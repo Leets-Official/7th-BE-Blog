@@ -1,0 +1,13 @@
+package com.example.leets_7th;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class Leets7thApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
