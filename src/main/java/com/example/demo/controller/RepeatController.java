@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 import com.example.demo.dto.ErrorResponseDto;
 import com.example.demo.dto.RepeatRequestDto;
+import com.example.demo.dto.RepeatResponseDto;
 import com.example.demo.service.RepeatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class RepeatController {
 
             return ResponseEntity.badRequest().body(errorReponseDto);
         }
+
 
 
         return ResponseEntity.ok(repeatService.getRepeat(request.getValue()));
