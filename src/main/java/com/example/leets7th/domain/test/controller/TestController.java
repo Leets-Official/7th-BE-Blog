@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final TestService testService;
 
-    @PostMapping("/test/repeat")
+    @PostMapping("/string/repeat")
     public ApiResponse<TestResDTO.TestDTO> repeat(@RequestBody String testValue) {
         TestResDTO.TestDTO result = testService.getTestValue(testValue);
         return ApiResponse.onSuccess(GeneralSuccessCode.REQUEST_OK, result);
