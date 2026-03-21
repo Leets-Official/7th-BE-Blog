@@ -1,14 +1,14 @@
-package com.leets.blog.domain.controller;
+package com.leets.blog.repeat.controller;
 
-import com.leets.blog.domain.dto.req.RepeatReqDTO;
-import com.leets.blog.domain.dto.res.RepeatResDTO;
+import com.leets.blog.repeat.dto.request.RepeatRequest;
+import com.leets.blog.repeat.dto.response.RepeatResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpEntity;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+@Tag(name = "Repeat | 가상의 repeat 도메인", description = "1주차 연습용")
 public interface RepeatControllerDocs {
 
     @Operation(
@@ -20,11 +20,11 @@ public interface RepeatControllerDocs {
                     """
     )
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "실패")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/string/repeat")
-    HttpEntity<RepeatResDTO> repeat(
-            @Valid @RequestBody RepeatReqDTO request
+    RepeatResponse repeat(
+            RepeatRequest request
     );
 }

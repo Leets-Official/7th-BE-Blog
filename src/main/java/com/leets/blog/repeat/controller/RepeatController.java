@@ -1,11 +1,10 @@
-package com.leets.blog.domain.controller;
+package com.leets.blog.repeat.controller;
 
-import com.leets.blog.domain.dto.req.RepeatReqDTO;
-import com.leets.blog.domain.dto.res.RepeatResDTO;
-import com.leets.blog.domain.service.RepeatService;
+import com.leets.blog.repeat.dto.request.RepeatRequest;
+import com.leets.blog.repeat.dto.response.RepeatResponse;
+import com.leets.blog.repeat.service.RepeatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +19,9 @@ public class RepeatController implements RepeatControllerDocs{
 
     @Override
     @PostMapping("/string/repeat")
-    public ResponseEntity<RepeatResDTO> repeat(
-            @Valid @RequestBody RepeatReqDTO request
+    public RepeatResponse repeat(
+            @Valid @RequestBody RepeatRequest request
     ) {
-        return ResponseEntity.ok(repeatService.repeat(request.value()));
+        return repeatService.repeat(request.value());
     }
 }
