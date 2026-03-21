@@ -16,7 +16,7 @@ public class StringController {
 
   private final StringService stringService;
 
-  @PostMapping("/string/repeat")
+  @PostMapping("/api/v1/strings/repeat")
   public ApiResponse<StringResponse> repeat(@RequestBody @Valid StringRequest request) {
     return ApiResponse.success(stringService.repeat(request.getValue()));
   }
