@@ -1,17 +1,44 @@
+# OS generated files
 .DS_Store
+Thumbs.db
 
-# IDE
+# IDE (IntelliJ, VS Code, STS, NetBeans)
 .idea/
 .vscode/
 *.iml
+*.iws
+*.ipr
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+out/
 
 # Java/Gradle build outputs
 .gradle/
 build/
-out/
-
-# Maven build outputs
 target/
+HELP.md
+
+# Gradle wrapper (Keep the wrapper jar)
+!gradle/wrapper/gradle-wrapper.jar
+
+# Specific build output exceptions
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 # Logs
 *.log
@@ -19,6 +46,3 @@ target/
 # Environment files
 .env
 .env.*
-
-# OS generated files
-Thumbs.db
