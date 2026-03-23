@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: blog
-  profiles:
-    active: local
