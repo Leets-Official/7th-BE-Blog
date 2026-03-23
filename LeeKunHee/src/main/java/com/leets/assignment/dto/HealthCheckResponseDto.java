@@ -7,7 +7,7 @@ public class HealthCheckResponseDto {
         this.message = message;
     }
 
-    // JSON으로 변환될 때 필요한 Getter들
+    // JSON으로 변환될 때 필요한 Getter
     public String getMessage() {
         return message;
     }
