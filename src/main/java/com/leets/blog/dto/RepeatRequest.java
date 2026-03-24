@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RepeatReq {
+public class RepeatRequest {
     private String content;     // 요청으로 받을 문자열
 }
