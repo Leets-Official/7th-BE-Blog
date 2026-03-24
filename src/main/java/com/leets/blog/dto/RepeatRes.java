@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RepeatRes {
-    private String result; // 결과 (문자열 2번) 필드
+    private String string_one;
+    private String string_two;
 }

@@ -17,10 +17,10 @@ public class StringController {
 
     @PostMapping("/string/repeat")
     public RepeatRes repeatString(@RequestBody RepeatReq req) {
-        // Service 호출
-        String repeat2 = stringService.repeatString(req.getContent());
+        // 서비스에서 원본 문자열 가져오기
+        String original = stringService.getOriginalString(req.getContent());
 
-        // DTO 에 담아서 >> JSON 으로 변환
-        return new RepeatRes(repeat2);
+        // JSON 구조로 응답
+        return new RepeatRes(original, original);
     }
 }
