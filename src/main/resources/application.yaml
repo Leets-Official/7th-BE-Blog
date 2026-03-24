@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: leets-7th
+
+  datasource:
+    url: ${DB_URL}
+    username: ${LOCAL_DB_NAME}
+    password: ${LOCAL_DB_PWD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
