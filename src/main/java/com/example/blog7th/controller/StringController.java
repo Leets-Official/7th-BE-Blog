@@ -3,6 +3,7 @@ package com.example.blog7th.controller;
 import com.example.blog7th.dto.StringRequest;
 import com.example.blog7th.dto.StringResponse;
 import com.example.blog7th.service.StringService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class StringController {
     private final StringService stringService;
 
     @PostMapping("/string/repeat")
-    public StringResponse repeat(@RequestBody StringRequest request) {
+    public StringResponse repeat(@Valid @RequestBody StringRequest request) {
 
         return stringService.repeatString(request.getValue());
     }
