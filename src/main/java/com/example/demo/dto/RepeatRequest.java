@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RequestRepeat {
+public class RepeatRequest {
     private String value;
 }
