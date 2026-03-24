@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RepeatResponse {
-    private String result1;
-    private String result2;
+    private String string_one;
+    private String string_two;
 }
