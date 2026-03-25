@@ -7,8 +7,8 @@ public class RepeatResponseDto {
     private final String string_one;
     private final String string_two;
 
-    public RepeatResponseDto(String value) {
-        this.string_one = value;
-        this.string_two = value;
+    public RepeatResponseDto(String string_one, String string_two) {
+        this.string_one = string_one;
+        this.string_two = string_two;
     }
 }

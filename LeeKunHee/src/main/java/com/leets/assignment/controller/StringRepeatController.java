@@ -18,6 +18,6 @@ public class StringRepeatController {
     @PostMapping("/string/repeat")
     public RepeatResponseDto repeat(@RequestBody RepeatRequestDto requestDto) {
         // @RequestBody : 사용자가 보낸 JSON 본문을 자바 객체로 변환
-        return stringRepeatService.repeatString(requestDto);
+        return stringRepeatService.repeatString(requestDto.getValue());
     }
 }

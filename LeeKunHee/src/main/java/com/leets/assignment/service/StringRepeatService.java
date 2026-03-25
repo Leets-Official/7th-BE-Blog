@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StringRepeatService {
 
-    public RepeatResponseDto repeatString(RepeatRequestDto requestDto) {
-        return new RepeatResponseDto(requestDto.getValue());
+    public RepeatResponseDto repeatString(String value) {
+        return new RepeatResponseDto(value, value);
     }
 }
