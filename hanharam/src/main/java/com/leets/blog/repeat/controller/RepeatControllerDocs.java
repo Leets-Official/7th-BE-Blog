@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Tag(name = "Repeat | 가상의 repeat 도메인", description = "1주차 연습용")
@@ -25,6 +26,6 @@ public interface RepeatControllerDocs {
     })
     @PostMapping("/string/repeat")
     RepeatResponse repeat(
-            RepeatRequest request
+            @Valid RepeatRequest request
     );
 }

@@ -14,7 +14,7 @@ public enum CommonErrorCode implements BaseCode {
 
     // COMMON: 일반 상태 코드
     INTERNAL_SERVER_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-001", "예기치 않은 서버 에러가 발생했습니다."),
+            HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-500", "예기치 않은 서버 에러가 발생했습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON-403", "허용되지 않는 요청입니다."),
