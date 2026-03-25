@@ -1,24 +1,18 @@
-.DS_Store
-
-# IDE
-.idea/
-.vscode/
-*.iml
-
-# Java/Gradle build outputs
 .gradle/
 build/
 out/
+!gradle/wrapper/gradle-wrapper.jar
 
-# Maven build outputs
-target/
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+*.xml
 
-# Logs
-*.log
-
-# Environment files
-.env
-.env.*
-
-# OS generated files
+### OS generated files ###
+.DS_Store
 Thumbs.db
+
+*.log
+.env
