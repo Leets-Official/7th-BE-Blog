@@ -1,10 +1,10 @@
 package com.leets.blog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class StringRequestDto {
-    private String text;
+    private final String value;
 }

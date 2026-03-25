@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StringService {
-    public String repeat(String text) {
-        return text;
+    public String repeat(String value) {
+        return value;
     }
 }

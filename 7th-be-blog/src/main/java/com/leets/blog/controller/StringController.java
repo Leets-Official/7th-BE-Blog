@@ -19,8 +19,8 @@ public class StringController {
     @PostMapping("/repeat")
     public StringResponseDto repeat(@RequestBody StringRequestDto request) {
 
-        String result = stringService.repeat(request.getText());
+        String result = stringService.repeat(request.getValue());
 
-        return new StringResponseDto(result);
+        return new StringResponseDto(result, result);
     }
 }
