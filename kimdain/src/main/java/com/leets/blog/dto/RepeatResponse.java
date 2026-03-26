@@ -1,11 +1,15 @@
 package com.leets.blog.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 public class RepeatResponse {
-    private String string_one;
-    private String string_two;
+    @JsonProperty("string_one")
+    private String stringOne;
+
+    @JsonProperty("string_two")
+    private String stringTwo;
 }

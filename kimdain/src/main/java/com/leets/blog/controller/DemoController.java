@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.leets.blog.service.DemoService;
-import com.leets.blog.dto.RepeatRequest;
+import com.leets.blog.          dto.RepeatRequest;
 import com.leets.blog.dto.RepeatResponse;
 
 @RestController
