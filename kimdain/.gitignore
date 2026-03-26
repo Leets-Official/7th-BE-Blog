@@ -1,7 +1,4 @@
-### JetBrains (IntelliJ) ###
-.idea/
-*.iml
-out/
+HELP.md
 
 ### Gradle ###
 .gradle/
@@ -9,7 +6,3 @@ build/
 
 ### Local Config ###
 /src/main/resources/application-local.properties
-
-### OS ###
-.DS_Store
-Thumbs.db
