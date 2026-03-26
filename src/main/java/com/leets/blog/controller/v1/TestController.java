@@ -1,7 +1,7 @@
 package com.leets.blog.controller.v1;
 
-import com.leets.blog.controller.dto.StringRequest;
-import com.leets.blog.controller.dto.StringResponse;
+import com.leets.blog.dto.StringRequest;
+import com.leets.blog.dto.StringResponse;
 import com.leets.blog.service.DtoConverter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,7 @@ public class TestController {
     @PostMapping("/string/repeat")
     public StringResponse stringRepeat(@RequestBody StringRequest stringRequest) {
 
-        StringResponse result = dtoConverter.convert(stringRequest);
+        StringResponse result = dtoConverter.convert(stringRequest.string());
 
         return result;
     }
