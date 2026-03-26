@@ -2,9 +2,11 @@ package com.leets.blog.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class StringRequestDto {
-    private final String value;
+    private String value;
 }
