@@ -23,6 +23,6 @@ public class DemoController {
     // 입력 문자열 중복 반환 API
     @PostMapping("/string/repeat")
     public RepeatResponse repeatString(@RequestBody RepeatRequest request) {
-        return demoService.repeatString(request.getValue());
-    }
+        String result = demoService.repeatString(request.getValue());
+        return new RepeatResponse(result, result); }
 }
