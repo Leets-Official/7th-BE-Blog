@@ -1,0 +1,7 @@
+### String Repeat Test
+POST http://localhost:8080/string/repeat
+Content-Type: application/json
+
+{
+  "text": "hello"
+}
