@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: leets7th
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/leets_db}
+    username: ${LOCAL_DB_NAME}
+    password: ${LOCAL_DB_PWD}
