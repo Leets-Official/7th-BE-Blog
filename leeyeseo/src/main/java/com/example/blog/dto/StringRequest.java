@@ -1,15 +1,8 @@
-package com.example.blog.dto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class StringRequest {
     private String value;
-
-    public StringRequest() {}
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
