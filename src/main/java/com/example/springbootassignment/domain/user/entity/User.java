@@ -1,5 +1,7 @@
-package com.example.springbootassignment.domain;
+package com.example.springbootassignment.domain.user.entity;
 
+import com.example.springbootassignment.domain.comment.entity.Comment;
+import com.example.springbootassignment.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
