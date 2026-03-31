@@ -1,6 +1,6 @@
-package com.example.leets_project.health.service;
+package com.example.leets_project.domain.health.service;
 
-import com.example.leets_project.health.dto.StringResponse;
+import com.example.leets_project.domain.health.dto.StringResponse;
 import org.springframework.stereotype.Service;
 
 @Service

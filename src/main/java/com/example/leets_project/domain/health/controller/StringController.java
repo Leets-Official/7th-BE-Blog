@@ -1,8 +1,8 @@
-package com.example.leets_project.health.controller;
+package com.example.leets_project.domain.health.controller;
 
-import com.example.leets_project.health.dto.StringRequest;
-import com.example.leets_project.health.dto.StringResponse;
-import com.example.leets_project.health.service.StringService;
+import com.example.leets_project.domain.health.dto.StringRequest;
+import com.example.leets_project.domain.health.dto.StringResponse;
+import com.example.leets_project.domain.health.service.StringService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

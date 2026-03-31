@@ -1,4 +1,4 @@
-package com.example.leets_project.health.dto;
+package com.example.leets_project.domain.health.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

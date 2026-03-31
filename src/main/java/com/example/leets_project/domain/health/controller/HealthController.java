@@ -1,4 +1,4 @@
-package com.example.leets_project.health.controller;
+package com.example.leets_project.domain.health.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
