@@ -1,5 +1,7 @@
 package com.example.blog.domain.user.entity;
 
+import com.example.blog.domain.comment.entity.Comment;
+import com.example.blog.domain.post.entity.Post;
 import com.example.blog.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,4 +33,10 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, length = 200)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 }
