@@ -26,6 +26,9 @@ public class User extends BaseEntity{
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Column(nullable = false, length = 50)
+    private String nickname;
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
