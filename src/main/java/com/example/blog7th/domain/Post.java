@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "post")
@@ -38,10 +40,14 @@ public class Post extends BaseEntity {
     @Column(name = "comment_count")
     private int commentCount = 0;
 
+    //
     // N:1 관계 (작성자)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, String thumbnail, String status, User user) {
