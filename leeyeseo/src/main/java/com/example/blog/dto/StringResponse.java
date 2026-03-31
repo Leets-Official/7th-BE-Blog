@@ -1,9 +1,11 @@
-import lombok.AllArgsConstructor;
+package com.example.blog.dto;
+
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 public class StringResponse {
-    private String string_one;
-    private String string_two;
+    private String value;
+    private String repeated;
 }
