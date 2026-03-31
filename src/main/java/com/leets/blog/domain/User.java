@@ -30,8 +30,9 @@ public class User extends BaseTimeEntity {
     private String nickname;
 
     // role (권한) 설정
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private UserRole role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
@@ -39,7 +40,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public User(String email, String password, String nickname, String role) {
+    public User(String email, String password, String nickname, UserRole role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
