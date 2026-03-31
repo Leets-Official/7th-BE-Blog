@@ -5,7 +5,9 @@ package com.leets.blog.global.exception.constant;
  */
 public enum Domain {
     COMMON,
-    REPEAT,
     AUTHORIZATION,
-    AUTHENTICATION
+    AUTHENTICATION,
+    COMMENT,
+    POST,
+    MEMBER
 }
