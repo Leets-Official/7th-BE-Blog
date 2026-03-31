@@ -1,5 +1,6 @@
 package com.example.leets_project.domain.comment;
 
+import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.domain.post.Post;
 import com.example.leets_project.domain.user.User;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +33,6 @@ public class Comment {
 
     @Column(nullable = false, length = 255)
     private String content;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @Builder
     public Comment(User user, Post post, String content) {

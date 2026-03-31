@@ -1,5 +1,6 @@
 package com.example.leets_project.domain.post;
 
+import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.domain.comment.Comment;
 import com.example.leets_project.domain.user.User;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,14 +37,6 @@ public class Post {
 
     @Column
     private String description;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     // 양방향: Post → Comment
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

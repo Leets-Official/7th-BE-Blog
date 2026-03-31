@@ -1,5 +1,6 @@
 package com.example.leets_project.domain.user;
 
+import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.domain.comment.Comment;
 import com.example.leets_project.domain.post.Post;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.Auditable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +34,6 @@ public class User {
 
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     // 양방향: User → Post
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
