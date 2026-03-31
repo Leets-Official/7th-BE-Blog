@@ -38,4 +38,8 @@ public class Post extends BaseEntity {
     // Post - Comment (1:N)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    // 상태 변경
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }
