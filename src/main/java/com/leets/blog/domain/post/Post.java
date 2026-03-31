@@ -1,5 +1,8 @@
-package com.leets.blog.domain;
+package com.leets.blog.domain.post;
 
+import com.leets.blog.domain.BaseTimeEntity;
+import com.leets.blog.domain.user.User;
+import com.leets.blog.domain.comment.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

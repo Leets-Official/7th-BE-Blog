@@ -1,4 +1,4 @@
-package com.leets.blog.domain;
+package com.leets.blog.domain.user;
 
 
 import lombok.Getter;
