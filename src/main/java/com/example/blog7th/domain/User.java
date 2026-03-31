@@ -1,0 +1,46 @@
+package com.example.blog7th.domain;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "user")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 100)
+    private String email;
+
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @Column(nullable = false, length = 100)
+    private String nickname;
+
+    @Column(name = "profile_image", length = 1000)
+    private String profileImage;
+
+    @Column(length = 20)
+    private String role;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @Builder
+    public User(String email, String password, String nickname, String profileImage, String role) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.role = role;
+    }
+}

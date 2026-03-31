@@ -1,0 +1,59 @@
+package com.example.blog7th.domain;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "post")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Post extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String content;
+
+    @Column(length = 1000)
+    private String thumbnail;
+
+    @Column(length = 20)
+    private String status;
+
+    @Column(name = "view_count")
+    private int viewCount = 0;
+
+    @Column(name = "like_count")
+    private int likeCount = 0;
+
+    @Column(name = "comment_count")
+    private int commentCount = 0;
+
+    // N:1 관계 (작성자)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Builder
+    public Post(String title, String content, String thumbnail, String status, User user) {
+        this.title = title;
+        this.content = content;
+        this.thumbnail = thumbnail;
+        this.status = status;
+        this.user = user;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+}
