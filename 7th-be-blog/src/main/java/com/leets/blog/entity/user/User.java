@@ -34,11 +34,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    // user - post = 1 : N
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-    // user - comment = 1 : N
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    // user 데이터를 지우지 않고 상태변경 -> FK 보존
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }
