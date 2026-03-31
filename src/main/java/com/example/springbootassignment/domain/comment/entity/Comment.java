@@ -40,3 +40,4 @@ public class Comment {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 }
+
