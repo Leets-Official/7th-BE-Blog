@@ -9,9 +9,6 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum SuccessStatus implements BaseStatus {
 
-    // 예시
-    COMM_SUCCESS_STATUS(HttpStatus.OK, "COMM_200", "성공적으로 처리되었습니다."),
-
     // test
     HEALTH_CHECK_SUCCESS_STATUS(HttpStatus.OK,"TEST_200","OK"),
     STRING_REPEAT_SUCCESS(HttpStatus.CREATED,"TEST_201","문자열을 성공적으로 출력했습니다.");
