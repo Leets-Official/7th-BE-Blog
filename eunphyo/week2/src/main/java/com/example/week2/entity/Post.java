@@ -2,13 +2,14 @@ package com.example.week2.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "posts")
 public class Post extends BaseEntity{
 
@@ -27,7 +28,7 @@ public class Post extends BaseEntity{
     private String content;
 
     @Column(length = 500)
-    private String imageUrl;  // ⭐ 여기 추가
+    private String imageUrl;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
