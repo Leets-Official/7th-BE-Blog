@@ -12,9 +12,7 @@ import java.util.List;
 @Table(name = "`user`")
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Id
@@ -38,6 +36,5 @@ public class User extends BaseEntity {
     private int age;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Comment> comment = new ArrayList<>();
 }

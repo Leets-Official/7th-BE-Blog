@@ -7,9 +7,7 @@ import lombok.*;
 @Table(name = "image")
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Image extends BaseEntity {
 
     @Id

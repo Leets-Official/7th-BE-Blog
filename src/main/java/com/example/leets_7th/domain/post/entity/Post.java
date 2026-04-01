@@ -12,9 +12,7 @@ import java.util.List;
 @Table(name = "post")
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Post extends BaseEntity {
 
     @Id
@@ -31,7 +29,6 @@ public class Post extends BaseEntity {
     private String thumbnailImageUrl;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +36,13 @@ public class Post extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder
+    public Post(User user, String title, String content, String thumbnailImageUrl) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+    }
 }
