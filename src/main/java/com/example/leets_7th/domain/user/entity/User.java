@@ -36,5 +36,15 @@ public class User extends BaseEntity {
     private int age;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+
+    public static User create(String name, Gender gender, String email, String password, int age) {
+        User user = new User();
+        user.name = name;
+        user.gender = gender;
+        user.email = email;
+        user.password = password;
+        user.age = age;
+        return user;
+    }
 }
