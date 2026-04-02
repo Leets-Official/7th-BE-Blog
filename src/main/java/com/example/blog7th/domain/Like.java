@@ -31,4 +31,11 @@ public class Like extends BaseEntity {
         this.post = post;
         this.comment = comment;
     }
+    @PrePersist
+    public void validate() {
+        // 하나만 처리
+        if ((post == null && comment == null) || (post != null && comment != null)) {
+            throw new IllegalStateException("좋아요는 게시글 또는 댓글 중 하나에만 할당되어야 합니다.");
+        }
+    }
 }
