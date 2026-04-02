@@ -29,5 +29,13 @@ public class PostBlock {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Builder
+    private PostBlock(Integer sequence, BlockType blockType, String content, Post post) {
+        this.sequence = sequence;
+        this.blockType = blockType;
+        this.content = content;
+        this.post = post;
+    }
 }
 

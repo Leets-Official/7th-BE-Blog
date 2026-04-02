@@ -27,4 +27,10 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostBlock> blocks = new ArrayList<>();
+
+    @Builder
+    private Post(String title, User user) {
+        this.title = title;
+        this.user = user;
+    }
 }
