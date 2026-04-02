@@ -4,10 +4,15 @@ import com.example.demo.domain.comment.entity.Comment;
 import com.example.demo.domain.post.entity.Post;
 import com.example.demo.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User extends BaseEntity {
 

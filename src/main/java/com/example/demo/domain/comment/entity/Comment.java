@@ -4,7 +4,12 @@ import com.example.demo.domain.post.entity.Post;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends BaseEntity {
 
