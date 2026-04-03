@@ -1,8 +1,10 @@
     package com.example.demo.dto;
 
     import com.fasterxml.jackson.annotation.JsonInclude;
-    import lombok.Getter;
+    import jakarta.servlet.http.HttpServletRequest;
 
+
+    import java.net.http.HttpRequest;
     import java.util.List;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
