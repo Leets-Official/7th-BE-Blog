@@ -4,13 +4,16 @@ import com.example.leets7th.domain.post.entity.Post;
 import com.example.leets7th.domain.comment.entity.Comment;
 import com.example.leets7th.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -21,7 +24,9 @@ public class User extends BaseEntity {
 
     // 선택 정보
     private String username;
-    private String gender;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private LocalDateTime deletedAt;
 

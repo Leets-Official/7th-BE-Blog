@@ -15,24 +15,32 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
+    // 댓글 내용
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    // 작성자
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 게시글
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    // 연관관계 편의 메서드
     public void setUser(User user) {
         this.user = user;
-        user.getComments().add(this);
+        if (!user.getComments().contains(this)) {
+            user.getComments().add(this);
+        }
     }
 
     public void setPost(Post post) {
         this.post = post;
-        post.getComments().add(this);
+        if (!post.getComments().contains(this)) {
+            post.getComments().add(this);
+        }
     }
 }
