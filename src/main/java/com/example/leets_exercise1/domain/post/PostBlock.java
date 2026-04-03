@@ -43,6 +43,9 @@ public class PostBlock {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -54,5 +57,9 @@ public class PostBlock {
         this.sortOrder = sortOrder;
         this.textContent = textContent;
         this.media = media;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
