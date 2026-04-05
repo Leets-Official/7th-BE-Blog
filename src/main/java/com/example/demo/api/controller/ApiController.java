@@ -13,7 +13,7 @@ public class ApiController {
 
     private final ApiService apiService;
 
-    // 헬스체크
+    // 헬스 체크
     @GetMapping("/health")
     public String healthCheck() {
         return "OK";

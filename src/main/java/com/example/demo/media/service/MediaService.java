@@ -18,6 +18,7 @@ public class MediaService {
     private final MediaRepository mediaRepository;
     private final String uploadDir = "C:/upload/";
 
+    //upload 폴더에 이미지 파일 저장
     public MediaResponse upload(MultipartFile file) {
         try {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
