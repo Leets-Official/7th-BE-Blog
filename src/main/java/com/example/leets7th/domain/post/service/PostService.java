@@ -46,8 +46,8 @@ public class PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        Category category = categoryRepository.findByName(request.category())
-                .orElseGet(() -> categoryRepository.save(Category.create(request.category())));
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. id=" + request.categoryId()));
 
         Post post = Post.create(request.title(), request.content(), null, user, category);
         postRepository.save(post);
