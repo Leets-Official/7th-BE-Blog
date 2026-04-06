@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +50,9 @@ public interface PostControllerDocs {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST201_3", description = "게시글 작성에 성공하였습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_1", description = "제목을 입력해주세요."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_2", description = "제목은 최대 255자까지 가능합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_3", description = "내용을 입력해주세요."),
     })
     @PostMapping("/api/posts")
     ApiResponse<PostResponseDTO.CreatePostResDTO> createPost(
