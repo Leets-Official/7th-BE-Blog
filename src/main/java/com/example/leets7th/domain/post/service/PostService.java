@@ -31,6 +31,8 @@ public class PostService {
                         .postId(post.getId())
                         .title(post.getTitle())
                         .nickname(post.getUser().getNickname())
+                        .createdAt(post.getCreatedAt())
+                        .updatedAt(post.getUpdatedAt())
                         .build())
                 .toList();
     }
