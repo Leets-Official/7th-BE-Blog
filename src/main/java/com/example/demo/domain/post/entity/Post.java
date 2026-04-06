@@ -16,20 +16,25 @@ import java.util.List;
 @Entity
 public class Post extends BaseEntity {
 
+    // 포스트 아이디
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 유저 아이디
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 제목
     @Column(nullable = false, length = 30)
     private String title;
 
+    // 내용
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    // 사진
     @Column(name = "image_url")
     private String imageUrl;
 

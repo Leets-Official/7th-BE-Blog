@@ -2,6 +2,7 @@ package com.example.demo.domain.user.entity;
 
 import com.example.demo.domain.comment.entity.Comment;
 import com.example.demo.domain.post.entity.Post;
+import com.example.demo.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,14 +15,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends BaseEntity {
 
+    // 유저 아이디
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nickname", nullable = false, length = 30)
-    private String nickname;
+    // 이름
+    @Column(nullable = false, length = 10)
+    private String name;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();

@@ -31,7 +31,7 @@ public class PostService {
                                 post.getTitle(),
                                 post.getContent(),
                                 post.getImageUrl(),
-                                post.getUser().getNickname(),
+                                post.getUser().getName(),
                                 post.getCreatedAt()
                         ))
                         .toList(),
@@ -54,7 +54,7 @@ public class PostService {
                 post.getContent(),
                 post.getImageUrl(),
                 post.getUser().getId(),
-                post.getUser().getNickname(),
+                post.getUser().getName(),
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         );
