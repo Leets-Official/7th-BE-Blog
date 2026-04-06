@@ -16,6 +16,7 @@ import java.util.List;
 public class PostController implements PostControllerDocs{
     private final PostService postService;
 
+    // 게시글 목록 조회 API
     @GetMapping
     public ApiResponse<List<PostResponseDTO.PostListResDTO>> getPostList(
             @RequestHeader @Valid Long userId
@@ -23,5 +24,16 @@ public class PostController implements PostControllerDocs{
         List<PostResponseDTO.PostListResDTO> result = postService.getPostList(userId);
 
         return ApiResponse.onSuccess(PostSuccessCode.GET_POSTLIST_SUCCESS, result);
+    }
+
+    // 게시글 상세 조회 API
+    @GetMapping("/{postId}")
+    public ApiResponse<PostResponseDTO.PostDetailResDTO> getPostDetail(
+            @PathVariable Long postId,
+            @RequestHeader @Valid Long userId
+    ) {
+        PostResponseDTO.PostDetailResDTO result = postService.getPostDetail(postId, userId);
+
+        return ApiResponse.onSuccess(PostSuccessCode.GET_POST_SUCCESS, result);
     }
 }

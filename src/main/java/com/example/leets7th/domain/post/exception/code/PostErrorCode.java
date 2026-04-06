@@ -7,13 +7,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostSuccessCode implements BaseCode {
-    GET_POSTLIST_SUCCESS(HttpStatus.OK,
-            "POST200_1",
-            "게시글 리스트 조회에 성공했습니다."),
-    GET_POST_SUCCESS(HttpStatus.OK,
-            "POST200_2",
-            "게시글 상세 조회에 성공했습니다.")
+public enum PostErrorCode implements BaseCode {
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND,
+            "POST404_1",
+            "해당 게시글이 존재하지 않습니다.")
     ;
     private final HttpStatus status;
     private final String code;

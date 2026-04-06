@@ -11,7 +11,16 @@ public class PostResponseDTO {
             Long postId,
             String title,
             String nickname,
-            LocalDateTime createdAt, // 생성일자 추가
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){}
+
+    @Builder
+    public record PostDetailResDTO (
+            String title,
+            String content,
+            String nickname,
+            LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){}
 }

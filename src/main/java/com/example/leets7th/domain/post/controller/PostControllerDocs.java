@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
@@ -18,11 +19,26 @@ public interface PostControllerDocs {
             description = "게시글의 목록을 반환합니다."
     )
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST200_1", description = "게시글 리스트 조회에 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다.")
     })
     @GetMapping("/api/posts")
     ApiResponse<List<PostResponseDTO.PostListResDTO>> getPostList(
+            @RequestHeader @Valid Long userId
+    );
+
+    @Operation(
+            summary = "게시글 상세 조회 api",
+            description = "게시글의 상세 내용을 반환합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST200_1", description = "게시글 상세 조회에 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+    })
+    @GetMapping("/api/posts/{postId}")
+    ApiResponse<PostResponseDTO.PostDetailResDTO> getPostDetail(
+            @PathVariable Long postId,
             @RequestHeader @Valid Long userId
     );
 
