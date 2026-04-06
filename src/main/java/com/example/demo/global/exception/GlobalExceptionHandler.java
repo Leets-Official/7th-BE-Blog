@@ -4,49 +4,49 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. @Valid 검증 실패
+    // Validation 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(
             MethodArgumentNotValidException e) {
 
-        String message = e.getBindingResult()
-                .getFieldErrors()
-                .get(0)
-                .getDefaultMessage();
+        Map<String, String> errors = new HashMap<>();
 
-        return ResponseEntity.badRequest().body(
-                ApiResponse.<Void>builder()
-                        .success(false)
-                        .message(message)
-                        .build()
-        );
+        e.getBindingResult().getFieldErrors()
+                .forEach(error ->
+                        errors.put(error.getField(), error.getDefaultMessage())
+                );
+
+        return ResponseEntity.badRequest()
+                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, errors));
     }
 
-    // 2. 비즈니스 예외
+    // 게시글 없음
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> handleIllegal(
             IllegalArgumentException e) {
 
-        return ResponseEntity.badRequest().body(
-                ApiResponse.<Void>builder()
-                        .success(false)
-                        .message(e.getMessage())
-                        .build()
-        );
+        if (e.getMessage().contains("게시글 없음")) {
+            return ResponseEntity.status(404)
+                    .body(ResponseUtil.fail(
+                            BaseCode.POST_NOT_FOUND,
+                            Map.of("postId", -1)
+                    ));
+        }
+
+        return ResponseEntity.badRequest()
+                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, null));
     }
 
-    // 3. 기타 예외
+    // 기타
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-
-        return ResponseEntity.internalServerError().body(
-                ApiResponse.<Void>builder()
-                        .success(false)
-                        .message("서버 오류가 발생했습니다.")
-                        .build()
-        );
+    public ResponseEntity<ApiResponse<Void>> handleException() {
+        return ResponseEntity.internalServerError()
+                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, null));
     }
 }

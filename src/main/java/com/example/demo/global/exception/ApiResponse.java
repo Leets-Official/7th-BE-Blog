@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ApiResponse<T> {
-    private boolean success;
-    private T data;
+    private boolean isSuccess;
+    private String code;
     private String message;
+    private T result;
 }
