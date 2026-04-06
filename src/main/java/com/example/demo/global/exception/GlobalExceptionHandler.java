@@ -10,7 +10,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Validation 실패
+    // 검증 만족 못한 내용들
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(
             MethodArgumentNotValidException e) {
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
                 .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, null));
     }
 
-    // 기타
+    // 기타 예외상황
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException() {
         return ResponseEntity.internalServerError()
