@@ -5,8 +5,6 @@ import com.example.leets7th.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Builder
 @Getter

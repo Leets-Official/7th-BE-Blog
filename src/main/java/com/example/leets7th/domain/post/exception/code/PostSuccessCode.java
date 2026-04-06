@@ -1,0 +1,18 @@
+package com.example.leets7th.domain.post.exception.code;
+
+import com.example.leets7th.global.apiPayload.code.BaseCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@RequiredArgsConstructor
+public enum PostSuccessCode implements BaseCode {
+    GET_POSTLIST_SUCCESS(HttpStatus.OK,
+            "POST200_1",
+            "게시글 리스트 조회에 성공했습니다.")
+    ;
+    private final HttpStatus status;
+    private final String code;
+    private final String message;
+}
