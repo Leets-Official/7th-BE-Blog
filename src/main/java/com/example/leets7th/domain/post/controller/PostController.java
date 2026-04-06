@@ -47,4 +47,15 @@ public class PostController implements PostControllerDocs{
         PostResponseDTO.CreatePostResDTO result = postService.createPost(userId, req);
         return ApiResponse.onSuccess(PostSuccessCode.CREAT_POST_SUCCESS, result);
     }
+
+    // 게시글 수정 API
+    @PatchMapping("/{postId}")
+    public ApiResponse<PostResponseDTO.PostDetailResDTO> patchPost(
+            @PathVariable Long postId,
+            @RequestHeader @Valid Long userId,
+            @Valid @RequestBody PostRequestDTO.PostReqDTO req
+    ) {
+        PostResponseDTO.PostDetailResDTO result = postService.patchPost(postId, userId, req);
+        return ApiResponse.onSuccess(PostSuccessCode.PATCH_POST_SUCCESS, result);
+    }
 }

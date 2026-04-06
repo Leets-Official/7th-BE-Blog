@@ -11,12 +11,9 @@ public enum PostErrorCode implements BaseCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,
             "POST404_1",
             "해당 게시글이 존재하지 않습니다."),
-    INPUT_NOT_FOUND(HttpStatus.BAD_REQUEST,
-            "POST400_1",
-            "제목과 내용을 입력해주세요."),
-    TITLE_BAD_REQUEST(HttpStatus.BAD_REQUEST,
-            "POST400_2",
-            "제목은 최대 255자까지 가능합니다.")
+    POST_FORBIDDEN(HttpStatus.FORBIDDEN,
+            "POST403_1",
+            "수정 권한이 없습니다.")
     ;
     private final HttpStatus status;
     private final String code;

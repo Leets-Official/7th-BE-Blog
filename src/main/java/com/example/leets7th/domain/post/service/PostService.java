@@ -79,4 +79,27 @@ public class PostService {
                 .updatedAt(savedPost.getUpdatedAt())
                 .build();
     }
+
+    @Transactional
+    public PostResponseDTO.PostDetailResDTO patchPost(Long postId, Long userId, PostRequestDTO.PostReqDTO req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new PostException(PostErrorCode.POST_FORBIDDEN);
+        }
+
+        post.update(req.title(), req.content());
+
+        return PostResponseDTO.PostDetailResDTO.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .nickname(post.getUser().getNickname())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
+    }
 }

@@ -17,6 +17,9 @@ public enum PostSuccessCode implements BaseCode {
     CREAT_POST_SUCCESS(HttpStatus.CREATED,
             "POST201_3",
             "게시글 작성에 성공하였습니다."),
+    PATCH_POST_SUCCESS(HttpStatus.OK,
+            "POST200_3",
+            "게시글 수정에 성공하였습니다."),
     ;
     private final HttpStatus status;
     private final String code;
