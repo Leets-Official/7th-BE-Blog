@@ -5,7 +5,10 @@ import com.example.leets7th.global.apiPayload.code.BaseCode;
 import com.example.leets7th.global.apiPayload.code.GeneralErrorCode;
 import com.example.leets7th.global.apiPayload.exception.GeneralException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -40,5 +43,26 @@ public class GeneralExceptionAdvice {
                         code,
                         null
                 ));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException e) {
+
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        String rawMessage = fieldError != null ? fieldError.getDefaultMessage() : "";
+
+        String errorCode = "COMMON400";
+        String errorMessage = "입력값이 올바르지 않습니다.";
+
+        if (rawMessage != null && rawMessage.contains("|")) {
+            String[] parts = rawMessage.split("\\|");
+            errorCode = parts[0];
+            errorMessage = parts[1];
+        } else if (rawMessage != null) {
+            errorMessage = rawMessage;
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.onFailure(errorCode, errorMessage, null));
     }
 }

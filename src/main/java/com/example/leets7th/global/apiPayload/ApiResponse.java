@@ -32,4 +32,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> onFailure(BaseCode code, T result) {
         return new ApiResponse<>(false, code.getCode(), code.getMessage(), result);
     }
+
+    public static <T> ApiResponse<T> onFailure(String code, String message, T result) {
+        return new ApiResponse<>(false, code, message, result);
+    }
 }

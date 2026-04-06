@@ -23,4 +23,14 @@ public class PostResponseDTO {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){}
+
+    @Builder
+    public record CreatePostResDTO (
+            Long postId,
+            String title,
+            String content,
+            String nickname,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){}
 }

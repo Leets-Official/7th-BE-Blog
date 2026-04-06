@@ -1,5 +1,6 @@
 package com.example.leets7th.domain.post.service;
 
+import com.example.leets7th.domain.post.dto.req.PostRequestDTO;
 import com.example.leets7th.domain.post.dto.res.PostResponseDTO;
 import com.example.leets7th.domain.post.entity.Post;
 import com.example.leets7th.domain.post.exception.PostException;
@@ -53,6 +54,29 @@ public class PostService {
                 .nickname(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
+                .build();
+    }
+
+    @Transactional
+    public PostResponseDTO.CreatePostResDTO createPost(Long userId, PostRequestDTO.PostReqDTO req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+
+        Post post = Post.builder()
+                .title(req.title())
+                .content(req.content())
+                .user(user)
+                .build();
+
+        Post savedPost = postRepository.save(post);
+
+        return PostResponseDTO.CreatePostResDTO.builder()
+                .postId(savedPost.getId())
+                .title(savedPost.getTitle())
+                .content(savedPost.getContent())
+                .nickname(savedPost.getUser().getNickname())
+                .createdAt(savedPost.getCreatedAt())
+                .updatedAt(savedPost.getUpdatedAt())
                 .build();
     }
 }

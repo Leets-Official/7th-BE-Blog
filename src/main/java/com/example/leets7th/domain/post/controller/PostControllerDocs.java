@@ -1,14 +1,13 @@
 package com.example.leets7th.domain.post.controller;
 
+import com.example.leets7th.domain.post.dto.req.PostRequestDTO;
 import com.example.leets7th.domain.post.dto.res.PostResponseDTO;
 import com.example.leets7th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,6 +39,21 @@ public interface PostControllerDocs {
     ApiResponse<PostResponseDTO.PostDetailResDTO> getPostDetail(
             @PathVariable Long postId,
             @RequestHeader @Valid Long userId
+    );
+
+    @Operation(
+            summary = "게시글 작성 api",
+            description = "게시글을 작성합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST201_3", description = "게시글 작성에 성공하였습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+    })
+    @PostMapping("/api/posts")
+    ApiResponse<PostResponseDTO.CreatePostResDTO> createPost(
+            @RequestHeader @Valid Long userId,
+            @Valid @RequestBody PostRequestDTO.PostReqDTO req
     );
 
 }
