@@ -1,8 +1,8 @@
-package com.example.leets7th.controller;
+package com.example.leets7th.domain.string.controller;
 
-import com.example.leets7th.dto.StringRequestDto;
-import com.example.leets7th.dto.StringResponseDto;
-import com.example.leets7th.service.StringService;
+import com.example.leets7th.domain.string.dto.StringRequestDto;
+import com.example.leets7th.domain.string.dto.StringResponseDto;
+import com.example.leets7th.domain.string.service.StringService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

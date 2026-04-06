@@ -1,5 +1,6 @@
 package com.example.leets7th.domain.post.entity;
 
+import com.example.leets7th.domain.category.entity.Category;
 import com.example.leets7th.domain.user.entity.User;
 import com.example.leets7th.domain.comment.entity.Comment;
 import com.example.leets7th.global.entity.BaseEntity;
@@ -29,6 +30,14 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    // 썸네일 이미지 URL
+    private String thumbnailImageUrl;
+
+    // 카테고리
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     // 작성자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -42,6 +51,25 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("imageOrder ASC")
     private List<PostImage> images = new ArrayList<>();
+
+    public static Post create(String title, String content, String thumbnailImageUrl, User user, Category category) {
+        Post post = new Post();
+        post.title = title;
+        post.content = content;
+        post.thumbnailImageUrl = thumbnailImageUrl;
+        post.user = user;
+        post.category = category;
+        return post;
+    }
+
+    public void update(String title, String content) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (content != null && !content.isBlank()) {
+            this.content = content;
+        }
+    }
 
     // 연관관계 편의 메서드
 

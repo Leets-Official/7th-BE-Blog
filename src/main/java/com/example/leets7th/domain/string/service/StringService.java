@@ -1,6 +1,6 @@
-package com.example.leets7th.service;
+package com.example.leets7th.domain.string.service;
 
-import com.example.leets7th.dto.StringResponseDto;
+import com.example.leets7th.domain.string.dto.StringResponseDto;
 import org.springframework.stereotype.Service;
 
 @Service
