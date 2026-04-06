@@ -2,9 +2,7 @@ package com.example.demo.post.service;
 
 import com.example.demo.media.entity.Media;
 import com.example.demo.media.repository.MediaRepository;
-import com.example.demo.post.dto.PostBlockDto;
-import com.example.demo.post.dto.PostCreateRequest;
-import com.example.demo.post.dto.PostResponse;
+import com.example.demo.post.dto.*;
 import com.example.demo.post.entity.Post;
 import com.example.demo.post.entity.PostBlock;
 import com.example.demo.post.repository.PostRepository;
@@ -16,6 +14,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -102,5 +101,31 @@ public class PostService {
         postRepository.delete(post);
 
         return postId;
+    }
+
+    //게시글 조회
+    @Transactional
+    public PostDetailResponse getPostDetail(Long postId) {
+
+        Post post = postRepository.findPostWithBlocks(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        List<PostBlockResponse> blocks = post.getBlocks().stream()
+                .sorted((a, b) -> a.getSortOrder() - b.getSortOrder())
+                .map(block -> PostBlockResponse.builder()
+                        .blockType(block.getBlockType())
+                        .textContent(block.getTextContent())
+                        .imageUrl(block.getMedia() != null ? block.getMedia().getUrl() : null)
+                        .build())
+                .toList();
+
+        return PostDetailResponse.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .authorNickname(post.getUser().getName())
+                .createdAt(post.getCreatedAt())
+                .blocks(blocks)
+                .build();
     }
 }

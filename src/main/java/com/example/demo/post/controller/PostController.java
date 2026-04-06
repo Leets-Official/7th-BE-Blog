@@ -4,6 +4,7 @@ import com.example.demo.global.exception.ApiResponse;
 import com.example.demo.global.exception.BaseCode;
 import com.example.demo.global.exception.ResponseUtil;
 import com.example.demo.post.dto.PostCreateRequest;
+import com.example.demo.post.dto.PostDetailResponse;
 import com.example.demo.post.dto.PostResponse;
 import com.example.demo.post.service.PostService;
 import jakarta.validation.Valid;
@@ -50,6 +51,16 @@ public class PostController {
         return ResponseUtil.success(
                 BaseCode.POST_DELETE_SUCCESS,
                 Map.of("postId", postService.deletePost(postId))
+        );
+    }
+
+    //게시글 조회
+    @GetMapping("/{postId}")
+    public ApiResponse<PostDetailResponse> getPost(@PathVariable Long postId) {
+
+        return ResponseUtil.success(
+                BaseCode.SUCCESS,
+                postService.getPostDetail(postId)
         );
     }
 }
