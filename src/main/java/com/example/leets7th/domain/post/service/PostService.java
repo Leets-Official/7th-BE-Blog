@@ -10,10 +10,13 @@ import com.example.leets7th.domain.user.entity.User;
 import com.example.leets7th.domain.user.repository.UserRepository;
 import com.example.leets7th.global.apiPayload.code.GeneralErrorCode;
 import com.example.leets7th.global.apiPayload.exception.GeneralException;
+import com.example.leets7th.global.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -101,5 +104,20 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new PostException(PostErrorCode.POST_FORBIDDEN);
+        }
+
+        post.delete();
     }
 }

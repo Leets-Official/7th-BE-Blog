@@ -58,4 +58,14 @@ public class PostController implements PostControllerDocs{
         PostResponseDTO.PostDetailResDTO result = postService.patchPost(postId, userId, req);
         return ApiResponse.onSuccess(PostSuccessCode.PATCH_POST_SUCCESS, result);
     }
+
+    // 게시글 삭제 API
+    @DeleteMapping("/{postId}")
+    public ApiResponse<Void> deletePost(
+            @PathVariable Long postId,
+            @RequestHeader @Valid Long userId
+    ) {
+        postService.deletePost(postId, userId);
+        return ApiResponse.onSuccess(PostSuccessCode.Delete_POST_SUCCESS, null);
+    }
 }

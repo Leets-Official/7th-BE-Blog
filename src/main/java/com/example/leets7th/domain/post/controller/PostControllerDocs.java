@@ -46,7 +46,7 @@ public interface PostControllerDocs {
             description = "게시글을 작성합니다."
     )
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST201_3", description = "게시글 작성에 성공하였습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST201_3", description = "게시글 작성에 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_1", description = "제목을 입력해주세요."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_2", description = "제목은 최대 255자까지 가능합니다."),
@@ -63,13 +63,13 @@ public interface PostControllerDocs {
             description = "게시글을 수정합니다."
     )
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST200_3", description = "게시글 수정에 성공하였습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST200_3", description = "게시글 수정에 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_1", description = "제목을 입력해주세요."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_2", description = "제목은 최대 255자까지 가능합니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST400_3", description = "내용을 입력해주세요."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST403_1", description = "수정 권한이 없습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST403_1", description = "접근 권한이 없습니다."),
 
     })
     @PostMapping("/api/posts/{postId}")
@@ -77,5 +77,22 @@ public interface PostControllerDocs {
             @PathVariable Long postId,
             @RequestHeader @Valid Long userId,
             @Valid @RequestBody PostRequestDTO.PostReqDTO req
+    );
+
+    @Operation(
+            summary = "게시글 삭제 api",
+            description = "게시글을 삭제합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST200_4", description = "게시글 삭제에 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST403_1", description = "접근 권한이 없습니다."),
+
+    })
+    @PostMapping("/api/posts/{postId}")
+    ApiResponse<Void> deletePost(
+            @PathVariable Long postId,
+            @RequestHeader @Valid Long userId
     );
 }
