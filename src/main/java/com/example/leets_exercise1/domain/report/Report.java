@@ -22,7 +22,7 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     // 신고한 유저
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
