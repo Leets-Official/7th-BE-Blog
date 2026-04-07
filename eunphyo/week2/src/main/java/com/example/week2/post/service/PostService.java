@@ -2,7 +2,6 @@ package com.example.week2.post.service;
 
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
-import com.example.week2.post.dto.PostUpdateRequest;
 import com.example.week2.post.entity.Post;
 import com.example.week2.post.repository.PostRepository;
 import com.example.week2.user.entity.User;

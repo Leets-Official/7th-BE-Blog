@@ -3,7 +3,6 @@ package com.example.week2.post.controller;
 import com.example.week2.global.exception.ApiResponse;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
-import com.example.week2.post.dto.PostUpdateRequest;
 import com.example.week2.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
