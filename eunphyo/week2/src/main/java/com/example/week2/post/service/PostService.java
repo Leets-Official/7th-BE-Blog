@@ -47,7 +47,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse.PostDetailResponse updatePost(Long userId, Long postId, PostUpdateRequest request) {
+    public PostResponse.PostDetailResponse updatePost(Long userId, Long postId, PostCreateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 

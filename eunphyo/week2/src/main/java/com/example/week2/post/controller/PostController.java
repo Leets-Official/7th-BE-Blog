@@ -33,10 +33,10 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> updatePost(
             @RequestParam Long userId,
             @PathVariable Long postId,
-            @Valid @RequestBody PostUpdateRequest postUpdateRequest
+            @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
         PostResponse.PostDetailResponse response =
-                postService.updatePost(userId, postId, postUpdateRequest);
+                postService.updatePost(userId, postId, postCreateRequest);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
