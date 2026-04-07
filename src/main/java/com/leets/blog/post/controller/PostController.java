@@ -4,6 +4,7 @@ import com.leets.blog.global.common.BaseResponse;
 import com.leets.blog.post.dto.PostRequest;
 import com.leets.blog.post.dto.PostResponse;
 import com.leets.blog.post.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class PostController {
 
     // 게시글 생성 (POST /api/posts)
     @PostMapping
-    public ResponseEntity<BaseResponse<PostResponse>> create(@RequestBody PostRequest.Create request) {
+    public ResponseEntity<BaseResponse<PostResponse>> create(@Valid @RequestBody PostRequest.Create request) {
         PostResponse response = postService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.ok(response));
     }
@@ -41,7 +42,7 @@ public class PostController {
 
     // 게시글 수정 (PATCH /api/posts/{id})
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<PostResponse>> update(@PathVariable("id") Long id, @RequestBody PostRequest.Update request) {
+    public ResponseEntity<BaseResponse<PostResponse>> update(@Valid @PathVariable("id") Long id, @RequestBody PostRequest.Update request) {
         PostResponse response = postService.update(id, request);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
