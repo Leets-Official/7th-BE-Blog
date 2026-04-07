@@ -58,4 +58,15 @@ public class PostService {
         
         // Soft delete 로직 추가 가능
     }
+
+    // 5. 게시글 수정 (PATCH)
+    @Transactional
+    public PostResponse updatePost(Long id, PostRequest request) {
+        Post post = postRepository.findById(id)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new PostException(BaseErrorCode.POST_NOT_FOUND));
+
+        post.update(request.getTitle(), request.getContent());
+        return PostConverter.toPostResponse(post);
+    }
 }

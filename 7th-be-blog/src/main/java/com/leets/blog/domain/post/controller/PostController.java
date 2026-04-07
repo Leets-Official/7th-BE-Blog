@@ -41,4 +41,10 @@ public class PostController {
         postService.deletePost(postId);
         return ApiResponse.onSuccess("게시글이 성공적으로 삭제되었습니다.");
     }
+
+    // 5. 게시글 수정 (PDF 설계: PATCH /posts/{postId})
+    @PatchMapping("/{postId}")
+    public ApiResponse<PostResponse> updatePost(@PathVariable Long postId, @RequestBody @Valid PostRequest request) {
+        return ApiResponse.onSuccess(postService.updatePost(postId, request));
+    }
 }
