@@ -32,7 +32,7 @@ public class PostListResponse {
                 .map(Post::getTitle)
                 .toList();
         response.nickname = posts.getContent().stream()
-                .map(post -> post.getUser().getNickname())
+                .map(post -> post.getUser() != null ? post.getUser().getNickname() : "unknown")
                 .toList();
         response.createdAt = posts.getContent().stream()
                 .map(Post::getCreatedAt)
