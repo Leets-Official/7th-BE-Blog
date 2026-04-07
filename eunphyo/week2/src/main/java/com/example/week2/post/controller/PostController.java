@@ -4,38 +4,59 @@ import com.example.week2.global.exception.ApiResponse;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
 import com.example.week2.post.dto.PostUpdateRequest;
-import com.example.week2.post.repository.PostRepository;
 import com.example.week2.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import com.example.week2.post.dto.PostUpdateRequest;
 
-@RestController
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/posts")
+@RestController
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(
+    public ResponseEntity<ApiResponse<PostResponse.CreatePostResponse>> createPost(
             @RequestParam Long userId,
             @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
-        PostResponse postResponse = postService.createPost(userId, postCreateRequest);
-        return ResponseEntity.ok(ApiResponse.success(postResponse));
+        PostResponse.CreatePostResponse response =
+                postService.createPost(userId, postCreateRequest);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+    public ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> updatePost(
             @RequestParam Long userId,
             @PathVariable Long postId,
-            @Valid @RequestBody PostUpdateRequest request
+            @Valid @RequestBody PostUpdateRequest postUpdateRequest
     ) {
-        PostResponse response = postService.updatePost(userId, postId, request);
+        PostResponse.PostDetailResponse response =
+                postService.updatePost(userId, postId, postUpdateRequest);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> getPost(
+            @PathVariable Long postId
+    ) {
+        PostResponse.PostDetailResponse response =
+                postService.getPost(postId);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PostResponse.PostListResponse>>> getPosts() {
+        List<PostResponse.PostListResponse> response =
+                postService.getPosts();
+
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -47,17 +68,4 @@ public class PostController {
         postService.deletePost(userId, postId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-
-    @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> getPost(@PathVariable Long postId) {
-        PostResponse response = postService.getPost(postId);
-        return ResponseEntity.ok(ApiResponse.success(response));
-    }
-
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts() {
-        List<PostResponse> responses = postService.getPosts();
-        return ResponseEntity.ok(ApiResponse.success(responses));
-    }
-
 }

@@ -1,23 +1,36 @@
 package com.example.week2.post.dto;
 
 import com.example.week2.post.entity.Post;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
-public class PostResponse {
-    private Long id;
-    private String title;
-    private String content;
-    private String authorName;
 
-    public static PostResponse from(Post post) {
-        return new PostResponse(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getUser().getName()
-        );
-    }
+public class PostResponse{
+    @Builder
+    public record PostListResponse(
+            Long postId,
+            String title,
+            String nickname,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){}
+
+    @Builder
+    public record PostDetailResponse (
+            String title,
+            String content,
+            String nickname,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){}
+
+    @Builder
+    public record CreatePostResponse (
+            Long postId,
+            String title,
+            String content,
+            String nickname,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){}
 }

@@ -1,19 +1,20 @@
 package com.example.week2.post.service;
 
-import com.example.week2.global.exception.PostNotFoundException;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
+import com.example.week2.post.dto.PostUpdateRequest;
 import com.example.week2.post.entity.Post;
 import com.example.week2.post.repository.PostRepository;
 import com.example.week2.user.entity.User;
-import com.example.week2.user.exception.UserNotFoundException;
 import com.example.week2.user.repository.UserRepository;
+import com.example.week2.global.exception.ForbiddenPostAccessException;
+import com.example.week2.global.exception.PostNotFoundException;
+import com.example.week2.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import com.example.week2.post.dto.PostUpdateRequest;
-import com.example.week2.global.exception.ForbiddenPostAccessException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public PostResponse createPost(Long userId,PostCreateRequest request) {
+    public PostResponse.CreatePostResponse createPost(Long userId, PostCreateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -35,11 +36,19 @@ public class PostService {
                 .build();
 
         Post savedPost = postRepository.save(post);
-        return PostResponse.from(savedPost);
+
+        return PostResponse.CreatePostResponse.builder()
+                .postId(savedPost.getId())
+                .title(savedPost.getTitle())
+                .content(savedPost.getContent())
+                .nickname(savedPost.getUser().getName())
+                .createdAt(savedPost.getCreatedAt())
+                .updatedAt(savedPost.getUpdatedAt())
+                .build();
     }
 
     @Transactional
-    public PostResponse updatePost(Long userId, Long postId, PostUpdateRequest request) {
+    public PostResponse.PostDetailResponse updatePost(Long userId, Long postId, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -49,7 +58,13 @@ public class PostService {
 
         post.update(request.getTitle(), request.getContent());
 
-        return PostResponse.from(post);
+        return PostResponse.PostDetailResponse.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .nickname(post.getUser().getName())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
     }
 
     @Transactional
@@ -64,17 +79,29 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public PostResponse getPost(Long postId) {
+    public PostResponse.PostDetailResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        return PostResponse.from(post);
+        return PostResponse.PostDetailResponse.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .nickname(post.getUser().getName())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
     }
 
-    public List<PostResponse> getPosts() {
+    public List<PostResponse.PostListResponse> getPosts() {
         return postRepository.findAll()
                 .stream()
-                .map(PostResponse::from)
+                .map(post -> PostResponse.PostListResponse.builder()
+                        .postId(post.getId())
+                        .title(post.getTitle())
+                        .nickname(post.getUser().getName())
+                        .createdAt(post.getCreatedAt())
+                        .updatedAt(post.getUpdatedAt())
+                        .build())
                 .toList();
     }
 }
