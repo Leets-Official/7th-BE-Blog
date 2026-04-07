@@ -30,8 +30,8 @@ public class PostService {
                 .title(request.title())
                 .content(request.content())
                 .user(user)
-                .createdAt(LocalDateTime.now()) // <--- 직접 주입해서 NULL 에러 방지
-                .updatedAt(LocalDateTime.now()) // <--- 직접 주입
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
         return postRepository.save(post).getId();
@@ -70,14 +70,24 @@ public class PostService {
         Post post = postRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
-        // 수정 시에도 updatedAt 갱신이 필요하다면 여기서 세팅 가능
+        // 권한 체크: 작성자 ID와 요청자 ID 비교
+        if (!post.getUser().getId().equals(request.userId())) {
+            throw new RuntimeException("게시글 수정 권한이 없습니다.");
+        }
+
         post.update(request.title(), request.content());
     }
 
     @Transactional
-    public void deletePost(Long id) {
+    public void deletePost(Long id, Long userId) {
         Post post = postRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        // 권한 체크: 작성자 ID와 요청자 ID 비교
+        if (!post.getUser().getId().equals(userId)) {
+            throw new RuntimeException("게시글 삭제 권한이 없습니다.");
+        }
+
         post.delete();
     }
 }

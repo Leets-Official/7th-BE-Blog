@@ -36,7 +36,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getPost(id));
     }
 
-    // 게시글 수정:
+    // 게시글 수정
     @PatchMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(
             @PathVariable Long id,
@@ -47,8 +47,10 @@ public class PostController {
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> delete(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<Map<String, String>> delete(
+            @PathVariable Long id,
+            @RequestParam Long userId) {
+        postService.deletePost(id, userId);
         return ResponseEntity.ok(Map.of("message", "게시글이 삭제되었습니다."));
     }
 }
