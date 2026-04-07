@@ -5,14 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 
 public record UpdatePostRequest(
 
-        @NotBlank
         @Schema(example = "제목")
+        @NotBlank(message = "제목은 공백일 수 없습니다")
         String title,
 
-        @NotBlank
         @Schema(example = "내용")
+        @NotBlank(message = "내용은 공백일 수 없습니다")
         String content,
 
         Integer thumbnailIndex
+
 ) {
 }
