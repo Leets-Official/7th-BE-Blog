@@ -15,7 +15,18 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. @Valid 검증 실패 시
+    // 1. 커스텀 예외 처리 (GeneralException)
+    @ExceptionHandler(GeneralException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleGeneralException(GeneralException e) {
+        BaseErrorCode errorCode = e.getErrorCode();
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode.getCode(), e.getMessage());
+        
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), errorResponse));
+    }
+
+    // 2. @Valid 검증 실패 시
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleValidationException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
