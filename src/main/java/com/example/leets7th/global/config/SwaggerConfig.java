@@ -12,8 +12,8 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Leets 7th BE Blog API")
-                        .description("남유정 API 명세서")
-                        .version("v1.0.0"));
+                        .title("Leets-7th BE Blog API")
+                        .description("[남유정] 미션 API 명세서")
+                        .version("3주차"));
     }
 }
