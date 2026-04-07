@@ -2,37 +2,35 @@ package com.leets.blog.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "post")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@SuperBuilder // @Builder 대신 SuperBuilder!
 public class Post extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(name = "title", nullable = false, length = 100)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "content", nullable = false, length = 255)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "image", length = 255)
-    private String image;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.updatedAt = java.time.LocalDateTime.now();
+    }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<PostLike> postLikes;
+    public void delete() {
+        this.deletedAt = java.time.LocalDateTime.now();
+    }
 }
