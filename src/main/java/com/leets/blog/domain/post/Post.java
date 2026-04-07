@@ -5,6 +5,7 @@ import com.leets.blog.domain.user.User;
 import com.leets.blog.domain.comment.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,8 +29,9 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;          // PUBLISHED, DRAFT
+    private PostStatus status;          // PUBLISHED, DRAFT
 
     @ManyToOne(fetch = FetchType.LAZY)      // 필요시만 가져오는 LAZY 지연로딩 사용
     @JoinColumn(name = "user_id")
@@ -38,11 +40,21 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public Post(String title, String content, String status, User user) {
+    public void confirmUser(User user) {
+        this.user = user;
+        if (user != null && !user.getPosts().contains(this)) {
+            user.getPosts().add(this);
+        }
+    }
+
+    @Builder
+    public Post(String title, String content, PostStatus status, User user) {
         this.title = title;
         this.content = content;
         this.status = status;
-        this.user = user;
+        if (user != null && !user.getPosts().contains(this)) {
+            confirmUser(user);
+        }
     }
 
 
