@@ -27,7 +27,8 @@ public class PostQueryService {
 
         User user = postValidator.validateUser(request.userId());
 
-        Page<Post> postPage = postRepository.findAllByUser(user, request.toPageable());
+        Page<Post> postPage = postRepository
+                .findAllByUserAndDeletedAtIsNull(user, request.toPageable());
 
         List<PostSummary> postList = postPage.getContent().stream()
                 .map(PostSummary::from)

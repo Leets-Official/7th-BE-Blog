@@ -22,7 +22,13 @@ public class PostValidator {
     }
 
     public Post validatePost(Long postId) {
-        return postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        if (post.getDeletedAt() != null) {
+            throw new GeneralException(ErrorStatus.POST_ALREADY_DELETED);
+        }
+
+        return post;
     }
 }

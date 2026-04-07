@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @EntityGraph(attributePaths = {"user"})
-    Page<Post> findAllByUser(User user, Pageable pageable);
-
     @EntityGraph(attributePaths = {"user", "images"})
     Optional<Post> findById(Long postId);
+
+    @EntityGraph(attributePaths = {"user"})
+    Page<Post> findAllByUserAndDeletedAtIsNull(User user, Pageable pageable);
 }
