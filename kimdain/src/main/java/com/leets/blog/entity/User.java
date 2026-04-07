@@ -2,7 +2,6 @@ package com.leets.blog.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
 @Entity
@@ -12,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class User extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +18,7 @@ public class User extends BaseEntity {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "email", nullable = false, length = 255, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false, length = 255)

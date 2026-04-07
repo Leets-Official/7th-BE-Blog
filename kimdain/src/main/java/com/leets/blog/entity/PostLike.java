@@ -4,13 +4,20 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "post_like")
+@Table(
+        name = "post_like",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_post_like_user_post",
+                        columnNames = {"user_id", "post_id"}
+                )
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class PostLike extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

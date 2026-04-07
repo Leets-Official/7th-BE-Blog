@@ -4,13 +4,20 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "comment_like")
+@Table(
+        name = "comment_like",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_comment_like_user_comment",
+                        columnNames = {"user_id", "comment_id"}
+                )
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class CommentLike extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
