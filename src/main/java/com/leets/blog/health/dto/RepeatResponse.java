@@ -1,4 +1,4 @@
-package com.leets.blog.dto;
+package com.leets.blog.health.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

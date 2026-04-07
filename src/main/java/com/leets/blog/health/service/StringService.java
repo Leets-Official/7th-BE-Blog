@@ -1,6 +1,6 @@
-package com.leets.blog.service;
+package com.leets.blog.health.service;
 
-import com.leets.blog.dto.RepeatResponse;
+import com.leets.blog.health.dto.RepeatResponse;
 import org.springframework.stereotype.Service;
 
 @Service

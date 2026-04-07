@@ -1,6 +1,6 @@
-package com.leets.blog.controller;
+package com.leets.blog.health.controller;
 
-import com.leets.blog.service.HealthService;
+import com.leets.blog.health.service.HealthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

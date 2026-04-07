@@ -1,4 +1,4 @@
-package com.leets.blog.service;
+package com.leets.blog.health.service;
 
 import org.springframework.stereotype.Service;
 @Service
