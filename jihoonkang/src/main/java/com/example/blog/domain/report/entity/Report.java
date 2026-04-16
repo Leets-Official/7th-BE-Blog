@@ -34,4 +34,13 @@ public class Report extends BaseEntity {
 
     @Column(nullable = false)
     private String reason;
+
+    public static Report of(User reporter, Post post, Comment comment, String reason) {
+        Report report = new Report();
+        report.reporter = reporter;
+        report.post = post;
+        report.comment = comment;
+        report.reason = reason;
+        return report;
+    }
 }

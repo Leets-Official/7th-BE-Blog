@@ -39,4 +39,17 @@ public class Comment extends BaseEntity {
 
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> replies = new ArrayList<>();
+
+    public static Comment of(User user, Post post, String content, Comment parentComment) {
+        Comment comment = new Comment();
+        comment.user = user;
+        comment.post = post;
+        comment.content = content;
+        comment.parentComment = parentComment;
+        return comment;
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }

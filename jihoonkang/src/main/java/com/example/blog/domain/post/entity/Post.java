@@ -37,4 +37,25 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+
+    public static Post of(User user, String title, String content, String status) {
+        Post post = new Post();
+        post.user = user;
+        post.title = title;
+        post.content = content;
+        post.status = status != null ? status : "PUBLISHED";
+        return post;
+    }
+
+    public void update(String title, String content, String status) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+        if (status != null) {
+            this.status = status;
+        }
+    }
 }

@@ -39,4 +39,22 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    public static User of(String username, String email, String password, String profileUrl) {
+        User user = new User();
+        user.username = username;
+        user.email = email;
+        user.password = password;
+        user.profileUrl = profileUrl;
+        return user;
+    }
+
+    public void update(String username, String profileUrl) {
+        if (username != null) {
+            this.username = username;
+        }
+        if (profileUrl != null) {
+            this.profileUrl = profileUrl;
+        }
+    }
 }
