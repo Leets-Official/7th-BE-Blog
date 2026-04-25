@@ -1,8 +1,8 @@
-package com.leets.blog.entity.comment;
+package com.leets.blog.domain.comment.entity;
 
-import com.leets.blog.entity.BaseEntity;
-import com.leets.blog.entity.post.Post;
-import com.leets.blog.entity.user.User;
+import com.leets.blog.global.common.BaseEntity;
+import com.leets.blog.domain.post.entity.Post;
+import com.leets.blog.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

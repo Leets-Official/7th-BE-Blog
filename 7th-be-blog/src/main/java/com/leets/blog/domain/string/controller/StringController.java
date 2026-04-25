@@ -1,8 +1,8 @@
-package com.leets.blog.controller;
+package com.leets.blog.domain.string.controller;
 
-import com.leets.blog.dto.StringRequestDto;
-import com.leets.blog.dto.StringResponseDto;
-import com.leets.blog.service.StringService;
+import com.leets.blog.domain.string.dto.StringRequestDto;
+import com.leets.blog.domain.string.dto.StringResponseDto;
+import com.leets.blog.domain.string.service.StringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

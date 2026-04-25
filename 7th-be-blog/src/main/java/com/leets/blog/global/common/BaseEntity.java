@@ -1,4 +1,4 @@
-package com.leets.blog.entity;
+package com.leets.blog.global.common;
 
 import jakarta.persistence.*;
 import lombok.Getter;

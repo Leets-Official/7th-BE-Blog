@@ -1,4 +1,4 @@
-package com.leets.blog.dto;
+package com.leets.blog.domain.string.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

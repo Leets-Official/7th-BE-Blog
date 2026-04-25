@@ -1,8 +1,8 @@
-package com.leets.blog.entity.post;
+package com.leets.blog.domain.post.entity;
 
-import com.leets.blog.entity.BaseEntity;
-import com.leets.blog.entity.comment.Comment;
-import com.leets.blog.entity.user.User;
+import com.leets.blog.global.common.BaseEntity;
+import com.leets.blog.domain.comment.entity.Comment;
+import com.leets.blog.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,4 +42,14 @@ public class Post extends BaseEntity {
     // 상태 변경
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    // 게시글 수정 메서드
+    public void update(String title, String content) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (content != null && !content.isBlank()) {
+            this.content = content;
+        }
+    }
 }
