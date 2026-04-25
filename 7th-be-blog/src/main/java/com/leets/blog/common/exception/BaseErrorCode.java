@@ -13,7 +13,8 @@ public enum BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "사용자를 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4001", "댓글을 찾을 수 없습니다."),
-    DUPLICATE_REPORT(HttpStatus.CONFLICT, "REPORT4001", "이미 신고를 완료했습니다.");
+    DUPLICATE_REPORT(HttpStatus.CONFLICT, "REPORT4001", "이미 신고를 완료했습니다."),
+    DUPLICATE_POST_LIKE(HttpStatus.CONFLICT, "LIKE4001", "이미 좋아요한 게시글입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
