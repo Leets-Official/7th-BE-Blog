@@ -1,11 +1,10 @@
-package com.leets.blog.global.exception;
+package com.leets.blog.common.exception;
 
-import com.leets.blog.global.common.BaseErrorCode;
 import lombok.Getter;
 
 @Getter
 public class GeneralException extends RuntimeException {
-    
+
     private final BaseErrorCode errorCode;
 
     public GeneralException(BaseErrorCode errorCode) {

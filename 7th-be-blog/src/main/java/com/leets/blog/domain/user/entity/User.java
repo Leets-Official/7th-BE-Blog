@@ -1,48 +1,54 @@
 package com.leets.blog.domain.user.entity;
 
-import com.leets.blog.global.common.BaseEntity;
-import com.leets.blog.domain.post.entity.Post;
+import com.leets.blog.common.entity.BaseEntity;
 import com.leets.blog.domain.comment.entity.Comment;
-import jakarta.persistence.*;
-import lombok.*;
+import com.leets.blog.domain.post.entity.Post;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
-    // - pk
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // - 유저 이름
     @Column(nullable = false)
     private String name;
 
-    // - 이메일
     @Column(nullable = false, unique = true)
     private String email;
 
-    // - 패스워드
     @Column(nullable = false)
     private String password;
 
-    // user - post = 1 : N
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-    // user - comment = 1 : N
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    // user 데이터를 지우지 않고 상태변경 -> FK 보존
+    @Builder.Default
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }

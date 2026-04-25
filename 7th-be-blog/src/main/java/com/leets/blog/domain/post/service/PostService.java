@@ -1,20 +1,20 @@
 package com.leets.blog.domain.post.service;
 
+import com.leets.blog.common.exception.BaseErrorCode;
+import com.leets.blog.common.exception.GeneralException;
 import com.leets.blog.domain.post.converter.PostConverter;
-import com.leets.blog.domain.post.dto.PostRequest;
+import com.leets.blog.domain.post.dto.CreatePostRequest;
 import com.leets.blog.domain.post.dto.PostResponse;
+import com.leets.blog.domain.post.dto.UpdatePostRequest;
 import com.leets.blog.domain.post.entity.Post;
-import com.leets.blog.domain.user.entity.User;
 import com.leets.blog.domain.post.repository.PostRepository;
+import com.leets.blog.domain.user.entity.User;
 import com.leets.blog.domain.user.repository.UserRepository;
-import com.leets.blog.global.common.BaseErrorCode;
-import com.leets.blog.global.exception.PostException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,49 +24,44 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    // 1. 게시글 작성
     @Transactional
-    public PostResponse createPost(PostRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new PostException(BaseErrorCode.USER_NOT_FOUND)); 
-        
-        Post post = PostConverter.toPost(request, user);
+    public PostResponse createPost(CreatePostRequest request) {
+        User user = getUser(request.userId());
+        Post post = Post.create(request.title(), request.content(), user);
         return PostConverter.toPostResponse(postRepository.save(post));
     }
 
-    // 2. 게시글 목록 조회
     public List<PostResponse> getPostList() {
         return postRepository.findAllByIsDeletedFalse().stream()
                 .map(PostConverter::toPostResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    // 3. 게시글 상세 조회
-    public PostResponse getPostDetail(Long id) {
-        Post post = postRepository.findById(id)
-                .filter(p -> !p.isDeleted())
-                .orElseThrow(() -> new PostException(BaseErrorCode.POST_NOT_FOUND));
-        
+    public PostResponse getPostDetail(Long postId) {
+        return PostConverter.toPostResponse(getActivePost(postId));
+    }
+
+    @Transactional
+    public PostResponse updatePost(Long postId, UpdatePostRequest request) {
+        Post post = getActivePost(postId);
+        post.update(request.title(), request.content());
         return PostConverter.toPostResponse(post);
     }
 
-    // 4. 게시글 삭제 (Soft Delete)
     @Transactional
-    public void deletePost(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostException(BaseErrorCode.POST_NOT_FOUND));
-        
-        // Soft delete 로직 추가 가능
+    public void deletePost(Long postId) {
+        Post post = getActivePost(postId);
+        post.softDelete();
     }
 
-    // 5. 게시글 수정 (PATCH)
-    @Transactional
-    public PostResponse updatePost(Long id, PostRequest request) {
-        Post post = postRepository.findById(id)
-                .filter(p -> !p.isDeleted())
-                .orElseThrow(() -> new PostException(BaseErrorCode.POST_NOT_FOUND));
+    private Post getActivePost(Long postId) {
+        return postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new GeneralException(BaseErrorCode.POST_NOT_FOUND));
+    }
 
-        post.update(request.getTitle(), request.getContent());
-        return PostConverter.toPostResponse(post);
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .filter(user -> !user.isDeleted())
+                .orElseThrow(() -> new GeneralException(BaseErrorCode.USER_NOT_FOUND));
     }
 }

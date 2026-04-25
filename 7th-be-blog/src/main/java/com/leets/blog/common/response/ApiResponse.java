@@ -1,8 +1,9 @@
-package com.leets.blog.global.common;
+package com.leets.blog.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.leets.blog.common.exception.BaseErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,17 +16,19 @@ public class ApiResponse<T> {
     private final Boolean isSuccess;
     private final String code;
     private final String message;
-    
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final T result;
 
-    // 성공 시
     public static <T> ApiResponse<T> onSuccess(T result) {
-        return new ApiResponse<>(true, "COMMON200", "요청에 성공하였습니다.", result);
+        return new ApiResponse<>(true, BaseErrorCode.SUCCESS.getCode(), BaseErrorCode.SUCCESS.getMessage(), result);
     }
 
-    // 실패 시 (상황에 따라 result에 에러 정보를 담거나 null 처리)
-    public static <T> ApiResponse<T> onFailure(String code, String message, T result) {
-        return new ApiResponse<>(false, code, message, result);
+    public static <T> ApiResponse<T> onFailure(BaseErrorCode errorCode, T result) {
+        return new ApiResponse<>(false, errorCode.getCode(), errorCode.getMessage(), result);
+    }
+
+    public static <T> ApiResponse<T> onFailure(BaseErrorCode errorCode, String message, T result) {
+        return new ApiResponse<>(false, errorCode.getCode(), message, result);
     }
 }
