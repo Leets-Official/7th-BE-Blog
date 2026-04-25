@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ReportResponse {
+public class CommentReportResponse {
 
     private Long reportId;
-    private Long postId;
+    private Long commentId;
     private Long reporterId;
     private String reason;
     private ReportStatus status;

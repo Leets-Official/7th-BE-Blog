@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@Table(name = "reports")
+@Table(name = "post_reports")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report extends BaseEntity {
+public class PostReport extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +48,8 @@ public class Report extends BaseEntity {
     @Column(nullable = false, length = 20)
     private ReportStatus status = ReportStatus.PENDING;
 
-    public static Report create(User user, Post post, String reason) {
-        return Report.builder()
+    public static PostReport create(User user, Post post, String reason) {
+        return PostReport.builder()
                 .user(user)
                 .post(post)
                 .reason(reason)
