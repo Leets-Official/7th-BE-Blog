@@ -26,7 +26,12 @@ public class PostController {
         PostResponse.CreatePostResponse response =
                 postService.createPost(userId, postCreateRequest);
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(
+                "POST201_1",
+                "게시글 작성에 성공하였습니다.",
+                response
+
+        ));
     }
 
     @PatchMapping("/{postId}")
@@ -38,7 +43,12 @@ public class PostController {
         PostResponse.PostDetailResponse response =
                 postService.updatePost(userId, postId, postCreateRequest);
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(
+                "POST200_3",
+                "게시글이 수정되었습니다.",
+                response
+
+        ));
     }
 
     @GetMapping("/{postId}")
@@ -48,7 +58,12 @@ public class PostController {
         PostResponse.PostDetailResponse response =
                 postService.getPost(postId);
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(
+                "POST200_2",
+                "게시글 상세 조회에 성공하였습니다.",
+                response
+
+        ));
     }
 
     @GetMapping
@@ -56,7 +71,10 @@ public class PostController {
         List<PostResponse.PostListResponse> response =
                 postService.getPosts();
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(
+                "POST200_1",
+                "게시글 목록 조회에 성공하였습니다.",
+                response));
     }
 
     @DeleteMapping("/{postId}")
@@ -65,6 +83,10 @@ public class PostController {
             @PathVariable Long postId
     ) {
         postService.deletePost(userId, postId);
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return ResponseEntity.ok(ApiResponse.success(
+                "POST200_4",
+                "게시글 삭제에 성공하였습니다.",
+                null
+        ));
     }
 }
