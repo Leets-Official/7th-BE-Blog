@@ -1,9 +1,9 @@
-package com.leets.blog.controller;
+package com.leets.blog.health.controller;
 
 
-import com.leets.blog.dto.RepeatRequest;
-import com.leets.blog.dto.RepeatResponse;
-import com.leets.blog.service.StringService;
+import com.leets.blog.health.dto.RepeatRequest;
+import com.leets.blog.health.dto.RepeatResponse;
+import com.leets.blog.health.service.StringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

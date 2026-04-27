@@ -1,14 +1,13 @@
-package com.leets.blog.domain.user;
-
+package com.leets.blog.post.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserRole {
-    USER("일반 사용자"),
-    ADMIN("관리자");
+public enum PostStatus {
+    DRAFT("임시 저장"),
+    PUBLISHED("발행 완료");
 
     private final String description;
 }

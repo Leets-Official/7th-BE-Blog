@@ -1,4 +1,4 @@
-package com.leets.blog.domain;
+package com.leets.blog.global;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
