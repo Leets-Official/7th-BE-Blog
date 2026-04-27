@@ -43,7 +43,7 @@ public class PostService {
     public List<PostResponse> findAll() {
         return postRepository.findAll().stream()
                 .map(PostResponse::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

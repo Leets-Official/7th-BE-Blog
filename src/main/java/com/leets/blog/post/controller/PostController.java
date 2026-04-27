@@ -42,7 +42,10 @@ public class PostController {
 
     // 게시글 수정 (PATCH /api/posts/{id})
     @PatchMapping("/{id}")
-    public ResponseEntity<BaseResponse<PostResponse>> update(@Valid @PathVariable("id") Long id, @RequestBody PostRequest.Update request) {
+    public ResponseEntity<BaseResponse<PostResponse>> update(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody PostRequest.Update request
+    ) {
         PostResponse response = postService.update(id, request);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
