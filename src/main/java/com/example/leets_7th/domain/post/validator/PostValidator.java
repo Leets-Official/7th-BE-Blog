@@ -13,13 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PostValidator {
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
-
-    public User validateUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-    }
 
     public Post validatePost(Long postId) {
         Post post = postRepository.findById(postId)
