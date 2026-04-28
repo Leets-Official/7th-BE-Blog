@@ -6,6 +6,8 @@ import com.example.leets7th.domain.post.exception.code.PostErrorCode;
 import com.example.leets7th.domain.post.repository.PostRepository;
 import com.example.leets7th.domain.report.dto.req.ReportReqDTO;
 import com.example.leets7th.domain.report.entity.Report;
+import com.example.leets7th.domain.report.exception.ReportException;
+import com.example.leets7th.domain.report.exception.code.ReportErrorCode;
 import com.example.leets7th.domain.report.repository.ReportRepository;
 import com.example.leets7th.domain.user.entity.User;
 import com.example.leets7th.domain.user.repository.UserRepository;
@@ -30,6 +32,10 @@ public class ReportService {
 
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        if (reportRepository.existsByUserAndPost(user, post)) {
+            throw new ReportException(ReportErrorCode.ALREADY_REPORTED);
+        }
 
         Report newReport = Report.builder()
                 .user(user)

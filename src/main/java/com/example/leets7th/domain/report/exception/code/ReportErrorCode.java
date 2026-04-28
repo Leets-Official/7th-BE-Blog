@@ -7,11 +7,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ReportSuccessCode implements BaseCode {
-    Report_POST_SUCCESS(HttpStatus.OK,
-            "REPORT200_5",
-            "게시글 신고에 성공했습니다."),
-    ;
+public enum ReportErrorCode implements BaseCode {
+    ALREADY_REPORTED(HttpStatus.BAD_REQUEST,
+            "REPORT400_1",
+            "이미 신고한 게시글입니다.");
 
     private final HttpStatus status;
     private final String code;
