@@ -13,13 +13,13 @@ public class ApiController {
 
     private final ApiService apiService;
 
-    // 헬스체크
+    // 헬스 체크
     @GetMapping("/health")
     public String healthCheck() {
         return "OK";
     }
 
-    // 문자열 반복
+    // 문자열 2개로 복사
     @PostMapping("/string/repeat")
     public RepeatResponse repeat(@RequestBody Map<String, String> request) {
         return apiService.repeat(request.get("text"));

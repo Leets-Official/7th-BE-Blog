@@ -10,10 +10,10 @@ import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -26,7 +26,7 @@ public class PostService {
 
     //게시글 생성
     @Transactional
-    public Long createPost(PostCreateRequest request) {
+    public PostResponse createPost(PostCreateRequest request) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
@@ -42,6 +42,7 @@ public class PostService {
         for (PostBlockDto dto : request.getBlocks()) {
 
             Media media = null;
+
             if (dto.getMediaId() != null) {
                 media = mediaRepository.findById(dto.getMediaId())
                         .orElseThrow(() -> new IllegalArgumentException("이미지 없음"));
@@ -58,7 +59,73 @@ public class PostService {
             post.addBlock(block);
         }
 
-        return postRepository.save(post).getId();
+        Post saved = postRepository.save(post);
+
+        return PostResponse.builder()
+                .postId(saved.getId())
+                .title(saved.getTitle())
+                .description(saved.getDescription())
+                .authorNickname(user.getName())
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 
+    //게시글 수정
+    @Transactional
+    public PostResponse updatePost(Long postId, PostCreateRequest request) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setUpdatedAt(LocalDateTime.now());
+
+        return PostResponse.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .authorNickname(post.getUser().getName())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
+    }
+
+    //게시글 삭제
+    @Transactional
+    public Long deletePost(Long postId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        postRepository.delete(post);
+
+        return postId;
+    }
+
+    //게시글 조회
+    @Transactional
+    public PostDetailResponse getPostDetail(Long postId) {
+
+        Post post = postRepository.findPostWithBlocks(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        List<PostBlockResponse> blocks = post.getBlocks().stream()
+                .sorted((a, b) -> a.getSortOrder() - b.getSortOrder())
+                .map(block -> PostBlockResponse.builder()
+                        .blockType(block.getBlockType())
+                        .textContent(block.getTextContent())
+                        .imageUrl(block.getMedia() != null ? block.getMedia().getUrl() : null)
+                        .build())
+                .toList();
+
+        return PostDetailResponse.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .authorNickname(post.getUser().getName())
+                .createdAt(post.getCreatedAt())
+                .blocks(blocks)
+                .build();
+    }
 }
