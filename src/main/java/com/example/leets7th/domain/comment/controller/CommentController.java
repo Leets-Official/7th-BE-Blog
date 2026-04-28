@@ -10,11 +10,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
 public class CommentController implements CommentControllerDocs {
     private final CommentService commentService;
+
+    // 댓글 목록 조회 API
+    @Override
+    @GetMapping("/api/posts/{postId}/comments")
+    public ApiResponse<List<CommentResponseDTO.CommentResDTO>> getCommentList(
+            @RequestHeader @Valid Long userId,
+            @PathVariable Long postId
+    ) {
+        List<CommentResponseDTO.CommentResDTO> result = commentService.getCommentList(userId, postId);
+        return ApiResponse.onSuccess(CommentSuccessCode.GET_COMMENT_LIST_SUCCESS, result);
+    }
 
     // 댓글 작성 API
     @Override

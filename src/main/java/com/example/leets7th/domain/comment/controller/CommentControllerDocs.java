@@ -9,8 +9,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Comment", description = "댓글 관련 API")
 public interface CommentControllerDocs {
+
+    @Operation(
+            summary = "댓글 목록 조회 api",
+            description = "게시글의 댓글 목록을 대댓글과 함께 반환합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT200_1", description = "댓글 목록 조회에 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST403_2", description = "신고 처리된 게시글입니다."),
+    })
+    @GetMapping("/api/posts/{postId}/comments")
+    ApiResponse<List<CommentResponseDTO.CommentResDTO>> getCommentList(
+            @RequestHeader @Valid Long userId,
+            @PathVariable Long postId
+    );
 
     @Operation(
             summary = "댓글 작성 api",

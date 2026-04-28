@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum CommentSuccessCode implements BaseCode {
+    GET_COMMENT_LIST_SUCCESS(HttpStatus.OK,
+            "COMMENT200_1",
+            "댓글 목록 조회에 성공했습니다."),
     CREATE_COMMENT_SUCCESS(HttpStatus.CREATED,
             "COMMENT201_1",
             "댓글 작성에 성공했습니다."),
