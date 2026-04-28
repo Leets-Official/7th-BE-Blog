@@ -3,6 +3,7 @@ package com.example.leets_exercise1.domain.report;
 import com.example.leets_exercise1.domain.comment.Comment;
 import com.example.leets_exercise1.domain.post.Post;
 import com.example.leets_exercise1.domain.user.User;
+import com.example.leets_exercise1.exception.InvalidReportStateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,6 +41,10 @@ public class Report {
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ReportStatus status;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -51,11 +56,12 @@ public class Report {
     private List<ReportBlock> reportBlocks = new ArrayList<>();
 
     @Builder
-    public Report(User reporter, Post post, Comment comment, String title, Boolean active) {
+    public Report(User reporter, Post post, Comment comment, String title, ReportStatus status, Boolean active) {
         this.reporter = reporter;
         this.post = post;
         this.comment = comment;
         this.title = title;
+        this.status = status != null ? status : ReportStatus.PENDING;
         this.active = active != null ? active : true;
     }
 
@@ -68,5 +74,12 @@ public class Report {
         if (hasPost == hasComment) {
             throw new IllegalStateException("신고 대상은 Post 또는 Comment 중 하나만 가져야 합니다.");
         }
+    }
+
+    public void resolve() {
+        if (this.status == ReportStatus.RESOLVED) {
+            throw new InvalidReportStateException();
+        }
+        this.status = ReportStatus.RESOLVED;
     }
 }
