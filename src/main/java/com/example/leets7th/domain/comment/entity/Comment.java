@@ -32,4 +32,12 @@ public class Comment extends BaseEntity {
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "is_adopted")
+    @Builder.Default
+    private Boolean isAdopted = false;
+
+    public void adopt() {
+        this.isAdopted = true;
+    }
 }

@@ -16,7 +16,10 @@ public enum CommentSuccessCode implements BaseCode {
             "댓글 작성에 성공했습니다."),
     CREATE_REPLY_SUCCESS(HttpStatus.CREATED,
             "COMMENT201_2",
-            "대댓글 작성에 성공했습니다.");
+            "대댓글 작성에 성공했습니다."),
+    ADOPT_COMMENT_SUCCESS(HttpStatus.OK,
+            "COMMENT200_2",
+            "댓글 채택에 성공했습니다.");
 
     private final HttpStatus status;
     private final String code;

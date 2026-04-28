@@ -40,7 +40,7 @@ public class CommentService {
             throw new PostException(PostErrorCode.POST_REPORTED);
         }
 
-        return commentRepository.findAllByPostAndParentIsNullOrderByCreatedAtAsc(post).stream()
+        return commentRepository.findAllByPostAndParentIsNull(post).stream()
                 .map(comment -> {
                     List<CommentResponseDTO.ReplyResDTO> replies =
                             commentRepository.findAllByParentOrderByCreatedAtAsc(comment).stream()
@@ -57,10 +57,48 @@ public class CommentService {
                             .content(comment.getContent())
                             .nickname(comment.getUser().getNickname())
                             .createdAt(comment.getCreatedAt())
+                            .isAdopted(comment.getIsAdopted())
                             .replies(replies)
                             .build();
                 })
                 .toList();
+    }
+
+    public void adoptComment(Long userId, Long postId, Long commentId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        if (post.getIsReported()) {
+            throw new PostException(PostErrorCode.POST_REPORTED);
+        }
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new CommentException(CommentErrorCode.COMMENT_NOT_POST_AUTHOR);
+        }
+
+        if (commentRepository.existsByPostAndIsAdoptedTrue(post)) {
+            throw new CommentException(CommentErrorCode.COMMENT_ALREADY_ADOPTED);
+        }
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new CommentException(CommentErrorCode.COMMENT_POST_MISMATCH);
+        }
+
+        if (comment.getParent() != null) {
+            throw new CommentException(CommentErrorCode.COMMENT_REPLY_CANNOT_ADOPT);
+        }
+
+        if (comment.getUser().getId().equals(userId)) {
+            throw new CommentException(CommentErrorCode.COMMENT_SELF_ADOPTION);
+        }
+
+        comment.adopt();
     }
 
     public CommentResponseDTO.CreateCommentResDTO createComment(

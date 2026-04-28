@@ -31,6 +31,29 @@ public interface CommentControllerDocs {
     );
 
     @Operation(
+            summary = "댓글 채택 api",
+            description = "게시글 작성자가 댓글을 채택합니다. 자신의 댓글은 채택 불가, 게시글당 1회만 가능합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT200_2", description = "댓글 채택에 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH401_1", description = "인증이 필요합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST403_2", description = "신고 처리된 게시글입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT403_1", description = "본인의 게시글에서만 채택이 가능합니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT400_4", description = "자신의 댓글은 채택할 수 없습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT400_5", description = "이미 채택된 댓글이 있는 게시글입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT404_1", description = "해당 댓글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT400_2", description = "해당 댓글이 게시글에 속하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMENT400_6", description = "대댓글은 채택할 수 없습니다."),
+    })
+    @PatchMapping("/api/posts/{postId}/comments/{commentId}/adopt")
+    ApiResponse<Void> adoptComment(
+            @RequestHeader @Valid Long userId,
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    );
+
+    @Operation(
             summary = "댓글 작성 api",
             description = "게시글에 댓글을 작성합니다."
     )

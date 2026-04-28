@@ -28,6 +28,7 @@ public class CommentResponseDTO {
             String content,
             String nickname,
             LocalDateTime createdAt,
+            Boolean isAdopted,
             List<ReplyResDTO> replies
     ) {}
 }

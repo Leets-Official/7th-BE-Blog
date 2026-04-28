@@ -16,7 +16,19 @@ public enum CommentErrorCode implements BaseCode {
             "해당 댓글이 게시글에 속하지 않습니다."),
     REPLY_NOT_ALLOWED(HttpStatus.BAD_REQUEST,
             "COMMENT400_3",
-            "대댓글에는 답글을 달 수 없습니다.");
+            "대댓글에는 답글을 달 수 없습니다."),
+    COMMENT_NOT_POST_AUTHOR(HttpStatus.FORBIDDEN,
+            "COMMENT403_1",
+            "본인의 게시글에서만 채택이 가능합니다."),
+    COMMENT_SELF_ADOPTION(HttpStatus.BAD_REQUEST,
+            "COMMENT400_4",
+            "자신의 댓글은 채택할 수 없습니다."),
+    COMMENT_ALREADY_ADOPTED(HttpStatus.BAD_REQUEST,
+            "COMMENT400_5",
+            "이미 채택된 댓글이 있는 게시글입니다."),
+    COMMENT_REPLY_CANNOT_ADOPT(HttpStatus.BAD_REQUEST,
+            "COMMENT400_6",
+            "대댓글은 채택할 수 없습니다.");
 
     private final HttpStatus status;
     private final String code;

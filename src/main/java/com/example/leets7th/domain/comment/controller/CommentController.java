@@ -18,6 +18,18 @@ import java.util.List;
 public class CommentController implements CommentControllerDocs {
     private final CommentService commentService;
 
+    // 댓글 채택 API
+    @Override
+    @PatchMapping("/api/posts/{postId}/comments/{commentId}/adopt")
+    public ApiResponse<Void> adoptComment(
+            @RequestHeader @Valid Long userId,
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    ) {
+        commentService.adoptComment(userId, postId, commentId);
+        return ApiResponse.onSuccess(CommentSuccessCode.ADOPT_COMMENT_SUCCESS, null);
+    }
+
     // 댓글 목록 조회 API
     @Override
     @GetMapping("/api/posts/{postId}/comments")
