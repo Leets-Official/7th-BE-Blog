@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,4 +30,16 @@ public interface ReportControllerDocs {
             @RequestHeader @Valid Long userId,
             @RequestBody @Valid ReportReqDTO.CreateReportDTO request
     );
+
+    @Operation(
+            summary = "신고 처리 api (admin)",
+            description = "신고된 게시글을 처리합니다. 게시글의 신고 상태를 true로 전환하고 조회를 차단합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REPORT200_6", description = "신고 처리에 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST404_1", description = "해당 게시글이 존재하지 않습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REPORT404_1", description = "해당 게시글에 대한 신고가 존재하지 않습니다."),
+    })
+    @PatchMapping("/api/admin/report/{postId}")
+    ApiResponse<Void> processReport(@PathVariable Long postId);
 }

@@ -9,6 +9,8 @@ import com.example.leets7th.domain.report.entity.Report;
 import com.example.leets7th.domain.report.exception.ReportException;
 import com.example.leets7th.domain.report.exception.code.ReportErrorCode;
 import com.example.leets7th.domain.report.repository.ReportRepository;
+
+import java.util.List;
 import com.example.leets7th.domain.user.entity.User;
 import com.example.leets7th.domain.user.repository.UserRepository;
 import com.example.leets7th.global.apiPayload.code.GeneralErrorCode;
@@ -45,5 +47,19 @@ public class ReportService {
                 .build();
 
         reportRepository.save(newReport);
+    }
+
+    @Transactional
+    public void processReport(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        List<Report> reports = reportRepository.findAllByPost(post);
+        if (reports.isEmpty()) {
+            throw new ReportException(ReportErrorCode.REPORT_NOT_FOUND);
+        }
+
+        post.report();
+        reports.forEach(Report::resolve);
     }
 }

@@ -25,4 +25,12 @@ public class ReportController implements ReportControllerDocs{
         reportService.reportPost(request, userId);
         return ApiResponse.onSuccess(ReportSuccessCode.Report_POST_SUCCESS, null);
     }
+
+    // 신고 처리 API (admin)
+    @Override
+    @PatchMapping("/api/admin/report/{postId}")
+    public ApiResponse<Void> processReport(@PathVariable Long postId) {
+        reportService.processReport(postId);
+        return ApiResponse.onSuccess(ReportSuccessCode.PROCESS_REPORT_SUCCESS, null);
+    }
 }

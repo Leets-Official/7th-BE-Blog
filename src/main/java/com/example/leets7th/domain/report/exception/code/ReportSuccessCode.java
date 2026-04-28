@@ -11,6 +11,9 @@ public enum ReportSuccessCode implements BaseCode {
     Report_POST_SUCCESS(HttpStatus.OK,
             "REPORT200_5",
             "게시글 신고에 성공했습니다."),
+    PROCESS_REPORT_SUCCESS(HttpStatus.OK,
+            "REPORT200_6",
+            "신고 처리에 성공했습니다.")
     ;
 
     private final HttpStatus status;

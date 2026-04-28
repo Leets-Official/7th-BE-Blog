@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 public enum ReportErrorCode implements BaseCode {
     ALREADY_REPORTED(HttpStatus.BAD_REQUEST,
             "REPORT400_1",
-            "이미 신고한 게시글입니다.");
+            "이미 신고한 게시글입니다."),
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND,
+            "REPORT404_1",
+            "해당 게시글에 대한 신고가 존재하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;
