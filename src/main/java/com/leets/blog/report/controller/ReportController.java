@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -49,6 +51,25 @@ public class ReportController {
             @PathVariable Long reportId
     ) {
         ReportResponse response = reportService.resolve(authUser, reportId);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @GetMapping("/reports")
+    public ResponseEntity<BaseResponse<List<ReportResponse>>> findAll(
+            @Parameter(hidden = true)
+            @CurrentUser AuthUser authUser
+    ) {
+        List<ReportResponse> response = reportService.findAll(authUser);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @GetMapping("/reports/{reportId}")
+    public ResponseEntity<BaseResponse<ReportResponse>> findById(
+            @Parameter(hidden = true)
+            @CurrentUser AuthUser authUser,
+            @PathVariable Long reportId
+    ) {
+        ReportResponse response = reportService.findById(authUser, reportId);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }

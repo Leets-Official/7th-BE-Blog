@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -85,5 +87,25 @@ public class ReportService {
 
         report.resolve(resolver);
         return new ReportResponse(report);
+    }
+
+    public List<ReportResponse> findAll(AuthUser authUser) {
+        validateAdmin(authUser);
+        return reportRepository.findAll().stream()
+                .map(ReportResponse::new)
+                .toList();
+    }
+
+    public ReportResponse findById(AuthUser authUser, Long reportId) {
+        validateAdmin(authUser);
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.REPORT_NOT_FOUND));
+        return new ReportResponse(report);
+    }
+
+    private void validateAdmin(AuthUser authUser) {
+        if (authUser.getRole() != UserRole.ADMIN) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
     }
 }

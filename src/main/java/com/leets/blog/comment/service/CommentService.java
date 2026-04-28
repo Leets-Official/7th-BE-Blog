@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -54,6 +56,21 @@ public class CommentService {
         }
 
         comment.accept();
+        return new CommentResponse(comment);
+    }
+
+    public List<CommentResponse> findByPostId(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
+        }
+        return commentRepository.findAllByPostIdOrderByIdAsc(postId).stream()
+                .map(CommentResponse::new)
+                .toList();
+    }
+
+    public CommentResponse findById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
         return new CommentResponse(comment);
     }
 }

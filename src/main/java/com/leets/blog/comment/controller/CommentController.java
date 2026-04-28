@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -38,6 +40,18 @@ public class CommentController {
             @PathVariable Long commentId
     ) {
         CommentResponse response = commentService.accept(authUser, commentId);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<BaseResponse<List<CommentResponse>>> findByPostId(@PathVariable Long postId) {
+        List<CommentResponse> response = commentService.findByPostId(postId);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<BaseResponse<CommentResponse>> findById(@PathVariable Long commentId) {
+        CommentResponse response = commentService.findById(commentId);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }

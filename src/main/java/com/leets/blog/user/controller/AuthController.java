@@ -39,4 +39,10 @@ public class AuthController {
     ) {
         return ResponseEntity.ok(BaseResponse.ok(authUser));
     }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<BaseResponse<AuthResponse.UserInfo>> findUserById(@PathVariable Long userId) {
+        AuthResponse.UserInfo response = authService.findUserById(userId);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
 }

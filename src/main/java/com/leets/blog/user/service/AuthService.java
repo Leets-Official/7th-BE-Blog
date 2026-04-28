@@ -47,4 +47,10 @@ public class AuthService {
 
         return new AuthResponse.Login(user);
     }
+
+    public AuthResponse.UserInfo findUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return new AuthResponse.UserInfo(user);
+    }
 }
