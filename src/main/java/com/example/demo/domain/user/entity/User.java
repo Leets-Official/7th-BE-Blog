@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "user")
 public class User extends BaseEntity {
 
     // 유저 아이디
@@ -24,15 +25,6 @@ public class User extends BaseEntity {
     // 이름
     @Column(nullable = false, length = 10)
     private String name;
-
-    // 성별
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Gender gender;
-
-    // 나이
-    @Column
-    private Integer age;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();

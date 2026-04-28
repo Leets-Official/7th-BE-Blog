@@ -40,4 +40,25 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    private Post(User user, String title, String content, String imageUrl) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+    }
+
+    public static Post of(User user, String title, String content, String imageUrl) {
+        return new Post(user, title, content, imageUrl);
+    }
+
+    public void update(String title, String content, String imageUrl) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (content != null && !content.isBlank()) {
+            this.content = content;
+        }
+        this.imageUrl = imageUrl;
+    }
 }
