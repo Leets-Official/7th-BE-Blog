@@ -1,6 +1,7 @@
 package com.example.blog.domain.report.dto;
 
 import com.example.blog.domain.report.entity.Report;
+import com.example.blog.domain.report.entity.ReportStatus;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,8 @@ public record ReportResponse(
     String targetType,
     Long targetId,
     String reason,
+    ReportStatus status,
+    LocalDateTime resolvedAt,
     LocalDateTime createdAt
 ) {
 
@@ -26,6 +29,8 @@ public record ReportResponse(
             targetType,
             targetId,
             report.getReason(),
+            report.getStatus(),
+            report.getResolvedAt(),
             report.getCreatedAt()
         );
     }
