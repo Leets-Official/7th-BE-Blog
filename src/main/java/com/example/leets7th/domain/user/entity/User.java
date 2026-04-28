@@ -25,6 +25,8 @@ public class User extends BaseEntity {
     // 선택 정보
     private String username;
 
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -35,6 +37,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    public static User create(String nickname) {
+        User user = new User();
+        user.nickname = nickname;
+        return user;
+    }
 
     public void delete() {
         this.deletedAt = LocalDateTime.now();
