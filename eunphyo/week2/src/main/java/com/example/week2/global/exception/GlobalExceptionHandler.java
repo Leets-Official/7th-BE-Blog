@@ -1,35 +1,21 @@
 package com.example.week2.global.exception;
 
-import com.example.week2.user.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.example.week2.global.exception.ForbiddenPostAccessException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handlePostNotFoundException(PostNotFoundException e) {
-        ErrorCode errorCode = ErrorCode.POST_NOT_FOUND;
-        return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleUserNotFoundException(UserNotFoundException e) {
-        ErrorCode errorCode = ErrorCode.USER_NOT_FOUND;
-        return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<?>> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldErrors().get(0);
+
+        String message = e.getBindingResult()
+                .getFieldError()
+                .getDefaultMessage();
 
         return ResponseEntity
                 .status(ErrorCode.BAD_REQUEST.getStatus())
@@ -55,11 +41,17 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
     }
 
-    @ExceptionHandler(ForbiddenPostAccessException.class)
-    public ResponseEntity<ApiResponse<?>> handleForbiddenPostAccessException(ForbiddenPostAccessException e) {
-        ErrorCode errorCode = ErrorCode.FORBIDDEN;
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ApiResponse<?>> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
         return ResponseEntity
                 .status(errorCode.getStatus())
-                .body(ApiResponse.fail(errorCode.getCode(), e.getMessage()));
+                .body(ApiResponse.fail(
+                        errorCode.getCode(),
+                        errorCode.getMessage()));
     }
+
+
+
 }
