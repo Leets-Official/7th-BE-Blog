@@ -5,6 +5,7 @@ import com.example.leets_7th.common.status.SuccessStatus;
 import com.example.leets_7th.domain.post.controller.docs.PostControllerDocs;
 import com.example.leets_7th.domain.post.dto.request.CreatePostRequest;
 import com.example.leets_7th.domain.post.dto.request.GetPostRequest;
+import com.example.leets_7th.domain.post.dto.request.ReportPostRequest;
 import com.example.leets_7th.domain.post.dto.request.UpdatePostRequest;
 import com.example.leets_7th.domain.post.dto.response.CreatePostResponse;
 import com.example.leets_7th.domain.post.dto.response.GetPostDetailResponse;
@@ -65,6 +66,37 @@ public class PostController implements PostControllerDocs {
     ) {
         UpdatePostResponse response = postCommandService.updatePost(userId, postId, request);
         return ApiResponse.success(SuccessStatus.UPDATE_POST_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<ApiResponse<Void>> likePost(
+            @RequestParam Long userId,
+            @PathVariable Long postId
+    ) {
+        postCommandService.likePost(userId, postId);
+        return ApiResponse.success(SuccessStatus.LIKE_POST_SUCCESS);
+    }
+
+    @Override
+    @DeleteMapping("/{postId}/likes")
+    public ResponseEntity<ApiResponse<Void>> unlikePost(
+            @RequestParam Long userId,
+            @PathVariable Long postId
+    ) {
+        postCommandService.unlikePost(userId, postId);
+        return ApiResponse.success(SuccessStatus.UNLIKE_POST_CANCEL_SUCCESS);
+    }
+
+    @Override
+    @PostMapping("/{postId}/reports")
+    public ResponseEntity<ApiResponse<Void>> reportPost(
+            @RequestParam Long userId,
+            @PathVariable Long postId,
+            @RequestBody @Valid ReportPostRequest request
+    ) {
+        postCommandService.reportPost(userId, postId, request);
+        return ApiResponse.success(SuccessStatus.REPORT_POST_SUCCESS);
     }
 
     @Override
