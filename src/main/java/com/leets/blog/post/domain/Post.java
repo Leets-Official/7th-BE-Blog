@@ -1,6 +1,8 @@
 package com.leets.blog.post.domain;
 
 import com.leets.blog.global.BaseTimeEntity;
+import com.leets.blog.global.exception.BusinessException;
+import com.leets.blog.global.exception.ErrorCode;
 import com.leets.blog.user.domain.User;
 import com.leets.blog.comment.domain.Comment;
 import jakarta.persistence.*;
@@ -60,6 +62,20 @@ public class Post extends BaseTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void hide() {
+        if (this.status == PostStatus.HIDDEN) {
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
+        }
+        this.status = PostStatus.HIDDEN;
+    }
+
+    public void activate() {
+        if (this.status == PostStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
+        }
+        this.status = PostStatus.ACTIVE;
     }
 
 

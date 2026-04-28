@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .status(PostStatus.PUBLISHED)
+                .status(PostStatus.ACTIVE)
                 .build();
 
         Post savedPost = postRepository.save(post);
@@ -63,5 +62,21 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
 
         postRepository.delete(post);
+    }
+
+    @Transactional
+    public PostResponse hide(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        post.hide();
+        return new PostResponse(post);
+    }
+
+    @Transactional
+    public PostResponse activate(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        post.activate();
+        return new PostResponse(post);
     }
 }

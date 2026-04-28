@@ -2,6 +2,8 @@ package com.leets.blog.comment.domain;
 
 
 import com.leets.blog.global.BaseTimeEntity;
+import com.leets.blog.global.exception.BusinessException;
+import com.leets.blog.global.exception.ErrorCode;
 import com.leets.blog.post.domain.Post;
 import com.leets.blog.user.domain.User;
 import jakarta.persistence.*;
@@ -23,6 +25,10 @@ public class Comment extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CommentStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
@@ -35,5 +41,20 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
         this.post = post;
         this.user = user;
+        this.status = CommentStatus.ACTIVE;
+    }
+
+    public void hide() {
+        if (this.status == CommentStatus.HIDDEN) {
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
+        }
+        this.status = CommentStatus.HIDDEN;
+    }
+
+    public void activate() {
+        if (this.status == CommentStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
+        }
+        this.status = CommentStatus.ACTIVE;
     }
 }

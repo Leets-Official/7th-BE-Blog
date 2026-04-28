@@ -56,4 +56,18 @@ public class PostController {
         postService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    // 게시글 숨김 처리 (PATCH /api/posts/{id}/hide)
+    @PatchMapping("/{id}/hide")
+    public ResponseEntity<BaseResponse<PostResponse>> hide(@PathVariable("id") Long id) {
+        PostResponse response = postService.hide(id);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    // 게시글 복구 처리 (PATCH /api/posts/{id}/activate)
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<BaseResponse<PostResponse>> activate(@PathVariable("id") Long id) {
+        PostResponse response = postService.activate(id);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
 }
