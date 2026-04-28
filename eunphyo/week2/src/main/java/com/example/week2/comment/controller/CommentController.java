@@ -47,13 +47,13 @@ public class CommentController {
     }
 
     @PostMapping("/{commentId}/likes")
-    public ApiResponse<Void> likeComment(
+    public ApiResponse<CommentResponse.CommentLikeResponse> likeComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @Valid @RequestBody CommentLikeRequest request
     ) {
-
-        commentLikeService.likeComment(
+        CommentResponse.CommentLikeResponse response =
+            commentLikeService.likeComment(
                 commentId,
                 request.getUserId()
         );
@@ -61,7 +61,7 @@ public class CommentController {
         return ApiResponse.success(
                 "COMMENT_LIKED",
                 "댓글 좋아요 성공",
-                null
+                response
         );
     }
 

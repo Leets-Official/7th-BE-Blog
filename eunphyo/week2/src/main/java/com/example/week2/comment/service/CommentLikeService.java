@@ -1,5 +1,6 @@
 package com.example.week2.comment.service;
 
+import com.example.week2.comment.dto.CommentResponse;
 import com.example.week2.comment.entity.Comment;
 import com.example.week2.comment.entity.CommentLike;
 import com.example.week2.comment.repository.CommentLikeRepository;
@@ -20,7 +21,8 @@ public class CommentLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void likeComment(Long commentId, Long userId) {
+    public CommentResponse.CommentLikeResponse likeComment(Long commentId, Long userId) {
+
         Comment comment = commentService.getComment(commentId);
 
         User user = userRepository.findById(userId)
@@ -34,8 +36,15 @@ public class CommentLikeService {
                 .comment(comment)
                 .user(user)
                 .build();
+
         commentLikeRepository.save(like);
 
         comment.increaseLikeCount();
+
+        return CommentResponse.CommentLikeResponse.builder()
+                .commentId(comment.getId())
+                .userId(user.getId())
+                .likeCount(comment.getLikeCount())
+                .build();
     }
 }

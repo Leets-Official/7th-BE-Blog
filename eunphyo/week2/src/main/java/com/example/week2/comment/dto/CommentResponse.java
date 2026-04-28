@@ -24,6 +24,13 @@ public class CommentResponse {
     ){}
 
     @Builder
+    public record CommentLikeResponse(
+            Long commentId,
+            Long userId,
+            int likeCount
+    ) {}
+
+    @Builder
     public record CommentReportResponse(
             Long reportId,
             Long commentId,
