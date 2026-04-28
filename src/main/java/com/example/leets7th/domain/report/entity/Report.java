@@ -41,4 +41,8 @@ public class Report extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private SupportStatus supportStatus = SupportStatus.PENDING;
+
+    public void resolve() {
+        this.supportStatus = SupportStatus.RESOLVED;
+    }
 }

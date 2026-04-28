@@ -27,9 +27,17 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "is_reported")
+    @Builder.Default
+    private Boolean isReported = false;
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void report() {
+        this.isReported = true;
     }
 
     public void delete() {
