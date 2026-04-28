@@ -32,5 +32,26 @@ public class Comment extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private CommentStatus status;
 
+    private Comment(User user, Post post, String content) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+        this.status = CommentStatus.ACTIVE;
+    }
+
+    public static Comment of(User user, Post post, String content) {
+        return new Comment(user, post, content);
+    }
+
+    public void hide() {
+        this.status = CommentStatus.HIDDEN;
+    }
+
+    public void adopt() {
+        this.status = CommentStatus.ADOPTED;
+    }
 }

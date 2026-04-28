@@ -31,6 +31,7 @@ public class PostService {
                                 post.getTitle(),
                                 post.getContent(),
                                 post.getImageUrl(),
+                                post.getStatus(),
                                 post.getUser().getName(),
                                 post.getCreatedAt()
                         ))
@@ -53,6 +54,7 @@ public class PostService {
                 post.getTitle(),
                 post.getContent(),
                 post.getImageUrl(),
+                post.getStatus(),
                 post.getUser().getId(),
                 post.getUser().getName(),
                 post.getCreatedAt(),
