@@ -4,6 +4,9 @@ import com.example.blog.domain.comment.dto.CommentCreateRequest;
 import com.example.blog.domain.comment.dto.CommentResponse;
 import com.example.blog.domain.comment.dto.CommentUpdateRequest;
 import com.example.blog.domain.comment.service.CommentService;
+import com.example.blog.domain.report.dto.ReportCommentRequest;
+import com.example.blog.domain.report.dto.ReportResponse;
+import com.example.blog.domain.report.service.ReportService;
 import com.example.blog.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final ReportService reportService;
 
     @PostMapping("/api/v1/posts/{postId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,5 +53,24 @@ public class CommentController {
         @PathVariable Long commentId
     ) {
         commentService.delete(userId, commentId);
+    }
+
+    @PostMapping("/api/v1/posts/{postId}/comments/{commentId}/accept")
+    public ApiResponse<CommentResponse> accept(
+        @RequestHeader("X-User-Id") Long userId,
+        @PathVariable Long postId,
+        @PathVariable Long commentId
+    ) {
+        return ApiResponse.success(commentService.acceptComment(userId, postId, commentId));
+    }
+
+    @PostMapping("/api/v1/comments/{commentId}/reports")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<ReportResponse> reportComment(
+        @RequestHeader("X-User-Id") Long reporterId,
+        @PathVariable Long commentId,
+        @RequestBody @Valid ReportCommentRequest request
+    ) {
+        return ApiResponse.success(reportService.reportComment(reporterId, commentId, request));
     }
 }

@@ -11,6 +11,7 @@ public record CommentResponse(
     Long userId,
     String username,
     String content,
+    boolean accepted,
     Long parentCommentId,
     List<CommentResponse> replies,
     LocalDateTime createdAt
@@ -26,6 +27,7 @@ public record CommentResponse(
             comment.getUser().getId(),
             comment.getUser().getUsername(),
             comment.getContent(),
+            comment.isAccepted(),
             comment.getParentComment() != null ? comment.getParentComment().getId() : null,
             replies,
             comment.getCreatedAt()

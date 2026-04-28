@@ -40,16 +40,28 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> replies = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean accepted;
+
     public static Comment of(User user, Post post, String content, Comment parentComment) {
         Comment comment = new Comment();
         comment.user = user;
         comment.post = post;
         comment.content = content;
         comment.parentComment = parentComment;
+        comment.accepted = false;
         return comment;
     }
 
     public void update(String content) {
         this.content = content;
+    }
+
+    public void accept() {
+        this.accepted = true;
+    }
+
+    public void unaccept() {
+        this.accepted = false;
     }
 }
