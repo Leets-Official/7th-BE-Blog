@@ -4,28 +4,24 @@ import com.example.demo.domain.post.dto.*;
 import com.example.demo.domain.post.service.PostService;
 import com.example.demo.global.response.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
-@Validated
 public class PostController {
 
     private final PostService postService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PostListResponse>> getPosts(
-            @RequestParam(defaultValue = "0") @Min(value = 0, message = "페이지 번호는 0 이상이어야 합니다.") int page,
-            @RequestParam(defaultValue = "10") @Min(value = 1, message = "페이지 크기는 1 이상이어야 합니다.") int size
+            @Valid @ModelAttribute PostListRequest request
     ) {
         return ResponseEntity.ok(
-                ApiResponse.success("POST_LIST_SUCCESS", "게시글 목록 조회 성공", postService.getPosts(page, size))
+                ApiResponse.success("POST_LIST_SUCCESS", "게시글 목록 조회 성공", postService.getPosts(request.page(), request.size()))
         );
     }
 
