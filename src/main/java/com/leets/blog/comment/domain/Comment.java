@@ -29,6 +29,9 @@ public class Comment extends BaseTimeEntity {
     @Column(nullable = false)
     private CommentStatus status;
 
+    @Column(nullable = false)
+    private boolean accepted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
@@ -42,6 +45,7 @@ public class Comment extends BaseTimeEntity {
         this.post = post;
         this.user = user;
         this.status = CommentStatus.ACTIVE;
+        this.accepted = false;
     }
 
     public void hide() {
@@ -56,5 +60,12 @@ public class Comment extends BaseTimeEntity {
             throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
         }
         this.status = CommentStatus.ACTIVE;
+    }
+
+    public void accept() {
+        if (this.accepted) {
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
+        }
+        this.accepted = true;
     }
 }

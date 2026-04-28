@@ -6,6 +6,7 @@ import com.leets.blog.user.dto.AuthResponse;
 import com.leets.blog.user.service.AuthService;
 import com.leets.blog.user.auth.AuthUser;
 import com.leets.blog.user.auth.CurrentUser;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,10 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<AuthUser>> me(@CurrentUser AuthUser authUser) {
+    public ResponseEntity<BaseResponse<AuthUser>> me(
+            @Parameter(hidden = true)
+            @CurrentUser AuthUser authUser
+    ) {
         return ResponseEntity.ok(BaseResponse.ok(authUser));
     }
 }
