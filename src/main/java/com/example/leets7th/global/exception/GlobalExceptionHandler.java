@@ -21,6 +21,54 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("POST_NOT_FOUND", "해당 게시글을 찾을 수 없습니다."));
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCommentNotFound(CommentNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error("COMMENT_NOT_FOUND", e.getMessage()));
+    }
+
+    @ExceptionHandler(ReportNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleReportNotFound(ReportNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error("REPORT_NOT_FOUND", e.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateReportException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateReport(DuplicateReportException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error("DUPLICATE_REPORT", e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyAdoptedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAlreadyAdopted(AlreadyAdoptedException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error("ALREADY_ADOPTED", e.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUserNotFound(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error("USER_NOT_FOUND", e.getMessage()));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCategoryNotFound(CategoryNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error("CATEGORY_NOT_FOUND", e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyHiddenException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAlreadyHidden(AlreadyHiddenException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error("ALREADY_HIDDEN", e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyResolvedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAlreadyResolved(AlreadyResolvedException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error("ALREADY_RESOLVED", e.getMessage()));
+    }
+
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

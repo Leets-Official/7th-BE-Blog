@@ -52,6 +52,11 @@ public class Post extends BaseEntity {
     @OrderBy("imageOrder ASC")
     private List<PostImage> images = new ArrayList<>();
 
+    // 게시글 상태
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PostStatus status = PostStatus.ACTIVE;
+
     public static Post create(String title, String content, String thumbnailImageUrl, User user, Category category) {
         Post post = new Post();
         post.title = title;
@@ -59,7 +64,12 @@ public class Post extends BaseEntity {
         post.thumbnailImageUrl = thumbnailImageUrl;
         post.user = user;
         post.category = category;
+        post.status = PostStatus.ACTIVE;
         return post;
+    }
+
+    public void hide() {
+        this.status = PostStatus.HIDDEN;
     }
 
     public void update(String title, String content) {

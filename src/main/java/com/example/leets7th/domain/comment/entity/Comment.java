@@ -5,8 +5,11 @@ import com.example.leets7th.domain.post.entity.Post;
 import com.example.leets7th.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "comments")
 public class Comment extends BaseEntity {
@@ -28,6 +31,22 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    // 채택 여부
+    @Column(nullable = false)
+    private boolean adopted = false;
+
+    public static Comment create(String content, User user, Post post) {
+        Comment comment = new Comment();
+        comment.content = content;
+        comment.user = user;
+        comment.post = post;
+        return comment;
+    }
+
+    public void adopt() {
+        this.adopted = true;
+    }
 
     // 연관관계 편의 메서드
     public void setUser(User user) {
