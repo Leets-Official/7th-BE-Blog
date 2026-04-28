@@ -8,6 +8,7 @@ import com.leets.blog.domain.report.dto.PostReportResponse;
 import com.leets.blog.domain.report.service.ReportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,5 +36,15 @@ public class ReportController {
             @RequestBody @Valid CreateCommentReportRequest request
     ) {
         return ApiResponse.onSuccess(reportService.createCommentReport(commentId, request));
+    }
+
+    @PatchMapping("/post-reports/{reportId}/resolve")
+    public ApiResponse<PostReportResponse> resolvePostReport(@PathVariable Long reportId) {
+        return ApiResponse.onSuccess(reportService.resolvePostReport(reportId));
+    }
+
+    @PatchMapping("/comment-reports/{reportId}/resolve")
+    public ApiResponse<CommentReportResponse> resolveCommentReport(@PathVariable Long reportId) {
+        return ApiResponse.onSuccess(reportService.resolveCommentReport(reportId));
     }
 }

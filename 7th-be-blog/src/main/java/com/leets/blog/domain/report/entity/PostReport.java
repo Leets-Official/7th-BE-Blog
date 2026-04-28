@@ -1,6 +1,8 @@
 package com.leets.blog.domain.report.entity;
 
 import com.leets.blog.common.entity.BaseEntity;
+import com.leets.blog.common.exception.BaseErrorCode;
+import com.leets.blog.common.exception.GeneralException;
 import com.leets.blog.domain.post.entity.Post;
 import com.leets.blog.domain.user.entity.User;
 import jakarta.persistence.Column;
@@ -57,6 +59,9 @@ public class PostReport extends BaseEntity {
     }
 
     public void resolve() {
+        if (this.status == ReportStatus.RESOLVED) {
+            throw new GeneralException(BaseErrorCode.REPORT_ALREADY_RESOLVED);
+        }
         this.status = ReportStatus.RESOLVED;
     }
 }

@@ -75,6 +75,40 @@ public class ReportService {
                 .build();
     }
 
+    @Transactional
+    public PostReportResponse resolvePostReport(Long reportId) {
+        PostReport report = postReportRepository.findById(reportId)
+                .orElseThrow(() -> new GeneralException(BaseErrorCode.REPORT_NOT_FOUND));
+
+        report.resolve();
+
+        return PostReportResponse.builder()
+                .reportId(report.getId())
+                .postId(report.getPost().getId())
+                .reporterId(report.getUser().getId())
+                .reason(report.getReason())
+                .status(report.getStatus())
+                .createdAt(report.getCreatedAt())
+                .build();
+    }
+
+    @Transactional
+    public CommentReportResponse resolveCommentReport(Long reportId) {
+        CommentReport report = commentReportRepository.findById(reportId)
+                .orElseThrow(() -> new GeneralException(BaseErrorCode.REPORT_NOT_FOUND));
+
+        report.resolve();
+
+        return CommentReportResponse.builder()
+                .reportId(report.getId())
+                .commentId(report.getComment().getId())
+                .reporterId(report.getUser().getId())
+                .reason(report.getReason())
+                .status(report.getStatus())
+                .createdAt(report.getCreatedAt())
+                .build();
+    }
+
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .filter(user -> !user.isDeleted())
