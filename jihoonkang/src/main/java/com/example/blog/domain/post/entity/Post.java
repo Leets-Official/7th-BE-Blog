@@ -3,6 +3,8 @@ package com.example.blog.domain.post.entity;
 import com.example.blog.domain.comment.entity.Comment;
 import com.example.blog.domain.user.entity.User;
 import com.example.blog.global.entity.BaseEntity;
+import com.example.blog.global.exception.BusinessException;
+import com.example.blog.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,22 +34,23 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String status;
+    private PostStatus status;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
-    public static Post of(User user, String title, String content, String status) {
+    public static Post of(User user, String title, String content, PostStatus status) {
         Post post = new Post();
         post.user = user;
         post.title = title;
         post.content = content;
-        post.status = status != null ? status : "PUBLISHED";
+        post.status = status != null ? status : PostStatus.PUBLISHED;
         return post;
     }
 
-    public void update(String title, String content, String status) {
+    public void update(String title, String content, PostStatus status) {
         if (title != null) {
             this.title = title;
         }
@@ -57,5 +60,12 @@ public class Post extends BaseEntity {
         if (status != null) {
             this.status = status;
         }
+    }
+
+    public void hide() {
+        if (this.status == PostStatus.HIDDEN) {
+            throw new BusinessException(ErrorCode.POST_ALREADY_HIDDEN);
+        }
+        this.status = PostStatus.HIDDEN;
     }
 }
