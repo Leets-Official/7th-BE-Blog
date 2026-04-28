@@ -8,6 +8,7 @@ import com.example.leets_7th.domain.post.entity.Post;
 import com.example.leets_7th.domain.post.repository.PostRepository;
 import com.example.leets_7th.domain.post.validator.PostValidator;
 import com.example.leets_7th.domain.user.entity.User;
+import com.example.leets_7th.domain.user.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,11 @@ public class PostQueryService {
 
     private final PostRepository postRepository;
     private final PostValidator postValidator;
+    private final UserValidator userValidator;
 
     public GetPostResponse getAllPost(GetPostRequest request) {
 
-        User user = postValidator.validateUser(request.userId());
+        User user = userValidator.validateUser(request.userId());
 
         Page<Post> postPage = postRepository
                 .findAllByUserAndDeletedAtIsNull(user, request.toPageable());
@@ -45,7 +47,7 @@ public class PostQueryService {
 
     public GetPostDetailResponse getPostDetail(Long userId, Long postId) {
 
-        postValidator.validateUser(userId);
+        userValidator.validateUser(userId);
         Post post = postValidator.validatePost(postId);
 
         return GetPostDetailResponse.from(post);
