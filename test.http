@@ -5,3 +5,21 @@ Content-Type: application/json
 {
   "text": "hello"
 }
+### POST - 게시글 작성
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "title": "첫 번째 게시글",
+  "content": "테스트 내용입니다"
+}
+### PUT - 게시글 수정
+PUT http://localhost:8080/posts/1
+Content-Type: application/json
+
+{
+  "title": "수정된 제목",
+  "content": "수정된 내용입니다"
+}
+### DELETE - 게시글 삭제
+DELETE http://localhost:8080/posts/1

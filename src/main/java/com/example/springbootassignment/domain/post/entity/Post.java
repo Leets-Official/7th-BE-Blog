@@ -13,7 +13,8 @@ import java.util.List;
 @Entity
 @Table(name = "posts")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -21,7 +22,7 @@ public class Post {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)  // ← nullable = true로 변경
     private User user;
 
     @Column(nullable = false, length = 100)
@@ -52,4 +53,11 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    /**
+     * 조회수 증가
+     */
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
 }
