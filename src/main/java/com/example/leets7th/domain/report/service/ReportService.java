@@ -35,6 +35,10 @@ public class ReportService {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
 
+        if (post.getUser().getId().equals(userId)) {
+            throw new ReportException(ReportErrorCode.SELF_REPORT_NOT_ALLOWED);
+        }
+
         if (reportRepository.existsByUserAndPost(user, post)) {
             throw new ReportException(ReportErrorCode.ALREADY_REPORTED);
         }
