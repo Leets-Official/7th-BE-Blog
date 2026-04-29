@@ -72,18 +72,6 @@ public class CommentService {
                 .build();
     }
 
-    @Transactional
-    public void hidecomment(Long commentId) {
-
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-        if (comment.getStatus() == CommentStatus.HIDDEN) {
-            throw new CustomException(ErrorCode.COMMENT_ALREADY_HIDDEN);
-        }
-
-        comment.hide();
-    }
 
 }
 

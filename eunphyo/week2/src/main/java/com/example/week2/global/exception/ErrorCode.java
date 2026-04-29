@@ -18,13 +18,13 @@ public enum ErrorCode {
             "POST400_1", "존재하지 않는 게시글입니다."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST,
             "USER400_1", "존재하지 않는 사용자입니다."),
+    REPORT_NOT_FOUND(HttpStatus.BAD_REQUEST,
+            "USER400_1", "존재하지 않는 신고입니다."),
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST,
                       "COMMENT400_1", "존재하지 않는 댓글입니다."),
     COMMENT_ALREADY_LIKED(HttpStatus.BAD_REQUEST,
                           "COMMENT400_2", "이미 좋아요를 누른 댓글입니다."),
-    COMMENT_ALREADY_HIDDEN(HttpStatus.BAD_REQUEST,
-                        "POST400_2", "이미 숨김 처리된 댓글입니다."),
-    COMMENT_ALREADY_REPORTED(HttpStatus.BAD_REQUEST,
+    COMMENT_ALREADY_RESOLVED(HttpStatus.BAD_REQUEST,
                         "POST400_2", "이미 신고 처리된 댓글입니다.");
 
     private final HttpStatus status;

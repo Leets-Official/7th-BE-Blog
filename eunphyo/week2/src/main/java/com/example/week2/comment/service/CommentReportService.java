@@ -38,7 +38,7 @@ public class CommentReportService {
 
 
         if (commentReportRepository.existsByCommentAndReporter(comment, reporter)) {
-            throw new CustomException(ErrorCode.COMMENT_ALREADY_REPORTED);
+            throw new CustomException(ErrorCode.COMMENT_ALREADY_RESOLVED);
         }
 
         CommentReport report = CommentReport.builder()
@@ -65,7 +65,7 @@ public class CommentReportService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         if (report.getStatus() == ReportStatus.RESOLVED) {
-            throw new CustomException(ErrorCode.COMMENT_ALREADY_REPORTED);
+            throw new CustomException(ErrorCode.COMMENT_ALREADY_RESOLVED);
         }
 
         report.resolve();
