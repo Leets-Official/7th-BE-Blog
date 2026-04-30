@@ -1,4 +1,4 @@
-package com.example.week2.global.exception;
+package com.example.week2.global.response;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public enum ErrorCode {
                       "COMMENT400_1", "존재하지 않는 댓글입니다."),
     COMMENT_ALREADY_LIKED(HttpStatus.BAD_REQUEST,
                           "COMMENT400_2", "이미 좋아요를 누른 댓글입니다."),
-    COMMENT_ALREADY_RESOLVED(HttpStatus.BAD_REQUEST,
+    REPORT_COMMENT_ALREADY_RESOLVED(HttpStatus.BAD_REQUEST,
                         "POST400_2", "이미 신고 처리된 댓글입니다.");
 
     private final HttpStatus status;

@@ -1,6 +1,7 @@
 package com.example.week2.post.controller;
 
-import com.example.week2.global.exception.ApiResponse;
+import com.example.week2.global.response.ApiResponse;
+import com.example.week2.global.response.SuccessCode;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
 import com.example.week2.post.service.PostService;
@@ -27,10 +28,8 @@ public class PostController {
                 postService.createPost(userId, postCreateRequest);
 
         return ResponseEntity.ok(ApiResponse.success(
-                "POST201_1",
-                "게시글 작성에 성공하였습니다.",
+                SuccessCode.POST_CREATED,
                 response
-
         ));
     }
 
@@ -44,8 +43,7 @@ public class PostController {
                 postService.updatePost(userId, postId, postCreateRequest);
 
         return ResponseEntity.ok(ApiResponse.success(
-                "POST200_3",
-                "게시글이 수정되었습니다.",
+                SuccessCode.POST_UPDATED,
                 response
 
         ));
@@ -59,8 +57,7 @@ public class PostController {
                 postService.getPost(postId);
 
         return ResponseEntity.ok(ApiResponse.success(
-                "POST200_2",
-                "게시글 상세 조회에 성공하였습니다.",
+                SuccessCode.POST_DETAIL_GET,
                 response
 
         ));
@@ -72,8 +69,7 @@ public class PostController {
                 postService.getPosts();
 
         return ResponseEntity.ok(ApiResponse.success(
-                "POST200_1",
-                "게시글 목록 조회에 성공하였습니다.",
+                SuccessCode.POST_GET,
                 response));
     }
 
@@ -84,8 +80,7 @@ public class PostController {
     ) {
         postService.deletePost(userId, postId);
         return ResponseEntity.ok(ApiResponse.success(
-                "POST200_4",
-                "게시글 삭제에 성공하였습니다.",
+                SuccessCode.POST_DELETED,
                 null
         ));
     }

@@ -1,4 +1,4 @@
-package com.example.week2.global.exception;
+package com.example.week2.global.response;
 
 import lombok.Getter;
 

@@ -7,7 +7,8 @@ import com.example.week2.comment.dto.CommentResponse;
 import com.example.week2.comment.service.CommentLikeService;
 import com.example.week2.comment.service.CommentReportService;
 import com.example.week2.comment.service.CommentService;
-import com.example.week2.global.exception.ApiResponse;
+import com.example.week2.global.response.ApiResponse;
+import com.example.week2.global.response.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class CommentController {
         CommentResponse.CreateCommentResponse response =
             commentService.createComment(postId, userId, request);
 
-        return ApiResponse.success("COMMENT_CREATED", "댓글 작성 성공", response);
+        return ApiResponse.success(SuccessCode.COMMENT_CREATED, response);
 
     }
 
@@ -43,7 +44,7 @@ public class CommentController {
         CommentResponse.CommentDetailResponse response =
                 commentService.getCommentResponse(commentId);
 
-        return ApiResponse.success("COMMENT_FOUND", "댓글 조회 성공", response);
+        return ApiResponse.success(SuccessCode.COMMENT_GET, response);
     }
 
     @PostMapping("/{commentId}/likes")
@@ -58,11 +59,7 @@ public class CommentController {
                 request.getUserId()
         );
 
-        return ApiResponse.success(
-                "COMMENT_LIKED",
-                "댓글 좋아요 성공",
-                response
-        );
+        return ApiResponse.success(SuccessCode.COMMENT_LIKED, response);
     }
 
     @PostMapping("/{commentId}/reports")
@@ -74,14 +71,10 @@ public class CommentController {
         CommentResponse.CommentReportResponse response =
                 commentReportService.reportComment(commentId, request);
 
-        return ApiResponse.success(
-                "COMMENT_REPORTED",
-                "댓글 신고 성공",
-                response
-        );
+        return ApiResponse.success(SuccessCode.REPORT_COMMENT_CREATED, response);
     }
 
-    @PatchMapping("/{commentId}/reports/{reportId}/resolve")
+    @PatchMapping("/{commentId}/reports/{reportId}/resolves")
     public ApiResponse<CommentResponse.CommentReportResolve> resolveReport(
             @PathVariable Long commentId,
             @PathVariable Long reportId
@@ -89,10 +82,6 @@ public class CommentController {
         CommentResponse.CommentReportResolve response =
                 commentReportService.resolveReport(reportId);
 
-        return ApiResponse.success(
-                "COMMENT_REPORT_RESOLVED",
-                "댓글 신고 처리 완료 (상태 변경: PENDING → RESOLVED)",
-                response
-        );
+        return ApiResponse.success(SuccessCode.REPORT_COMMENT_RESOLVED, response);
     }
 }

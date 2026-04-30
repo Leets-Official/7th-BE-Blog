@@ -1,4 +1,4 @@
-package com.example.week2.global.exception;
+package com.example.week2.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +18,14 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> fail(String code, String message) {
         return new ApiResponse<>(false, code, message, null);
+    }
+
+    public static <T> ApiResponse<T> success(SuccessCode successCode, T result) {
+        return new ApiResponse<>(
+                true,
+                successCode.getCode(),
+                successCode.getMessage(),
+                result
+        );
     }
 }

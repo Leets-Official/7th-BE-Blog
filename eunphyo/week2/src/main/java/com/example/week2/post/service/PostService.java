@@ -1,7 +1,5 @@
 package com.example.week2.post.service;
 
-import com.example.week2.comment.entity.CommentReportStatus;
-import com.example.week2.comment.entity.CommentStatus;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
 import com.example.week2.post.entity.Post;
@@ -12,8 +10,8 @@ import com.example.week2.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.week2.global.exception.CustomException;
-import com.example.week2.global.exception.ErrorCode;
+import com.example.week2.global.response.CustomException;
+import com.example.week2.global.response.ErrorCode;
 
 import java.util.List;
 

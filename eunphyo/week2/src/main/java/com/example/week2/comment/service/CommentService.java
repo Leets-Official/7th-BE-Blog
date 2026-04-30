@@ -3,7 +3,6 @@ package com.example.week2.comment.service;
 import com.example.week2.comment.dto.CommentCreateRequest;
 import com.example.week2.comment.dto.CommentResponse;
 import com.example.week2.comment.entity.Comment;
-import com.example.week2.comment.entity.CommentStatus;
 import com.example.week2.comment.repository.CommentRepository;
 import com.example.week2.post.entity.Post;
 import com.example.week2.post.repository.PostRepository;
@@ -11,8 +10,8 @@ import com.example.week2.user.entity.User;
 import com.example.week2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.example.week2.global.exception.CustomException;
-import com.example.week2.global.exception.ErrorCode;
+import com.example.week2.global.response.CustomException;
+import com.example.week2.global.response.ErrorCode;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

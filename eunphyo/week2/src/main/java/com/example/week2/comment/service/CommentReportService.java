@@ -8,8 +8,8 @@ import com.example.week2.comment.repository.CommentReportRepository;
 import com.example.week2.report.entity.ReportStatus;
 import com.example.week2.user.entity.User;
 import com.example.week2.user.repository.UserRepository;
-import com.example.week2.global.exception.CustomException;
-import com.example.week2.global.exception.ErrorCode;
+import com.example.week2.global.response.CustomException;
+import com.example.week2.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class CommentReportService {
 
 
         if (commentReportRepository.existsByCommentAndReporter(comment, reporter)) {
-            throw new CustomException(ErrorCode.COMMENT_ALREADY_RESOLVED);
+            throw new CustomException(ErrorCode.REPORT_COMMENT_ALREADY_RESOLVED);
         }
 
         CommentReport report = CommentReport.builder()
@@ -65,7 +65,7 @@ public class CommentReportService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         if (report.getStatus() == ReportStatus.RESOLVED) {
-            throw new CustomException(ErrorCode.COMMENT_ALREADY_RESOLVED);
+            throw new CustomException(ErrorCode.REPORT_COMMENT_ALREADY_RESOLVED);
         }
 
         report.resolve();
