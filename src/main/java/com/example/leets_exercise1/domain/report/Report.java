@@ -3,6 +3,7 @@ package com.example.leets_exercise1.domain.report;
 import com.example.leets_exercise1.domain.comment.Comment;
 import com.example.leets_exercise1.domain.post.Post;
 import com.example.leets_exercise1.domain.user.User;
+import com.example.leets_exercise1.exception.InvalidReportStateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,8 +12,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "report")
@@ -29,10 +28,12 @@ public class Report {
     @JoinColumn(name = "user_id", nullable = false)
     private User reporter;
 
+    // 게시글 신고인 경우 사용
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
+    // 댓글 신고인 경우 사용
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
@@ -40,22 +41,24 @@ public class Report {
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ReportStatus status;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private Boolean active = true;
-
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReportBlock> reportBlocks = new ArrayList<>();
+    private Boolean active;
 
     @Builder
-    public Report(User reporter, Post post, Comment comment, String title, Boolean active) {
+    public Report(User reporter, Post post, Comment comment, String title, ReportStatus status, Boolean active) {
         this.reporter = reporter;
         this.post = post;
         this.comment = comment;
         this.title = title;
+        this.status = status != null ? status : ReportStatus.PENDING;
         this.active = active != null ? active : true;
     }
 
@@ -68,5 +71,12 @@ public class Report {
         if (hasPost == hasComment) {
             throw new IllegalStateException("신고 대상은 Post 또는 Comment 중 하나만 가져야 합니다.");
         }
+    }
+
+    public void resolve() {
+        if (this.status == ReportStatus.RESOLVED) {
+            throw new InvalidReportStateException();
+        }
+        this.status = ReportStatus.RESOLVED;
     }
 }
