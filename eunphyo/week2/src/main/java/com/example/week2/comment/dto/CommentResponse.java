@@ -29,22 +29,4 @@ public class CommentResponse {
             Long userId,
             int likeCount
     ) {}
-
-    @Builder
-    public record CommentReportResponse(
-            Long reportId,
-            Long commentId,
-            String reason,
-            String status,
-            LocalDateTime createdAt
-    ) {}
-
-    @Builder
-    public record CommentReportResolve(
-            Long reportId,
-            Long commentId,
-            String reason,
-            String status,
-            LocalDateTime createdAt
-    ) {}
 }

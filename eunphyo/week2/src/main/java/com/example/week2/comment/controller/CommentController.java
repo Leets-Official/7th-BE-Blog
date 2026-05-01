@@ -2,10 +2,8 @@ package com.example.week2.comment.controller;
 
 import com.example.week2.comment.dto.CommentCreateRequest;
 import com.example.week2.comment.dto.CommentLikeRequest;
-import com.example.week2.comment.dto.CommentReportRequest;
 import com.example.week2.comment.dto.CommentResponse;
 import com.example.week2.comment.service.CommentLikeService;
-import com.example.week2.comment.service.CommentReportService;
 import com.example.week2.comment.service.CommentService;
 import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
@@ -20,7 +18,6 @@ public class CommentController {
 
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
-    private final CommentReportService commentReportService;
 
 
     @PostMapping
@@ -60,28 +57,5 @@ public class CommentController {
         );
 
         return ApiResponse.success(SuccessCode.COMMENT_LIKED, response);
-    }
-
-    @PostMapping("/{commentId}/reports")
-    public ApiResponse<CommentResponse.CommentReportResponse> reportComment(
-            @PathVariable Long postId,
-            @PathVariable Long commentId,
-            @Valid @RequestBody CommentReportRequest request
-    ) {
-        CommentResponse.CommentReportResponse response =
-                commentReportService.reportComment(commentId, request);
-
-        return ApiResponse.success(SuccessCode.REPORT_COMMENT_CREATED, response);
-    }
-
-    @PatchMapping("/{commentId}/reports/{reportId}/resolves")
-    public ApiResponse<CommentResponse.CommentReportResolve> resolveReport(
-            @PathVariable Long commentId,
-            @PathVariable Long reportId
-    ) {
-        CommentResponse.CommentReportResolve response =
-                commentReportService.resolveReport(reportId);
-
-        return ApiResponse.success(SuccessCode.REPORT_COMMENT_RESOLVED, response);
     }
 }
