@@ -1,5 +1,6 @@
 package com.example.week2.report.controller;
 
+
 import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
 import com.example.week2.report.dto.ReportRequest;
