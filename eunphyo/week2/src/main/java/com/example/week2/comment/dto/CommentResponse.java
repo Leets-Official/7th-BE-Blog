@@ -19,6 +19,7 @@ public class CommentResponse {
             Long commentId,
             String content,
             String nickname,
+            int likeCount,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){}
