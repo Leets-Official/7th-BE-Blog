@@ -30,7 +30,7 @@ public class PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
 
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAllByIsReportedFalse();
 
         return postList.stream()
                 .map(post -> PostResponseDTO.PostListResDTO.builder()
@@ -50,6 +50,10 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_NOT_FOUND));
+
+        if (post.getIsReported()) {
+            throw new PostException(PostErrorCode.POST_REPORTED);
+        }
 
         return PostResponseDTO.PostDetailResDTO.builder()
                 .title(post.getTitle())

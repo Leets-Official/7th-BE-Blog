@@ -13,7 +13,10 @@ public enum PostErrorCode implements BaseCode {
             "해당 게시글이 존재하지 않습니다."),
     POST_FORBIDDEN(HttpStatus.FORBIDDEN,
             "POST403_1",
-            "접근 권한이 없습니다.")
+            "접근 권한이 없습니다."),
+    POST_REPORTED(HttpStatus.FORBIDDEN,
+            "POST403_2",
+            "신고 처리된 게시글입니다.")
     ;
     private final HttpStatus status;
     private final String code;
