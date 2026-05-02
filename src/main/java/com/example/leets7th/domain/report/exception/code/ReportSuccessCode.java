@@ -13,7 +13,7 @@ public enum ReportSuccessCode implements BaseCode {
             "게시글 신고에 성공했습니다."),
     PROCESS_REPORT_SUCCESS(HttpStatus.OK,
             "REPORT200_6",
-            "신고 처리에 성공했습니다.")
+            "신고 상태 변경에 성공했습니다.")
     ;
 
     private final HttpStatus status;
