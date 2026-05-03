@@ -5,6 +5,9 @@ import com.example.blog.domain.post.dto.PostListResponse;
 import com.example.blog.domain.post.dto.PostResponse;
 import com.example.blog.domain.post.dto.PostUpdateRequest;
 import com.example.blog.domain.post.service.PostService;
+import com.example.blog.domain.report.dto.ReportPostRequest;
+import com.example.blog.domain.report.dto.ReportResponse;
+import com.example.blog.domain.report.service.ReportService;
 import com.example.blog.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final ReportService reportService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,5 +61,23 @@ public class PostController {
         @PathVariable Long postId
     ) {
         postService.delete(userId, postId);
+    }
+
+    @PostMapping("/{postId}/hide")
+    public ApiResponse<PostResponse> hide(
+        @RequestHeader("X-User-Id") Long userId,
+        @PathVariable Long postId
+    ) {
+        return ApiResponse.success(postService.hidePost(userId, postId));
+    }
+
+    @PostMapping("/{postId}/reports")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<ReportResponse> reportPost(
+        @RequestHeader("X-User-Id") Long reporterId,
+        @PathVariable Long postId,
+        @RequestBody @Valid ReportPostRequest request
+    ) {
+        return ApiResponse.success(reportService.reportPost(reporterId, postId, request));
     }
 }

@@ -22,7 +22,7 @@ public record PostResponse(
             post.getUser().getUsername(),
             post.getTitle(),
             post.getContent(),
-            post.getStatus(),
+            post.getStatus().name(),
             post.getCreatedAt(),
             post.getUpdatedAt()
         );

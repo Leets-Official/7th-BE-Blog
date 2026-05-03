@@ -5,6 +5,7 @@ import com.example.blog.domain.post.dto.PostListResponse;
 import com.example.blog.domain.post.dto.PostResponse;
 import com.example.blog.domain.post.dto.PostUpdateRequest;
 import com.example.blog.domain.post.entity.Post;
+import com.example.blog.domain.post.entity.PostStatus;
 import com.example.blog.domain.post.repository.PostRepository;
 import com.example.blog.domain.user.entity.User;
 import com.example.blog.domain.user.repository.UserRepository;
@@ -32,7 +33,8 @@ public class PostService {
     public PostResponse create(Long userId, PostCreateRequest request) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-        Post post = Post.of(user, request.title(), request.content(), request.status());
+        PostStatus status = parseStatus(request.status());
+        Post post = Post.of(user, request.title(), request.content(), status);
         return PostResponse.from(postRepository.save(post));
     }
 
@@ -41,7 +43,7 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Post> posts;
         if (status != null && !status.isBlank()) {
-            posts = postRepository.findByStatus(status, pageable);
+            posts = postRepository.findByStatus(PostStatus.valueOf(status.toUpperCase()), pageable);
         } else {
             posts = postRepository.findAll(pageable);
         }
@@ -64,7 +66,8 @@ public class PostService {
         if (!post.getUser().getId().equals(userId)) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
         }
-        post.update(request.title(), request.content(), request.status());
+        PostStatus status = parseStatus(request.status());
+        post.update(request.title(), request.content(), status);
         return PostResponse.from(post);
     }
 
@@ -75,5 +78,22 @@ public class PostService {
             throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
         }
         postRepository.delete(post);
+    }
+
+    public PostResponse hidePost(Long userId, Long postId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+        post.hide();
+        return PostResponse.from(post);
+    }
+
+    private PostStatus parseStatus(String status) {
+        if (status == null || status.isBlank()) {
+            return null;
+        }
+        return PostStatus.valueOf(status.toUpperCase());
     }
 }

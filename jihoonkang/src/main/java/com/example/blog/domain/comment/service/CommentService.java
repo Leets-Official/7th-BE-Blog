@@ -38,10 +38,10 @@ public class CommentService {
             parentComment = commentRepository.findById(request.parentCommentId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
             if (!parentComment.getPost().getId().equals(postId)) {
-                throw new BusinessException(ErrorCode.INVALID_REPORT_TARGET);
+                throw new BusinessException(ErrorCode.INVALID_PARENT_COMMENT);
             }
             if (parentComment.getParentComment() != null) {
-                throw new BusinessException(ErrorCode.INVALID_REPORT_TARGET);
+                throw new BusinessException(ErrorCode.INVALID_PARENT_COMMENT);
             }
         }
 
@@ -75,5 +75,29 @@ public class CommentService {
             throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
         }
         commentRepository.delete(comment);
+    }
+
+    public CommentResponse acceptComment(Long userId, Long postId, Long commentId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new BusinessException(ErrorCode.INVALID_PARENT_COMMENT);
+        }
+
+        if (comment.isAccepted()) {
+            return CommentResponse.from(comment);
+        }
+
+        commentRepository.findByPost_IdAndAcceptedTrue(postId)
+            .ifPresent(Comment::unaccept);
+
+        comment.accept();
+        return CommentResponse.from(comment);
     }
 }
