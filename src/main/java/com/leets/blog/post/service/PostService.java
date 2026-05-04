@@ -1,6 +1,7 @@
 package com.leets.blog.post.service;
 
-import com.leets.blog.global.exception.ErrorCode; // 추가
+import com.leets.blog.global.exception.BusinessException;
+import com.leets.blog.global.exception.ErrorCode;
 import com.leets.blog.user.auth.AuthUser;
 import com.leets.blog.post.domain.Post;
 import com.leets.blog.post.domain.PostStatus; // 추가
@@ -27,7 +28,7 @@ public class PostService {
     @Transactional
     public PostResponse create(AuthUser authUser, PostRequest.Create request) {
         User user = userRepository.findById(authUser.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -43,7 +44,7 @@ public class PostService {
     // 단건 조회
     public PostResponse findById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         return new PostResponse(post);
     }
 
@@ -57,7 +58,7 @@ public class PostService {
     @Transactional
     public PostResponse update(AuthUser authUser, Long id, PostRequest.Update request) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         validatePostAuthority(authUser, post);
 
         // 엔티티 내부의 update 메서드를 통해 값 변경 (더티 체킹 발생)
@@ -69,7 +70,7 @@ public class PostService {
     @Transactional
     public void delete(AuthUser authUser, Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         validatePostAuthority(authUser, post);
 
         postRepository.delete(post);
@@ -78,7 +79,7 @@ public class PostService {
     @Transactional
     public PostResponse hide(AuthUser authUser, Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         validatePostAuthority(authUser, post);
         post.hide();
         return new PostResponse(post);
@@ -87,7 +88,7 @@ public class PostService {
     @Transactional
     public PostResponse activate(AuthUser authUser, Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         validatePostAuthority(authUser, post);
         post.activate();
         return new PostResponse(post);
@@ -97,7 +98,7 @@ public class PostService {
         boolean isAuthor = post.getUser() != null && post.getUser().getId().equals(authUser.getUserId());
         boolean isAdmin = authUser.getRole() == UserRole.ADMIN;
         if (!isAuthor && !isAdmin) {
-            throw new IllegalArgumentException(ErrorCode.FORBIDDEN.getMessage());
+            throw new BusinessException(ErrorCode.FORBIDDEN);
         }
     }
 }
