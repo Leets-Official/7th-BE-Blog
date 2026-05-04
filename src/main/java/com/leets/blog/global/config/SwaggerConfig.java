@@ -1,7 +1,10 @@
 package com.leets.blog.global.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,9 +14,17 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
+                .components(new Components().addSecuritySchemes(
+                        "X-USER-ID",
+                        new SecurityScheme()
+                                .name("X-USER-ID")
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                ))
+                .addSecurityItem(new SecurityRequirement().addList("X-USER-ID"))
                 .info(new Info()
                         .title("Leets Blog API")
-                        .description("3주차 게시판 CRUD 과제 API 문서")
+                        .description("게시물/댓글/신고 상태 전이 API 문서\n\n임시 인증: 요청 헤더에 X-USER-ID 값을 담아 호출합니다.")
                         .version("1.0.0"));
     }
 }

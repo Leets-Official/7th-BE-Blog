@@ -1,13 +1,13 @@
-package com.leets.blog.post.domain;
+package com.leets.blog.report.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostStatus {
-    ACTIVE("노출 중"),
-    HIDDEN("숨김 처리");
+public enum ReportStatus {
+    PENDING("처리 대기"),
+    RESOLVED("처리 완료");
 
     private final String description;
 }
