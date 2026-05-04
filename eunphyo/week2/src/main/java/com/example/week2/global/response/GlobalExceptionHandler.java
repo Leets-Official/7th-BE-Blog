@@ -1,11 +1,14 @@
 package com.example.week2.global.response;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -51,7 +54,4 @@ public class GlobalExceptionHandler {
                         errorCode.getCode(),
                         errorCode.getMessage()));
     }
-
-
-
 }

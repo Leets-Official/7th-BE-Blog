@@ -64,7 +64,7 @@ public class ReportService {
     public ReportResponse.CommentReportResolve resolveReport(Long reportId) {
 
         Report report = commentReportRepository.findById(reportId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.REPORT_NOT_FOUND));
 
         if (report.getStatus() == ReportStatus.RESOLVED) {
             throw new CustomException(ErrorCode.REPORT_COMMENT_ALREADY_RESOLVED);
