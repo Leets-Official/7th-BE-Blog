@@ -1,5 +1,6 @@
 package com.example.week2.post.entity;
 
+import com.example.week2.comment.entity.Comment;
 import com.example.week2.global.entity.BaseEntity;
 import com.example.week2.user.entity.User;
 import jakarta.persistence.*;
@@ -38,4 +39,5 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
 }
