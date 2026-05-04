@@ -29,7 +29,7 @@ public class SwaggerOperationCustomizer implements OperationCustomizer {
 
         for (ErrorCode errorCode : annotation.value()) {
 
-            String responseCode = errorCode.getCode(); // ⭐ POST400_1 같은거
+            String responseCode = errorCode.getCode();
 
             Example example = new Example();
             example.setSummary(errorCode.getCode());
