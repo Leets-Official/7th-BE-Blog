@@ -13,6 +13,13 @@ public class AuthResponse {
         private final String nickname;
         private final UserRole role;
 
+        public UserInfo(Long userId, String email, String nickname, UserRole role) {
+            this.userId = userId;
+            this.email = email;
+            this.nickname = nickname;
+            this.role = role;
+        }
+
         public UserInfo(User user) {
             this.userId = user.getId();
             this.email = user.getEmail();
@@ -27,14 +34,12 @@ public class AuthResponse {
         private final String email;
         private final String nickname;
         private final UserRole role;
-        private final String authHeaderName;
 
         public Login(User user) {
             this.userId = user.getId();
             this.email = user.getEmail();
             this.nickname = user.getNickname();
             this.role = user.getRole();
-            this.authHeaderName = "X-USER-ID";
         }
     }
 }

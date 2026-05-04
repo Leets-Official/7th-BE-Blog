@@ -33,16 +33,16 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<AuthUser>> me(
+    public ResponseEntity<BaseResponse<AuthResponse.UserInfo>> me(
             @Parameter(hidden = true)
             @CurrentUser AuthUser authUser
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(authUser));
-    }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<BaseResponse<AuthResponse.UserInfo>> findUserById(@PathVariable Long userId) {
-        AuthResponse.UserInfo response = authService.findUserById(userId);
+        AuthResponse.UserInfo response = new AuthResponse.UserInfo(
+                authUser.getUserId(),
+                authUser.getEmail(),
+                authUser.getNickname(),
+                authUser.getRole()
+        );
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }
