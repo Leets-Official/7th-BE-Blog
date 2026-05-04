@@ -75,9 +75,7 @@ public class ReportService {
 
     @Transactional
     public ReportResponse resolve(AuthUser authUser, Long reportId) {
-        if (authUser.getRole() != UserRole.ADMIN) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
+        validateAdmin(authUser);
 
         User resolver = userRepository.findById(authUser.getUserId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));

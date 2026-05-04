@@ -13,11 +13,13 @@ import com.leets.blog.user.domain.UserRole;
 import com.leets.blog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("local")
 @RequiredArgsConstructor
 public class SeedDataInitializer implements CommandLineRunner {
 
@@ -63,7 +65,7 @@ public class SeedDataInitializer implements CommandLineRunner {
                 .user(user2)
                 .build());
 
-        Comment comment1 = commentRepository.save(new Comment("첫 번째 임시 댓글입니다.", post1, user2));
+        commentRepository.save(new Comment("첫 번째 임시 댓글입니다.", post1, user2));
         Comment comment2 = commentRepository.save(new Comment("두 번째 임시 댓글입니다.", post2, user1));
 
         if (!reportRepository.existsByReporterIdAndTargetTypeAndTargetId(user1.getId(), ReportTargetType.POST, post2.getId())) {

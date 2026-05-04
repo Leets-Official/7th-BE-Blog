@@ -24,7 +24,7 @@ public class SwaggerConfig {
                 .addSecurityItem(new SecurityRequirement().addList("X-USER-ID"))
                 .info(new Info()
                         .title("Leets Blog API")
-                        .description("게시물/댓글/신고 상태 전이 API 문서")
+                        .description("게시물/댓글/신고 상태 전이 API 문서\n\n임시 인증: 요청 헤더에 X-USER-ID 값을 담아 호출합니다.")
                         .version("1.0.0"));
     }
 }
