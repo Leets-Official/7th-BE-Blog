@@ -3,6 +3,7 @@ package com.example.leets_7th.domain.post.controller.docs;
 import com.example.leets_7th.common.response.ApiResponse;
 import com.example.leets_7th.domain.post.dto.request.CreatePostRequest;
 import com.example.leets_7th.domain.post.dto.request.GetPostRequest;
+import com.example.leets_7th.domain.post.dto.request.ReportPostRequest;
 import com.example.leets_7th.domain.post.dto.request.UpdatePostRequest;
 import com.example.leets_7th.domain.post.dto.response.CreatePostResponse;
 import com.example.leets_7th.domain.post.dto.response.GetPostDetailResponse;
@@ -43,6 +44,28 @@ public interface PostControllerDocs {
             @RequestParam Long userId,
             @PathVariable Long postId,
             @Valid @RequestBody UpdatePostRequest request
+    );
+
+    @Operation(summary = "게시글 좋아요", description = "특정 게시글에 좋아요를 누릅니다.")
+    @PostMapping("/{postId}/likes")
+    ResponseEntity<ApiResponse<Void>> likePost(
+            @RequestParam Long userId,
+            @PathVariable Long postId
+    );
+
+    @Operation(summary = "게시글 좋아요 취소", description = "특정 게시글의 좋아요를 취소합니다.")
+    @DeleteMapping("/{postId}/likes")
+    ResponseEntity<ApiResponse<Void>> unlikePost(
+            @RequestParam Long userId,
+            @PathVariable Long postId
+    );
+
+    @Operation(summary = "게시글 신고", description = "특정 게시글을 신고합니다.")
+    @PostMapping("/{postId}/reports")
+    ResponseEntity<ApiResponse<Void>> reportPost(
+            @RequestParam Long userId,
+            @PathVariable Long postId,
+            @RequestBody @Valid ReportPostRequest request
     );
 
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
