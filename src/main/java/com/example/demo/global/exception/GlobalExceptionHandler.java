@@ -10,11 +10,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 검증 만족 못한 내용들
+    // 검증 실패 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(
-            MethodArgumentNotValidException e) {
-
+            MethodArgumentNotValidException e
+    ) {
         Map<String, String> errors = new HashMap<>();
 
         e.getBindingResult().getFieldErrors()
@@ -26,27 +26,30 @@ public class GlobalExceptionHandler {
                 .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, errors));
     }
 
-    // 게시글 없음
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Map<String, Object>>> handleIllegal(
-            IllegalArgumentException e) {
-
-        if (e.getMessage().contains("게시글 없음")) {
-            return ResponseEntity.status(404)
-                    .body(ResponseUtil.fail(
-                            BaseCode.POST_NOT_FOUND,
-                            Map.of("postId", -1)
-                    ));
-        }
-
+    // CustomException 처리
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCustomException(
+            CustomException e
+    ) {
         return ResponseEntity.badRequest()
-                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, null));
+                .body(ResponseUtil.fail(e.getBaseCode(), null));
     }
 
-    // 기타 예외상황
+    // IllegalArgumentException 처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegal(
+            IllegalArgumentException e
+    ) {
+        return ResponseEntity.badRequest()
+                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, e.getMessage()));
+    }
+
+    // 기타 예외 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException() {
+    public ResponseEntity<ApiResponse<Object>> handleException(
+            Exception e
+    ) {
         return ResponseEntity.internalServerError()
-                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, null));
+                .body(ResponseUtil.fail(BaseCode.INVALID_REQUEST, e.getMessage()));
     }
 }

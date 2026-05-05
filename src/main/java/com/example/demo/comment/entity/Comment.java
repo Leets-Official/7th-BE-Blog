@@ -27,9 +27,17 @@ public class Comment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CommentStatus status = CommentStatus.ACTIVE;
+
     public void setUser(User user) { this.user = user; }
     public void setPost(Post post) { this.post = post; }
     public void setContent(String c) { this.content = c; }
     public void setCreatedAt(LocalDateTime t) { this.createdAt = t; }
     public void setUpdatedAt(LocalDateTime t) { this.updatedAt = t; }
+
+    public void hide() {
+        this.status = CommentStatus.HIDDEN;
+    }
 }
