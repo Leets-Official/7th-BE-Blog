@@ -7,6 +7,9 @@ import com.example.demo.comment.service.CommentService;
 import com.example.demo.global.exception.ApiResponse;
 import com.example.demo.global.exception.BaseCode;
 import com.example.demo.global.exception.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Comment", description = "댓글 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comments")
@@ -21,7 +25,11 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    //댓글 생성
+    // 댓글 생성
+    @Operation(
+            summary = "댓글 생성 API",
+            description = "게시글에 댓글을 생성합니다."
+    )
     @PostMapping
     public ApiResponse<Map<String, Long>> create(
             @RequestBody @Valid CommentCreateRequest request) {
@@ -34,9 +42,14 @@ public class CommentController {
         );
     }
 
-    //특정 게시글 댓글 조회
+    // 특정 게시글 댓글 조회
+    @Operation(
+            summary = "특정 게시글 댓글 조회 API",
+            description = "postId에 해당하는 게시글의 댓글 목록을 조회합니다."
+    )
     @GetMapping("/post/{postId}")
     public ApiResponse<List<CommentResponse>> getComments(
+            @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId) {
 
         return ResponseUtil.success(
@@ -45,10 +58,16 @@ public class CommentController {
         );
     }
 
-    //댓글 수정
+    // 댓글 수정
+    @Operation(
+            summary = "댓글 수정 API",
+            description = "commentId에 해당하는 댓글 내용을 수정합니다."
+    )
     @PutMapping("/{commentId}")
     public ApiResponse<Void> update(
+            @Parameter(description = "댓글 ID", example = "1")
             @PathVariable Long commentId,
+
             @RequestBody @Valid CommentUpdateRequest request) {
 
         commentService.updateComment(commentId, request);
@@ -59,9 +78,14 @@ public class CommentController {
         );
     }
 
-    //댓글 삭제
+    // 댓글 삭제
+    @Operation(
+            summary = "댓글 삭제 API",
+            description = "commentId에 해당하는 댓글을 삭제합니다."
+    )
     @DeleteMapping("/{commentId}")
     public ApiResponse<Map<String, Long>> delete(
+            @Parameter(description = "댓글 ID", example = "1")
             @PathVariable Long commentId) {
 
         commentService.deleteComment(commentId);
