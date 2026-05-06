@@ -1,6 +1,8 @@
 package com.example.blog7th.post.domain;
 
+import com.example.blog7th.comment.domain.Comment;
 import com.example.blog7th.global.domain.BaseEntity;
+import com.example.blog7th.post.repository.PostRepository;
 import com.example.blog7th.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,6 +22,9 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
+
+    @Version
+    private Long version;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -60,4 +65,21 @@ public class Post extends BaseEntity {
         this.content = content;
         this.status = status;
     }
+
+    // 게시물 숨김 처리
+    public void hide() {
+        if (this.status == PostStatus.HIDDEN) {
+            throw new IllegalStateException("이미 숨김 처리된 게시물입니다.");
+        }
+        this.status = PostStatus.HIDDEN;
+    }
+
+    // 작성자 일치 여부 확인
+    public boolean isOwner(Long userId) {
+        if (userId == null || this.user == null) {
+            return false;
+        }
+        return userId.equals(this.user.getId());
+    }
+
 }

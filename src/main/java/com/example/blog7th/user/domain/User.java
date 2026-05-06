@@ -1,13 +1,15 @@
 package com.example.blog7th.user.domain;
 
 import com.example.blog7th.global.domain.BaseEntity;
-import com.example.blog7th.post.domain.Comment;
+import com.example.blog7th.comment.domain.Comment;
 import com.example.blog7th.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -55,5 +57,11 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.role = role;
+    }
+
+    public void checkPassword(String password, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(password, this.password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }

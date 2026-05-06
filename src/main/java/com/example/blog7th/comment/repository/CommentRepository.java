@@ -1,9 +1,13 @@
 package com.example.blog7th.comment.repository;
 
-import com.example.blog7th.post.domain.Comment;
+import com.example.blog7th.comment.domain.Comment;
+import com.example.blog7th.post.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.List; // 반드시 java.util.List를 임포트해야 합니다.
+
 public interface CommentRepository extends JpaRepository<Comment, Long> {
+    List<Comment> findAllByPostOrderByIsPinnedDescCreatedAtAsc(Post post);
+    List<Comment> findByPostAndIsPinnedTrue(Post post);
+    //고정 확인
 }
