@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseEntity {
 
     // 유저 아이디
@@ -31,4 +31,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    private User(String name) {
+        this.name = name;
+    }
+
+    public static User of(String name) {
+        return new User(name);
+    }
 }

@@ -38,6 +38,10 @@ public class Post extends BaseEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PostStatus status;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -46,6 +50,7 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.status = PostStatus.ACTIVE;
     }
 
     public static Post of(User user, String title, String content, String imageUrl) {
@@ -60,5 +65,9 @@ public class Post extends BaseEntity {
             this.content = content;
         }
         this.imageUrl = imageUrl;
+    }
+
+    public void hide() {
+        this.status = PostStatus.HIDDEN;
     }
 }
