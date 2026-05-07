@@ -1,4 +1,4 @@
-package com.leets.blog.domain.post.dto;
+package com.leets.blog.domain.like.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class PostResponse {
+public class PostLikeResponse {
 
-    private Long id;
-    private String title;
-    private String content;
-    private String authorName;
+    private Long likeId;
+    private Long postId;
+    private Long userId;
     private LocalDateTime createdAt;
 }

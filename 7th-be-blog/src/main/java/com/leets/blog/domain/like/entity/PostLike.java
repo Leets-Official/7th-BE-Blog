@@ -1,9 +1,8 @@
-package com.leets.blog.domain.comment.entity;
+package com.leets.blog.domain.like.entity;
 
 import com.leets.blog.common.entity.BaseEntity;
 import com.leets.blog.domain.post.entity.Post;
 import com.leets.blog.domain.user.entity.User;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,27 +20,27 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@Table(name = "comments")
+@Table(name = "post_likes")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseEntity {
+public class PostLike extends BaseEntity {
 
-    // 고유 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 내용
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
-
-    // FK 유저
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // FK 포스트
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    public static PostLike create(User user, Post post) {
+        return PostLike.builder()
+                .user(user)
+                .post(post)
+                .build();
+    }
 }
