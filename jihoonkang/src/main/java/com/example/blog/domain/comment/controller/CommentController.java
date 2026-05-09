@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class CommentController {
     @PostMapping("/api/v1/posts/{postId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CommentResponse> create(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
         @RequestBody @Valid CommentCreateRequest request
     ) {
@@ -82,7 +83,7 @@ public class CommentController {
     })
     @PatchMapping("/api/v1/comments/{commentId}")
     public ApiResponse<CommentResponse> update(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "댓글 ID", example = "1") @PathVariable Long commentId,
         @RequestBody @Valid CommentUpdateRequest request
     ) {
@@ -99,7 +100,7 @@ public class CommentController {
     @DeleteMapping("/api/v1/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "댓글 ID", example = "1") @PathVariable Long commentId
     ) {
         commentService.delete(userId, commentId);
@@ -115,7 +116,7 @@ public class CommentController {
     })
     @PostMapping("/api/v1/posts/{postId}/comments/{commentId}/accept")
     public ApiResponse<CommentResponse> accept(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
         @Parameter(description = "채택할 댓글 ID", example = "1") @PathVariable Long commentId
     ) {
@@ -143,7 +144,7 @@ public class CommentController {
     @PostMapping("/api/v1/comments/{commentId}/reports")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ReportResponse> reportComment(
-        @RequestHeader("X-User-Id") Long reporterId,
+        @AuthenticationPrincipal Long reporterId,
         @Parameter(description = "댓글 ID", example = "1") @PathVariable Long commentId,
         @RequestBody @Valid ReportCommentRequest request
     ) {
