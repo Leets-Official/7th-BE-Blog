@@ -1,0 +1,116 @@
+package com.example.blog.domain.auth.service;
+
+import com.example.blog.domain.auth.dto.LoginRequest;
+import com.example.blog.domain.auth.dto.SignUpRequest;
+import com.example.blog.domain.auth.dto.TokenResponse;
+import com.example.blog.domain.auth.entity.RefreshToken;
+import com.example.blog.domain.auth.repository.RefreshTokenRepository;
+import com.example.blog.domain.user.dto.UserResponse;
+import com.example.blog.domain.user.entity.User;
+import com.example.blog.domain.user.repository.UserRepository;
+import com.example.blog.global.exception.BusinessException;
+import com.example.blog.global.exception.ErrorCode;
+import com.example.blog.global.security.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class AuthService {
+
+    private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
+
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpiration;
+
+    public UserResponse signUp(SignUpRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+        if (userRepository.existsByUsername(request.username())) {
+            throw new BusinessException(ErrorCode.USERNAME_ALREADY_EXISTS);
+        }
+        String hashedPassword = passwordEncoder.encode(request.password());
+        User user = User.of(request.username(), request.email(), hashedPassword, request.profileUrl());
+        return UserResponse.from(userRepository.save(user));
+    }
+
+    public TokenResponse login(LoginRequest request, HttpServletResponse response) {
+        User user = userRepository.findByEmail(request.email())
+            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
+
+        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(refreshExpiration / 1000);
+        refreshTokenRepository.findByUserId(user.getId())
+            .ifPresentOrElse(
+                rt -> rt.update(refreshToken, expiresAt),
+                () -> refreshTokenRepository.save(RefreshToken.of(user.getId(), refreshToken, expiresAt))
+            );
+
+        setRefreshTokenCookie(response, refreshToken);
+        return new TokenResponse(accessToken);
+    }
+
+    public TokenResponse reissue(HttpServletRequest request) {
+        String refreshToken = extractRefreshTokenFromCookie(request);
+
+        if (refreshToken == null || !jwtUtil.validate(refreshToken)) {
+            throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        RefreshToken stored = refreshTokenRepository.findByToken(refreshToken)
+            .orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (stored.getExpiresAt().isBefore(LocalDateTime.now())) {
+            refreshTokenRepository.delete(stored);
+            throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        Long userId = jwtUtil.getUserId(refreshToken);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        String newAccessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
+        return new TokenResponse(newAccessToken);
+    }
+
+    private void setRefreshTokenCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE, token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (refreshExpiration / 1000));
+        response.addCookie(cookie);
+    }
+
+    private String extractRefreshTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        return Arrays.stream(request.getCookies())
+            .filter(c -> REFRESH_TOKEN_COOKIE.equals(c.getName()))
+            .map(Cookie::getValue)
+            .findFirst()
+            .orElse(null);
+    }
+}
