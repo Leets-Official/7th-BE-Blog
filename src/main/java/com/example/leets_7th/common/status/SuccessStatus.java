@@ -13,6 +13,11 @@ public enum SuccessStatus implements BaseStatus {
     HEALTH_CHECK_SUCCESS_STATUS(HttpStatus.OK, "TEST_200", "OK"),
     STRING_REPEAT_SUCCESS(HttpStatus.CREATED, "TEST_201", "문자열을 성공적으로 출력했습니다."),
 
+    // User
+    CREATE_USER_SUCCESS(HttpStatus.CREATED,"AUTH_2011","회원가입에 성공했습니다."),
+    LOGIN_SUCCESS(HttpStatus.OK,"AUTH_2001","로그인에 성공했습니다."),
+    LOGOUT_SUCCESS(HttpStatus.OK,"AUTH_2002","로그아웃에 성공했습니다."),
+    REISSUE_SUCCESS(HttpStatus.OK,"AUTH_2003","리프레쉬 토큰 재발급에 성공했습니다."),
 
     // Post
     GET_ALL_POST_SUCCESS(HttpStatus.OK, "POST_2001", "게시글 목록 조회에 성공했습니다."),
