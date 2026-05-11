@@ -3,6 +3,7 @@ package com.example.leets7th.domain.report.controller;
 import com.example.leets7th.domain.report.dto.req.ReportReqDTO;
 import com.example.leets7th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public interface ReportControllerDocs {
     })
     @PostMapping("/api/report/{postId}")
     ApiResponse<Void> reportPost(
-            @RequestHeader @Valid Long userId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
             @RequestBody @Valid ReportReqDTO.CreateReportDTO request
     );
 
@@ -41,5 +42,6 @@ public interface ReportControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REPORT404_1", description = "해당 게시글에 대한 신고가 존재하지 않습니다."),
     })
     @PatchMapping("/api/admin/report/{postId}")
-    ApiResponse<Void> processReport(@PathVariable Long postId);
+    ApiResponse<Void> processReport(
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId);
 }

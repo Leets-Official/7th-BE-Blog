@@ -4,6 +4,7 @@ import com.example.leets7th.domain.post.dto.req.PostRequestDTO;
 import com.example.leets7th.domain.post.dto.res.PostResponseDTO;
 import com.example.leets7th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public interface PostControllerDocs {
     })
     @GetMapping("/api/posts")
     ApiResponse<List<PostResponseDTO.PostListResDTO>> getPostList(
-            @RequestHeader @Valid Long userId
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId
     );
 
     @Operation(
@@ -37,8 +38,8 @@ public interface PostControllerDocs {
     })
     @GetMapping("/api/posts/{postId}")
     ApiResponse<PostResponseDTO.PostDetailResDTO> getPostDetail(
-            @PathVariable Long postId,
-            @RequestHeader @Valid Long userId
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId
     );
 
     @Operation(
@@ -54,7 +55,7 @@ public interface PostControllerDocs {
     })
     @PostMapping("/api/posts")
     ApiResponse<PostResponseDTO.CreatePostResDTO> createPost(
-            @RequestHeader @Valid Long userId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
             @Valid @RequestBody PostRequestDTO.PostReqDTO req
     );
 
@@ -74,8 +75,8 @@ public interface PostControllerDocs {
     })
     @PostMapping("/api/posts/{postId}")
     ApiResponse<PostResponseDTO.PostDetailResDTO> patchPost(
-            @PathVariable Long postId,
-            @RequestHeader @Valid Long userId,
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
             @Valid @RequestBody PostRequestDTO.PostReqDTO req
     );
 
@@ -92,7 +93,7 @@ public interface PostControllerDocs {
     })
     @PostMapping("/api/posts/{postId}")
     ApiResponse<Void> deletePost(
-            @PathVariable Long postId,
-            @RequestHeader @Valid Long userId
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId
     );
 }

@@ -4,6 +4,7 @@ import com.example.leets7th.domain.comment.dto.req.CommentRequestDTO;
 import com.example.leets7th.domain.comment.dto.res.CommentResponseDTO;
 import com.example.leets7th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,8 +27,8 @@ public interface CommentControllerDocs {
     })
     @GetMapping("/api/posts/{postId}/comments")
     ApiResponse<List<CommentResponseDTO.CommentResDTO>> getCommentList(
-            @RequestHeader @Valid Long userId,
-            @PathVariable Long postId
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId
     );
 
     @Operation(
@@ -48,9 +49,9 @@ public interface CommentControllerDocs {
     })
     @PatchMapping("/api/posts/{postId}/comments/{commentId}/adopt")
     ApiResponse<Void> adoptComment(
-            @RequestHeader @Valid Long userId,
-            @PathVariable Long postId,
-            @PathVariable Long commentId
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "채택할 댓글 ID", example = "10") @PathVariable Long commentId
     );
 
     @Operation(
@@ -66,8 +67,8 @@ public interface CommentControllerDocs {
     })
     @PostMapping("/api/posts/{postId}/comments")
     ApiResponse<CommentResponseDTO.CreateCommentResDTO> createComment(
-            @RequestHeader @Valid Long userId,
-            @PathVariable Long postId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
             @RequestBody @Valid CommentRequestDTO.CreateCommentDTO request
     );
 
@@ -87,9 +88,9 @@ public interface CommentControllerDocs {
     })
     @PostMapping("/api/posts/{postId}/comments/{commentId}/replies")
     ApiResponse<CommentResponseDTO.CreateCommentResDTO> createReply(
-            @RequestHeader @Valid Long userId,
-            @PathVariable Long postId,
-            @PathVariable Long commentId,
+            @Parameter(description = "유저 ID", example = "1") @RequestHeader @Valid Long userId,
+            @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
+            @Parameter(description = "부모 댓글 ID", example = "10") @PathVariable Long commentId,
             @RequestBody @Valid CommentRequestDTO.CreateCommentDTO request
     );
 }
