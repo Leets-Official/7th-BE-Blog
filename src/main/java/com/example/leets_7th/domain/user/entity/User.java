@@ -3,6 +3,7 @@ package com.example.leets_7th.domain.user.entity;
 import com.example.leets_7th.common.base.BaseEntity;
 import com.example.leets_7th.domain.comment.entity.Comment;
 import com.example.leets_7th.domain.user.enums.Gender;
+import com.example.leets_7th.domain.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,10 @@ public class User extends BaseEntity {
     @Column(name = "age")
     private int age;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -45,6 +50,7 @@ public class User extends BaseEntity {
         user.email = email;
         user.password = password;
         user.age = age;
+        user.role = Role.USER;
         return user;
     }
 }
