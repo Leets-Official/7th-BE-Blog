@@ -18,3 +18,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  secret: dGhpcyBpcyBhIHZlcnkgbG9uZyBzZWNyZXQga2V5IGZvciBqd3Qgc2lnbmluZyEhMTIzNDU2Nzg=
+  access-token-expire-ms: 1800000      # 30분
+  refresh-token-expire-ms: 604800000   # 7일
