@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@Tag(name = "report-controller", description = "게시글/댓글 신고 및 처리(RESOLVE) API")
+@Tag(name = "Report", description = "게시글/댓글 신고 및 처리(RESOLVE) API")
 public class ReportController {
 
     private final ReportService reportService;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "string-controller", description = "문자열 처리 API")
+@Tag(name = "String", description = "문자열 처리 API")
 public class StringController {
 
     private final StringService stringService;

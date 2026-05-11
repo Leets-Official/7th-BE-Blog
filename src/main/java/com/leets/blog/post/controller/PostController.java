@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts") // 모든 게시글 API는 /api/posts로 시작합니다.
-@Tag(name = "post-controller", description = "게시글 CRUD 및 상태 전이(HIDE/ACTIVATE) API")
+@Tag(name = "Post", description = "게시글 CRUD 및 상태 전이(HIDE/ACTIVATE) API")
 public class PostController {
 
     private final PostService postService;
