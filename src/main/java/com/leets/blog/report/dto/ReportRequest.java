@@ -12,6 +12,7 @@ public class ReportRequest {
     @Schema(name = "ReportCreateRequest")
     public static class Create {
         @NotBlank(message = "신고 사유는 필수입니다.")
+        @Schema(description = "신고 사유", example = "욕설/비방이 포함되어 있어요.")
         private String reason;
     }
 }
