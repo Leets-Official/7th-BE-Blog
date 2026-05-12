@@ -57,6 +57,10 @@ public class JwtTokenProvider {
         return REFRESH_TOKEN_TYPE.equals(getTokenType(token));
     }
 
+    public boolean isAccessToken(String token) {
+        return ACCESS_TOKEN_TYPE.equals(getTokenType(token));
+    }
+
     public Long getUserId(String token) {
         return Long.valueOf(parseClaims(token).getSubject());
     }
