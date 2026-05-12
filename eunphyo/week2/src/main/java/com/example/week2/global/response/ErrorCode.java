@@ -36,7 +36,6 @@ public enum ErrorCode implements BaseErrorCode{
     //auth
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED,
             "AUTH400_1", "비밀번호가 일치하지 않습니다."),
-
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,
             "AUTH401_2", "유효하지 않은 토큰입니다."),
 
@@ -45,8 +44,9 @@ public enum ErrorCode implements BaseErrorCode{
             "USER404_1", "존재하지 않는 사용자입니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT,
             "USER400_2", "이미 존재하는 이메일입니다."),
-
     NAME_ALREADY_EXISTS(HttpStatus.CONFLICT,
+            "USER400_3", "이미 존재하는 이름입니다."),
+    NICKNAME_ALREADY_EXISTS(HttpStatus.CONFLICT,
             "USER400_3", "이미 존재하는 닉네임입니다.");
 
 

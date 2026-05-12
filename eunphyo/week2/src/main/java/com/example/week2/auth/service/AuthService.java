@@ -25,16 +25,21 @@ public class AuthService {
     @Transactional
     public TokenResponse signup(SignupRequest request) {
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
-        }
-
         if (userRepository.existsByName(request.getName())) {
             throw new CustomException(ErrorCode.NAME_ALREADY_EXISTS);
         }
 
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
         User user = User.builder()
                 .name(request.getName())
+                .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(User.Role.USER)
