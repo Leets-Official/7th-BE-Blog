@@ -10,6 +10,7 @@ import com.example.leets7th.domain.user.repository.UserRepository;
 import com.example.leets7th.global.exception.AlreadyAdoptedException;
 import com.example.leets7th.global.exception.CommentNotFoundException;
 import com.example.leets7th.global.exception.ForbiddenException;
+import com.example.leets7th.global.exception.InvalidCommentPostException;
 import com.example.leets7th.global.exception.PostNotFoundException;
 import com.example.leets7th.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class CommentService {
 
         // 해당 게시글의 댓글인지 확인
         if (!comment.getPost().getId().equals(postId)) {
-            throw new IllegalArgumentException("해당 게시글에 속한 댓글이 아닙니다.");
+            throw new InvalidCommentPostException();
         }
 
         // 이미 채택된 댓글이 있는지 확인

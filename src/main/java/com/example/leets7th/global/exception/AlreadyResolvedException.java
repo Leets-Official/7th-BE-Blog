@@ -1,8 +1,8 @@
 package com.example.leets7th.global.exception;
 
-public class AlreadyResolvedException extends RuntimeException {
+public class AlreadyResolvedException extends BusinessException {
 
     public AlreadyResolvedException() {
-        super("이미 처리된 신고입니다.");
+        super(ErrorCode.ALREADY_RESOLVED);
     }
 }

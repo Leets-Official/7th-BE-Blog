@@ -1,8 +1,8 @@
 package com.example.leets7th.global.exception;
 
-public class AlreadyAdoptedException extends RuntimeException {
+public class AlreadyAdoptedException extends BusinessException {
 
     public AlreadyAdoptedException() {
-        super("이미 채택된 댓글이 존재합니다.");
+        super(ErrorCode.ALREADY_ADOPTED);
     }
 }

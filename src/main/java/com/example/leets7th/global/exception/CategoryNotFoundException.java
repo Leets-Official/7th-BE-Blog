@@ -1,8 +1,8 @@
 package com.example.leets7th.global.exception;
 
-public class CategoryNotFoundException extends RuntimeException {
+public class CategoryNotFoundException extends BusinessException {
 
     public CategoryNotFoundException(Long categoryId) {
-        super("해당 카테고리를 찾을 수 없습니다. id=" + categoryId);
+        super(ErrorCode.CATEGORY_NOT_FOUND, ErrorCode.CATEGORY_NOT_FOUND.getMessage() + " id=" + categoryId);
     }
 }
