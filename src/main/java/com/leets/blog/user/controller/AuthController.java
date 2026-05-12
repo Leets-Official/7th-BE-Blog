@@ -108,6 +108,26 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.ok(userInfo));
     }
 
+    @PostMapping("/logout")
+    @Operation(
+            summary = "로그아웃",
+            description = "Access/Refresh token 쿠키를 만료시켜 로그아웃합니다."
+    )
+    public ResponseEntity<BaseResponse<Void>> logout(HttpServletResponse response) {
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                CookieUtils.deleteCookie(
+                        jwtProperties.getAccessCookieName(),
+                        jwtProperties
+                ).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                CookieUtils.deleteCookie(
+                        jwtProperties.getRefreshCookieName(),
+                        jwtProperties
+                ).toString());
+
+        return ResponseEntity.ok(BaseResponse.ok(null));
+    }
+
     @GetMapping("/me")
     @Operation(
             summary = "내 정보 조회",

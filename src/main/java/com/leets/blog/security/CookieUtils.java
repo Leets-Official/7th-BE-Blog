@@ -17,6 +17,10 @@ public class CookieUtils {
                 .build();
     }
 
+    public static ResponseCookie deleteCookie(String name, JwtProperties props) {
+        return createCookie(name, "", 0, props);
+    }
+
     public static String getCookieValue(HttpServletRequest request, String name) {
         Cookie cookie = WebUtils.getCookie(request, name);
         return cookie != null ? cookie.getValue() : null;
