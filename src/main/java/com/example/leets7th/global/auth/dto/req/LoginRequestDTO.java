@@ -1,4 +1,4 @@
-package com.example.leets7th.domain.user.dto.req;
+package com.example.leets7th.global.auth.dto.req;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
