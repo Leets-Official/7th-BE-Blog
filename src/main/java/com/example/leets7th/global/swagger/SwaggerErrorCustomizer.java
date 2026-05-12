@@ -1,4 +1,4 @@
-package com.example.leets7th.global.config;
+package com.example.leets7th.global.swagger;
 
 import com.example.leets7th.global.annotation.ApiErrorResponse;
 import com.example.leets7th.global.code.ErrorCode;
@@ -12,25 +12,29 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
+
 @Component
 public class SwaggerErrorCustomizer implements OperationCustomizer {
 
+    //Operation 커스터마이징 메서드
     @Override
     public Operation customize(Operation operation,HandlerMethod handlerMethod) {
 
+        //메서드에서 어노테이션 추출
         ApiErrorResponse apiErrorResponse = handlerMethod.getMethodAnnotation(ApiErrorResponse.class);
 
         if(apiErrorResponse == null) {
             return operation;
         }
 
-        ApiResponses apiResponses = operation.getResponses();
 
         for(ErrorCode errorCode : apiErrorResponse.value()) {
+            //에러 코드 변수 추출
             String status = String.valueOf(errorCode.getStatus().value());
             String code = errorCode.getCode();
             String message = errorCode.getMessage();
 
+            //예시 응답 객체 세팅
             Example example = new Example();
             java.util.Map<String, Object> exampleValue = new java.util.LinkedHashMap<>();
             exampleValue.put("success", false);
@@ -39,14 +43,22 @@ public class SwaggerErrorCustomizer implements OperationCustomizer {
 
             example.setValue(exampleValue);
 
-            example.setDescription(message);
 
+
+            //현재 API 에서 응답 객체 가져오기
+            /*
+            ApiResponses = ApiResponse 들의 컬렉션
+            ApiResponse = 상태 코드 하나의 응답 정보를 담는 객체
+             */
+
+            ApiResponses apiResponses = operation.getResponses();
 
             ApiResponse apiResponse = apiResponses.containsKey(status)
                     ? apiResponses.get(status)
-                    : new ApiResponse().description("에러 응답");
+                    : new ApiResponse().description(message);
 
 
+            //ApiResponse 객체 조립
 
             Content content =  apiResponse.getContent() != null ? apiResponse.getContent() : new Content();
             MediaType mediaType = content.containsKey("application/json") ? content.get("application/json") : new MediaType();
