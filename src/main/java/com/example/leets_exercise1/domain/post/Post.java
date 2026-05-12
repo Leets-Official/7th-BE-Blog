@@ -52,7 +52,7 @@ public class Post {
     public Post(User user, String title, String content, String description, Boolean active) {
         this.user = user;
         this.title = title;
-        this.content = content;
+        this.content = content != null ? content : description;
         this.description = description;
         this.active = active != null ? active : true;
     }
