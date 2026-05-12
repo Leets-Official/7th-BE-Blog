@@ -6,7 +6,6 @@ import com.example.week2.post.entity.Post;
 import com.example.week2.post.repository.PostRepository;
 import com.example.week2.user.entity.User;
 import com.example.week2.user.repository.UserRepository;
-import com.example.week2.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class PostService {
     @Transactional
     public PostResponse.CreatePostResponse createPost(Long userId, PostCreateRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(()-> new CustomException((ErrorCode.USER_NOT_FOUND)));
 
         Post post = Post.builder()
                 .title(request.getTitle())
