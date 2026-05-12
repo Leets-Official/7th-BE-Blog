@@ -19,7 +19,7 @@ public enum SuccessCode {
     COMMENT_CREATED(HttpStatus.CREATED,
             "COMMENT201_1","댓글 작성에 성공하였습니다."),
     COMMENT_GET(HttpStatus.OK,
-            "COMMENT200_2","댓글 조회에 성공하였습니다."), //댓글조회가 잇엇남..
+            "COMMENT200_2","댓글 조회에 성공하였습니다."),
     COMMENT_LIKED(HttpStatus.OK,
             "COMMENT200_3","댓글 좋아요에 성공하였습니다."),
     REPORT_COMMENT_CREATED(HttpStatus.CREATED,

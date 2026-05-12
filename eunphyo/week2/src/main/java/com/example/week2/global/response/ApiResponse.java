@@ -28,4 +28,13 @@ public class ApiResponse<T> {
                 result
         );
     }
+
+    public static <T> ApiResponse<T> fail(BaseErrorCode errorCode) {
+        return new ApiResponse<>(
+                false,
+                errorCode.getCode(),
+                errorCode.getMessage(),
+                null
+        );
+    }
 }
