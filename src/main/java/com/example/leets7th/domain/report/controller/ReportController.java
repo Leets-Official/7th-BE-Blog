@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,7 +22,7 @@ public class ReportController implements ReportControllerDocs {
     public ResponseEntity<ApiResponse<Map<String, Object>>> reportPost(
             @PathVariable Long postId,
             @RequestBody @Valid ReportRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         Long reportId = reportService.reportPost(postId, request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(Map.of("reportId", reportId, "message", "게시글이 신고되었습니다.")));
@@ -31,7 +32,7 @@ public class ReportController implements ReportControllerDocs {
     public ResponseEntity<ApiResponse<Map<String, Object>>> reportComment(
             @PathVariable Long commentId,
             @RequestBody @Valid ReportRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         Long reportId = reportService.reportComment(commentId, request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(Map.of("reportId", reportId, "message", "댓글이 신고되었습니다.")));

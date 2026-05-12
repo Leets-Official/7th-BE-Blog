@@ -1,7 +1,7 @@
 package com.example.leets7th.domain.user.entity;
 
-import com.example.leets7th.domain.post.entity.Post;
 import com.example.leets7th.domain.comment.entity.Comment;
+import com.example.leets7th.domain.post.entity.Post;
 import com.example.leets7th.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,13 +22,25 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 선택 정보
-    private String username;
+    @Column(nullable = false, unique = true)
+    private String email;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
+    private String username;
+
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private String refreshToken;
 
     private LocalDateTime deletedAt;
 
@@ -38,10 +50,17 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    public static User create(String nickname) {
+    public static User create(String email, String encodedPassword, String nickname) {
         User user = new User();
+        user.email = email;
+        user.password = encodedPassword;
         user.nickname = nickname;
+        user.role = UserRole.USER;
         return user;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void delete() {

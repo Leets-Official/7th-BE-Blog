@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class CommentController implements CommentControllerDocs {
     public ResponseEntity<ApiResponse<Map<String, Object>>> createComment(
             @PathVariable Long postId,
             @RequestBody @Valid CommentCreateRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         Long commentId = commentService.createComment(postId, request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(Map.of("commentId", commentId, "message", "댓글이 작성되었습니다.")));
@@ -32,7 +33,7 @@ public class CommentController implements CommentControllerDocs {
     public ResponseEntity<ApiResponse<Map<String, String>>> adoptComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         commentService.adoptComment(postId, commentId, userId);
         return ResponseEntity.ok(ApiResponse.success(Map.of("message", "댓글이 채택되었습니다.")));

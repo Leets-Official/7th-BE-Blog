@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +38,10 @@ public class PostController implements PostControllerDocs {
         return ResponseEntity.ok(ApiResponse.success("POST_DETAIL_SUCCESS", "게시글 상세 조회 성공", postService.getPost(postId)));
     }
 
-    // TODO: 실제 인증 구현 시 @AuthenticationPrincipal로 userId 주입
     @PostMapping
     public ResponseEntity<ApiResponse<Map<String, Object>>> createPost(
             @RequestBody @Valid PostCreateRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         Long postId = postService.createPost(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(Map.of("postId", postId, "message", "게시글이 생성되었습니다.")));
@@ -51,7 +51,7 @@ public class PostController implements PostControllerDocs {
     public ResponseEntity<ApiResponse<Map<String, String>>> updatePost(
             @PathVariable Long postId,
             @RequestBody PostUpdateRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         postService.updatePost(postId, request, userId);
         return ResponseEntity.ok(ApiResponse.success(Map.of("message", "게시글이 수정되었습니다.")));
@@ -60,7 +60,7 @@ public class PostController implements PostControllerDocs {
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Map<String, String>>> deletePost(
             @PathVariable Long postId,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         postService.deletePost(postId, userId);
         return ResponseEntity.ok(ApiResponse.success(Map.of("message", "게시글이 삭제되었습니다.")));
@@ -69,7 +69,7 @@ public class PostController implements PostControllerDocs {
     @PatchMapping("/{postId}/hide")
     public ResponseEntity<ApiResponse<Map<String, String>>> hidePost(
             @PathVariable Long postId,
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @AuthenticationPrincipal Long userId
     ) {
         postService.hidePost(postId, userId);
         return ResponseEntity.ok(ApiResponse.success(Map.of("message", "게시글이 숨김 처리되었습니다.")));
