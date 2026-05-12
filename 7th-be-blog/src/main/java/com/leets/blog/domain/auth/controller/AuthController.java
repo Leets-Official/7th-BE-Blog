@@ -1,6 +1,8 @@
 package com.leets.blog.domain.auth.controller;
 
 import com.leets.blog.common.response.ApiResponse;
+import com.leets.blog.domain.auth.dto.LoginRequest;
+import com.leets.blog.domain.auth.dto.LoginResponse;
 import com.leets.blog.domain.auth.dto.SignupRequest;
 import com.leets.blog.domain.auth.dto.SignupResponse;
 import com.leets.blog.domain.auth.service.AuthService;
@@ -23,5 +25,11 @@ public class AuthController {
     @Operation(summary = "이메일 회원가입", description = "이메일, 비밀번호, 닉네임으로 회원가입합니다.")
     public ApiResponse<SignupResponse> signup(@RequestBody @Valid SignupRequest request) {
         return ApiResponse.onSuccess(authService.signup(request));
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "이메일 로그인", description = "이메일과 비밀번호로 로그인하고 토큰을 발급받습니다.")
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        return ApiResponse.onSuccess(authService.login(request));
     }
 }
