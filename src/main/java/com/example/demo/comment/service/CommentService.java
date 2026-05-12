@@ -1,6 +1,8 @@
 package com.example.demo.comment.service;
 
-import com.example.demo.comment.dto.*;
+import com.example.demo.comment.dto.CommentCreateRequest;
+import com.example.demo.comment.dto.CommentResponse;
+import com.example.demo.comment.dto.CommentUpdateRequest;
 import com.example.demo.comment.entity.Comment;
 import com.example.demo.comment.repository.CommentRepository;
 import com.example.demo.post.entity.Post;
@@ -24,14 +26,16 @@ public class CommentService {
     private final PostRepository postRepository;
 
     // 댓글 생성
-    public Long createComment(CommentCreateRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public Long createComment(Long userId, CommentCreateRequest request) {
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
 
         Comment comment = new Comment();
+
         comment.setUser(user);
         comment.setPost(post);
         comment.setContent(request.getContent());
@@ -43,6 +47,7 @@ public class CommentService {
     // 댓글 목록 조회
     @Transactional(readOnly = true)
     public List<CommentResponse> getComments(Long postId) {
+
         return commentRepository.findByPostId(postId).stream()
                 .map(c -> CommentResponse.builder()
                         .id(c.getId())
@@ -54,6 +59,7 @@ public class CommentService {
 
     // 댓글 수정
     public void updateComment(Long commentId, CommentUpdateRequest request) {
+
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 없음"));
 
@@ -63,6 +69,10 @@ public class CommentService {
 
     // 댓글 삭제
     public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글 없음"));
+
+        commentRepository.delete(comment);
     }
 }

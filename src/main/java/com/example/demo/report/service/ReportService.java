@@ -31,8 +31,9 @@ public class ReportService {
     private final CommentRepository commentRepository;
 
     // 게시글 신고
-    public ReportResponse reportPost(Long postId, ReportCreateRequest request) {
-        User reporter = userRepository.findById(request.getReporterId())
+    public ReportResponse reportPost(Long userId, Long postId, ReportCreateRequest request) {
+
+        User reporter = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(BaseCode.USER_NOT_FOUND));
 
         Post post = postRepository.findById(postId)
@@ -63,8 +64,9 @@ public class ReportService {
     }
 
     // 댓글 신고
-    public ReportResponse reportComment(Long commentId, ReportCreateRequest request) {
-        User reporter = userRepository.findById(request.getReporterId())
+    public ReportResponse reportComment(Long userId, Long commentId, ReportCreateRequest request) {
+
+        User reporter = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(BaseCode.USER_NOT_FOUND));
 
         Comment comment = commentRepository.findById(commentId)
@@ -95,7 +97,11 @@ public class ReportService {
     }
 
     // 신고 처리 완료
-    public ReportResponse resolveReport(Long reportId) {
+    public ReportResponse resolveReport(Long userId, Long reportId) {
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(BaseCode.USER_NOT_FOUND));
+
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new CustomException(BaseCode.REPORT_NOT_FOUND));
 

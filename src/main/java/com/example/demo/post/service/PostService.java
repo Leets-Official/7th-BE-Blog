@@ -10,10 +10,10 @@ import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -24,11 +24,11 @@ public class PostService {
     private final UserRepository userRepository;
     private final MediaRepository mediaRepository;
 
-    //게시글 생성
+    // 게시글 생성
     @Transactional
-    public PostResponse createPost(PostCreateRequest request) {
+    public PostResponse createPost(Long userId, PostCreateRequest request) {
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
         Post post = new Post();
@@ -65,17 +65,19 @@ public class PostService {
                 .postId(saved.getId())
                 .title(saved.getTitle())
                 .description(saved.getDescription())
-                .authorNickname(user.getName())
+                .authorNickname(user.getNickname())
                 .createdAt(saved.getCreatedAt())
                 .build();
     }
 
-    //게시글 수정
+    // 게시글 수정
     @Transactional
-    public PostResponse updatePost(Long postId, PostCreateRequest request) {
+    public PostResponse updatePost(Long userId, Long postId, PostCreateRequest request) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        validatePostOwner(post, userId);
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
@@ -85,25 +87,27 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .description(post.getDescription())
-                .authorNickname(post.getUser().getName())
+                .authorNickname(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
     }
 
-    //게시글 삭제
+    // 게시글 삭제
     @Transactional
-    public Long deletePost(Long postId) {
+    public Long deletePost(Long userId, Long postId) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
+
+        validatePostOwner(post, userId);
 
         postRepository.delete(post);
 
         return postId;
     }
 
-    //게시글 조회
+    // 게시글 조회
     @Transactional
     public PostDetailResponse getPostDetail(Long postId) {
 
@@ -111,7 +115,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글 없음"));
 
         List<PostBlockResponse> blocks = post.getBlocks().stream()
-                .sorted((a, b) -> a.getSortOrder() - b.getSortOrder())
+                .sorted(Comparator.comparingInt(PostBlock::getSortOrder))
                 .map(block -> PostBlockResponse.builder()
                         .blockType(block.getBlockType())
                         .textContent(block.getTextContent())
@@ -123,9 +127,15 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .description(post.getDescription())
-                .authorNickname(post.getUser().getName())
+                .authorNickname(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
                 .blocks(blocks)
                 .build();
+    }
+
+    private void validatePostOwner(Post post, Long userId) {
+        if (!post.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("게시글 작성자만 수정 또는 삭제할 수 있습니다.");
+        }
     }
 }

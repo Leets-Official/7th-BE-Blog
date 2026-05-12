@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CommentController {
     // 댓글 생성
     @Operation(
             summary = "댓글 생성 API",
-            description = "게시글에 댓글을 생성합니다."
+            description = "로그인한 사용자가 게시글에 댓글을 생성합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -45,16 +46,22 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
-                    description = "유저 또는 게시글을 찾을 수 없음",
+                    description = "게시글을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     @PostMapping
     public ApiResponse<Map<String, Long>> create(
+            @AuthenticationPrincipal Long userId,
             @RequestBody @Valid CommentCreateRequest request) {
 
-        Long commentId = commentService.createComment(request);
+        Long commentId = commentService.createComment(userId, request);
 
         return ResponseUtil.success(
                 BaseCode.COMMENT_CREATE_SUCCESS,
@@ -105,6 +112,11 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
                     description = "댓글을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
@@ -133,6 +145,11 @@ public class CommentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
                     description = "댓글 삭제 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",

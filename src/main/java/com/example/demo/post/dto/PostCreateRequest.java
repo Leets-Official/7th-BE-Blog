@@ -3,17 +3,14 @@ package com.example.demo.post.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+
 import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Schema(description = "게시글 생성 요청 DTO")
 public class PostCreateRequest {
-
-    @Schema(description = "작성자 유저 ID", example = "1")
-    @NotNull(message = "유저 ID는 필수입니다.")
-    private Long userId;
 
     @Schema(description = "게시글 제목", example = "학교 근처 자취방 후기")
     @NotBlank(message = "제목은 비어 있을 수 없습니다.")
