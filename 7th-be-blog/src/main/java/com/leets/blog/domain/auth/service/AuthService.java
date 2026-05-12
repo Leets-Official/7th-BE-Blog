@@ -7,6 +7,8 @@ import com.leets.blog.domain.auth.dto.LoginRequest;
 import com.leets.blog.domain.auth.dto.LoginResponse;
 import com.leets.blog.domain.auth.dto.SignupRequest;
 import com.leets.blog.domain.auth.dto.SignupResponse;
+import com.leets.blog.domain.auth.dto.TokenReissueRequest;
+import com.leets.blog.domain.auth.dto.TokenReissueResponse;
 import com.leets.blog.domain.auth.entity.RefreshToken;
 import com.leets.blog.domain.auth.repository.RefreshTokenRepository;
 import com.leets.blog.domain.user.entity.User;
@@ -57,6 +59,27 @@ public class AuthService {
         saveRefreshToken(user, refreshToken);
 
         return new LoginResponse(accessToken, refreshToken);
+    }
+
+    public TokenReissueResponse reissueAccessToken(TokenReissueRequest request) {
+        String requestRefreshToken = request.refreshToken();
+        if (!jwtTokenProvider.validateToken(requestRefreshToken) || !jwtTokenProvider.isRefreshToken(requestRefreshToken)) {
+            throw new GeneralException(BaseErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(requestRefreshToken)
+                .orElseThrow(() -> new GeneralException(BaseErrorCode.INVALID_REFRESH_TOKEN));
+
+        if (refreshToken.isExpired(LocalDateTime.now())) {
+            throw new GeneralException(BaseErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        User user = refreshToken.getUser();
+        if (user.isDeleted()) {
+            throw new GeneralException(BaseErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        return new TokenReissueResponse(jwtTokenProvider.createAccessToken(user));
     }
 
     private void validateSignupRequest(SignupRequest request) {

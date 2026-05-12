@@ -5,6 +5,8 @@ import com.leets.blog.domain.auth.dto.LoginRequest;
 import com.leets.blog.domain.auth.dto.LoginResponse;
 import com.leets.blog.domain.auth.dto.SignupRequest;
 import com.leets.blog.domain.auth.dto.SignupResponse;
+import com.leets.blog.domain.auth.dto.TokenReissueRequest;
+import com.leets.blog.domain.auth.dto.TokenReissueResponse;
 import com.leets.blog.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,5 +33,11 @@ public class AuthController {
     @Operation(summary = "이메일 로그인", description = "이메일과 비밀번호로 로그인하고 토큰을 발급받습니다.")
     public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         return ApiResponse.onSuccess(authService.login(request));
+    }
+
+    @PostMapping("/auth/refresh")
+    @Operation(summary = "액세스 토큰 재발급", description = "리프레시 토큰으로 새 액세스 토큰을 발급받습니다.")
+    public ApiResponse<TokenReissueResponse> reissueAccessToken(@RequestBody @Valid TokenReissueRequest request) {
+        return ApiResponse.onSuccess(authService.reissueAccessToken(request));
     }
 }

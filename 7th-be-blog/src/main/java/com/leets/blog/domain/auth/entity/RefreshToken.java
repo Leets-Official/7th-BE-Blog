@@ -55,6 +55,6 @@ public class RefreshToken extends BaseEntity {
     }
 
     public boolean isExpired(LocalDateTime now) {
-        return expiresAt.isBefore(now);
+        return !expiresAt.isAfter(now);
     }
 }

@@ -14,6 +14,7 @@ public enum BaseErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "USER4002", "이미 등록된 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "USER4003", "이미 등록된 닉네임입니다."),
     INVALID_LOGIN(HttpStatus.UNAUTHORIZED, "AUTH4001", "이메일 또는 비밀번호가 올바르지 않습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH4002", "유효하지 않은 리프레시 토큰입니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4001", "댓글을 찾을 수 없습니다."),
     DUPLICATE_REPORT(HttpStatus.CONFLICT, "REPORT4001", "이미 신고를 완료했습니다."),
