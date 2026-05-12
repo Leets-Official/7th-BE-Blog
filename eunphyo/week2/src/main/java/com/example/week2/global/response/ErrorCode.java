@@ -1,10 +1,11 @@
 package com.example.week2.global.response;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements BaseErrorCode{
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500_1", "예기치 않은 서버 에러가 발생했습니다."),

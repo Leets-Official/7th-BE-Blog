@@ -29,7 +29,7 @@ public class ApiResponse<T> {
         );
     }
 
-    public static <T> ApiResponse<T> fail(ErrorCode errorCode) {
+    public static <T> ApiResponse<T> fail(BaseErrorCode errorCode) {
         return new ApiResponse<>(
                 false,
                 errorCode.getCode(),

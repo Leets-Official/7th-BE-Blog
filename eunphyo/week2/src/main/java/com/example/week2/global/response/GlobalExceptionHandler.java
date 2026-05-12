@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ApiResponse<?>> handleCustomException(CustomException e) {
-        ErrorCode errorCode = e.getErrorCode();
+        BaseErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity
                 .status(errorCode.getStatus())

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -13,7 +14,10 @@ import org.springframework.web.method.HandlerMethod;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class SwaggerOperationCustomizer implements OperationCustomizer {
+
+    private final ErrorCodeRegistry errorCodeRegistry;
 
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
