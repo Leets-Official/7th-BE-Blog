@@ -28,7 +28,7 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     @Operation(
             summary = "댓글 생성",
-            description = "특정 게시글에 댓글을 생성합니다. 임시 인증으로 헤더 `X-USER-ID` 값을 사용합니다."
+            description = "특정 게시글에 댓글을 생성합니다. Access token 쿠키 인증이 필요합니다."
     )
     public ResponseEntity<BaseResponse<CommentResponse>> create(
             @Parameter(hidden = true)

@@ -15,16 +15,16 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes(
-                        "X-USER-ID",
+                        "ACCESS_TOKEN",
                         new SecurityScheme()
-                                .name("X-USER-ID")
+                                .name("ACCESS_TOKEN")
                                 .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
+                                .in(SecurityScheme.In.COOKIE)
                 ))
-                .addSecurityItem(new SecurityRequirement().addList("X-USER-ID"))
+                .addSecurityItem(new SecurityRequirement().addList("ACCESS_TOKEN"))
                 .info(new Info()
                         .title("Leets Blog API")
-                        .description("게시물/댓글/신고 상태 전이 API 문서\n\n임시 인증: 요청 헤더에 X-USER-ID 값을 담아 호출합니다.")
+                        .description("게시물/댓글/신고 상태 전이 API 문서\n\n인증: 로그인 후 발급되는 ACCESS_TOKEN 쿠키를 사용합니다.")
                         .version("1.0.0"));
     }
 }

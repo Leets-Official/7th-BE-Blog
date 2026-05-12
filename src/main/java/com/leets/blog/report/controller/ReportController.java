@@ -28,7 +28,7 @@ public class ReportController {
     @PostMapping("/comments/{commentId}/reports")
     @Operation(
             summary = "댓글 신고",
-            description = "특정 댓글을 신고합니다. 임시 인증으로 헤더 `X-USER-ID` 값을 사용합니다."
+            description = "특정 댓글을 신고합니다. Access token 쿠키 인증이 필요합니다."
     )
     public ResponseEntity<BaseResponse<ReportResponse>> reportComment(
             @Parameter(hidden = true)
@@ -43,7 +43,7 @@ public class ReportController {
     @PostMapping("/posts/{postId}/reports")
     @Operation(
             summary = "게시글 신고",
-            description = "특정 게시글을 신고합니다. 임시 인증으로 헤더 `X-USER-ID` 값을 사용합니다."
+            description = "특정 게시글을 신고합니다. Access token 쿠키 인증이 필요합니다."
     )
     public ResponseEntity<BaseResponse<ReportResponse>> reportPost(
             @Parameter(hidden = true)

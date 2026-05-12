@@ -87,6 +87,10 @@ public class JwtTokenProvider {
         return REFRESH.equals(getClaims(token).get(CLAIM_TYPE, String.class));
     }
 
+    public boolean isAccessToken(String token) {
+        return ACCESS.equals(getClaims(token).get(CLAIM_TYPE, String.class));
+    }
+
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -100,6 +104,10 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
+        if (!isAccessToken(token)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+
         Long userId = getUserId(token);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED));
