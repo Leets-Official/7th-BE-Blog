@@ -5,6 +5,7 @@ import com.example.leets7th.domain.comment.dto.res.CommentResponseDTO;
 import com.example.leets7th.domain.comment.exception.code.CommentSuccessCode;
 import com.example.leets7th.domain.comment.service.CommentService;
 import com.example.leets7th.global.apiPayload.ApiResponse;
+import com.example.leets7th.global.security.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -16,53 +17,44 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class CommentController implements CommentControllerDocs {
+
     private final CommentService commentService;
 
-    // 댓글 채택 API
     @Override
     @PatchMapping("/api/posts/{postId}/comments/{commentId}/adopt")
     public ApiResponse<Void> adoptComment(
-            @RequestHeader @Valid Long userId,
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
-        commentService.adoptComment(userId, postId, commentId);
+        commentService.adoptComment(SecurityUtil.getCurrentUserId(), postId, commentId);
         return ApiResponse.onSuccess(CommentSuccessCode.ADOPT_COMMENT_SUCCESS, null);
     }
 
-    // 댓글 목록 조회 API
     @Override
     @GetMapping("/api/posts/{postId}/comments")
-    public ApiResponse<List<CommentResponseDTO.CommentResDTO>> getCommentList(
-            @RequestHeader @Valid Long userId,
-            @PathVariable Long postId
-    ) {
-        List<CommentResponseDTO.CommentResDTO> result = commentService.getCommentList(userId, postId);
+    public ApiResponse<List<CommentResponseDTO.CommentResDTO>> getCommentList(@PathVariable Long postId) {
+        List<CommentResponseDTO.CommentResDTO> result = commentService.getCommentList(SecurityUtil.getCurrentUserId(), postId);
         return ApiResponse.onSuccess(CommentSuccessCode.GET_COMMENT_LIST_SUCCESS, result);
     }
 
-    // 댓글 작성 API
     @Override
     @PostMapping("/api/posts/{postId}/comments")
     public ApiResponse<CommentResponseDTO.CreateCommentResDTO> createComment(
-            @RequestHeader @Valid Long userId,
             @PathVariable Long postId,
             @RequestBody @Valid CommentRequestDTO.CreateCommentDTO request
     ) {
-        CommentResponseDTO.CreateCommentResDTO result = commentService.createComment(userId, postId, request);
+        CommentResponseDTO.CreateCommentResDTO result = commentService.createComment(SecurityUtil.getCurrentUserId(), postId, request);
         return ApiResponse.onSuccess(CommentSuccessCode.CREATE_COMMENT_SUCCESS, result);
     }
 
-    // 대댓글 작성 API
     @Override
     @PostMapping("/api/posts/{postId}/comments/{commentId}/replies")
     public ApiResponse<CommentResponseDTO.CreateCommentResDTO> createReply(
-            @RequestHeader @Valid Long userId,
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody @Valid CommentRequestDTO.CreateCommentDTO request
     ) {
-        CommentResponseDTO.CreateCommentResDTO result = commentService.createReply(userId, postId, commentId, request);
+        CommentResponseDTO.CreateCommentResDTO result = commentService.createReply(SecurityUtil.getCurrentUserId(), postId, commentId, request);
         return ApiResponse.onSuccess(CommentSuccessCode.CREATE_REPLY_SUCCESS, result);
     }
 }

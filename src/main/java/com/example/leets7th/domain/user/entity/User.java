@@ -22,4 +22,8 @@ public class User extends BaseEntity {
 
     @Column(name = "email", nullable = false, length = 50)
     private String email;
+
+    public void delete() {
+        markAsDeleted();
+    }
 }
