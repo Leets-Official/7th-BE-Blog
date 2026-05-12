@@ -14,6 +14,8 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+
 public class User {
 
     @Id
@@ -36,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean isActive = true;
 
     @Column(name = "last_login_at")
@@ -58,4 +60,13 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder
+    public User(String email, String password, String nickname, Role role) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
+        this.isActive = true;
+    }
 }
