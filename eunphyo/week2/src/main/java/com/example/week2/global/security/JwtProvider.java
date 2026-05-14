@@ -55,13 +55,29 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Long getUserId(String token) {
-        return Long.valueOf(getClaims(token).getSubject());
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public boolean validateToken(String token) {
-        getClaims(token);
-        return true;
+    public Long getUserId(String token) {
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return Long.parseLong(claims.getSubject());
     }
 
     private Claims getClaims(String token) {

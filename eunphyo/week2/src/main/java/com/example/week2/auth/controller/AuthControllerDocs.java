@@ -1,6 +1,7 @@
 package com.example.week2.auth.controller;
 
 import com.example.week2.auth.dto.LoginRequest;
+import com.example.week2.auth.dto.ReissueRequest;
 import com.example.week2.auth.dto.SignupRequest;
 import com.example.week2.auth.dto.TokenResponse;
 import com.example.week2.global.response.ApiResponse;
@@ -22,7 +23,7 @@ public interface AuthControllerDocs {
             ErrorCode.NAME_ALREADY_EXISTS
     })
     @PostMapping("/signup")
-    ResponseEntity<ApiResponse<TokenResponse>> signup(
+    ResponseEntity<ApiResponse<Void>> signup(
             @Valid @RequestBody SignupRequest request
     );
 
@@ -32,7 +33,17 @@ public interface AuthControllerDocs {
             ErrorCode.USER_NOT_FOUND,
             ErrorCode.INVALID_PASSWORD
     })
+    @PostMapping("/login")
     ResponseEntity<ApiResponse<TokenResponse>> login(
-            @RequestBody LoginRequest request
+           @Valid @RequestBody LoginRequest request
     );
+
+    @Operation(summary = "토큰 재발급", description = "토큰을 재발급합니다.")
+    @ApiErrorCodeExample({
+            ErrorCode.INVALID_REFRESH_TOKEN
+    })
+    @PostMapping("/reissue")
+    ResponseEntity<ApiResponse<TokenResponse>> reissue(
+            @Valid @RequestBody ReissueRequest request
+            );
 }

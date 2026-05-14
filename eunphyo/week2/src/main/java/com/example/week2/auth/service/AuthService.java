@@ -1,6 +1,7 @@
 package com.example.week2.auth.service;
 
 import com.example.week2.auth.dto.LoginRequest;
+import com.example.week2.auth.dto.ReissueRequest;
 import com.example.week2.auth.dto.SignupRequest;
 import com.example.week2.auth.dto.TokenResponse;
 import com.example.week2.global.security.JwtProvider;
@@ -23,7 +24,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public TokenResponse signup(SignupRequest request) {
+    public void signup(SignupRequest request) {
 
         if (userRepository.existsByName(request.getName())) {
             throw new CustomException(ErrorCode.NAME_ALREADY_EXISTS);
@@ -46,14 +47,6 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
-
-        String accessToken = jwtProvider.createAccessToken(user.getId(), user.getRole());
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
-
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
     }
 
     public TokenResponse login(LoginRequest request) {
@@ -71,6 +64,30 @@ public class AuthService {
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Transactional
+    public TokenResponse reissue(ReissueRequest request) {
+
+        if (!jwtProvider.validateToken(request.getRefreshToken())) {
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        Long userId = jwtProvider.getUserId(request.getRefreshToken());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        String newAccessToken =
+                jwtProvider.createAccessToken(user.getId(), user.getRole());
+
+        String newRefreshToken =
+                jwtProvider.createRefreshToken(user.getId());
+
+        return TokenResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
                 .build();
     }
 }

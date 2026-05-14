@@ -38,6 +38,9 @@ public enum ErrorCode implements BaseErrorCode{
             "AUTH400_1", "비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,
             "AUTH401_2", "유효하지 않은 토큰입니다."),
+    INVALID_REFRESH_TOKEN(
+            HttpStatus.UNAUTHORIZED,
+            "AUTH401_2", "유효하지 않은 Refresh Token입니다."),
 
     //user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,

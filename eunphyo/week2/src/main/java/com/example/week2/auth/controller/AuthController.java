@@ -1,5 +1,6 @@
 package com.example.week2.auth.controller;
 
+import com.example.week2.auth.dto.ReissueRequest;
 import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
 import com.example.week2.auth.dto.LoginRequest;
@@ -22,15 +23,15 @@ public class AuthController implements AuthControllerDocs{
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<TokenResponse>> signup(
+    public ResponseEntity<ApiResponse<Void>> signup(
             @Valid @RequestBody SignupRequest request
     ) {
 
-        TokenResponse response = authService.signup(request);
+        authService.signup(request);
 
         return ResponseEntity
                 .status(SuccessCode.SIGNUP_SUCCESS.getStatus())
-                .body(ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, response));
+                .body(ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, null));
     }
 
     @PostMapping("/login")
@@ -42,5 +43,17 @@ public class AuthController implements AuthControllerDocs{
         return ResponseEntity
                 .status(SuccessCode.LOGIN_SUCCESS.getStatus())
                 .body(ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<TokenResponse>> reissue(
+            @Valid @RequestBody ReissueRequest request
+    ) {
+
+        TokenResponse response = authService.reissue(request);
+
+        return ResponseEntity
+                .status(SuccessCode.TOKEN_REISSUE_SUCCESS.getStatus())
+                .body(ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response));
     }
 }
