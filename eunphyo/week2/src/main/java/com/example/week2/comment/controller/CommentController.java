@@ -8,6 +8,7 @@ import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class CommentController implements CommentControllerDocs{
     private final CommentService commentService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CommentResponse.CreateCommentResponse> createComment(
 
             @PathVariable Long postId,

@@ -24,8 +24,8 @@ public class ReportController implements ReportControllerDocs{
 
     private final ReportService commentReportService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ReportResponse.CommentReportResponse> reportComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
