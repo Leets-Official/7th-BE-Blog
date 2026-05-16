@@ -1,14 +1,15 @@
 package com.example.week2.auth.controller;
 
-import com.example.week2.auth.dto.ReissueRequest;
+import com.example.week2.auth.dto.AuthRequest;
 import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
-import com.example.week2.auth.dto.LoginRequest;
-import com.example.week2.auth.dto.SignupRequest;
-import com.example.week2.auth.dto.TokenResponse;
+import com.example.week2.auth.dto.AuthResponse;
 import com.example.week2.auth.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,37 +24,58 @@ public class AuthController implements AuthControllerDocs{
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signup(
-            @Valid @RequestBody SignupRequest request
+    public ApiResponse<Void> signup(
+            @Valid @RequestBody AuthRequest.SignupRequest request
     ) {
-
         authService.signup(request);
 
-        return ResponseEntity
-                .status(SuccessCode.SIGNUP_SUCCESS.getStatus())
-                .body(ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, null));
+        return ApiResponse.success(SuccessCode.SIGNUP_SUCCESS, null);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> login(
-            @RequestBody LoginRequest request
+    public ApiResponse<AuthResponse.AccessToken> login(
+            @Valid @RequestBody AuthRequest.LoginRequest request,
+            HttpServletResponse servletResponse
     ) {
-        TokenResponse response = authService.login(request);
+        AuthResponse.TokenResult tokenResponse = authService.login(request);
 
-        return ResponseEntity
-                .status(SuccessCode.LOGIN_SUCCESS.getStatus())
-                .body(ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response));
+        setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
+
+        AuthResponse.AccessToken response =
+                new AuthResponse.AccessToken(tokenResponse.accessToken());
+
+        return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<TokenResponse>> reissue(
-            @Valid @RequestBody ReissueRequest request
+    public ApiResponse<AuthResponse.AccessToken> reissue(
+            @Valid @RequestBody AuthRequest.ReissueRequest request,
+            HttpServletResponse servletResponse
+    ) {
+        AuthResponse.TokenResult tokenResponse = authService.reissue(request);
+
+        setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
+
+        AuthResponse.AccessToken response =
+                new AuthResponse.AccessToken(tokenResponse.accessToken());
+
+
+        return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
+    }
+
+    private void setRefreshTokenCookie(
+            HttpServletResponse response,
+            String refreshToken
     ) {
 
-        TokenResponse response = authService.reissue(request);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/api/auth")
+                .maxAge(60 * 60 * 24 * 7)
+                .build();
 
-        return ResponseEntity
-                .status(SuccessCode.TOKEN_REISSUE_SUCCESS.getStatus())
-                .body(ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response));
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

@@ -22,7 +22,7 @@ public interface CommentControllerDocs {
                 ErrorCode.USER_NOT_FOUND
         })
         @PostMapping
-        ResponseEntity<ApiResponse<CommentResponse.CreateCommentResponse>> createComment(
+        ApiResponse<CommentResponse.CreateCommentResponse> createComment(
                 @Parameter(description = "게시글 post ID", example = "1")
                 @RequestParam Long postId,
                 @Parameter(description = "작성자 user ID", example = "1")
@@ -33,7 +33,7 @@ public interface CommentControllerDocs {
         @Operation(summary = "댓글 조회", description = "특정 댓글을 조회합니다.")
         @ApiErrorCodeExample({ErrorCode.COMMENT_NOT_FOUND})
         @GetMapping("/{commentId}")
-        ResponseEntity<ApiResponse<CommentResponse.CommentDetailResponse>> getComment(
+        ApiResponse<CommentResponse.CommentDetailResponse> getComment(
                 @Parameter(description = "게시글 post ID", example = "1")
                 @PathVariable Long postId,
                 @Parameter(description = "댓글 comment ID", example = "1")
@@ -46,7 +46,7 @@ public interface CommentControllerDocs {
                 ErrorCode.COMMENT_ALREADY_LIKED
         })
         @PostMapping("/{commentId}/likes")
-        ResponseEntity<ApiResponse<CommentResponse.CommentLikeResponse>> likeComment(
+        ApiResponse<CommentResponse.CommentLikeResponse> likeComment(
                 @Parameter(description = "게시물 post ID", example = "1")
                 @PathVariable Long postId,
                 @Parameter(description = "댓글 comment ID", example = "1")

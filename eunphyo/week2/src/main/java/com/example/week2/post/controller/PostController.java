@@ -23,7 +23,7 @@ public class PostController implements PostControllerDocs{
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponse.CreatePostResponse>> createPost(
+    public ApiResponse<PostResponse.CreatePostResponse> createPost(
 
             @RequestParam Long userId,
             @Valid @RequestBody PostCreateRequest postCreateRequest
@@ -31,14 +31,12 @@ public class PostController implements PostControllerDocs{
         PostResponse.CreatePostResponse response =
                 postService.createPost(userId, postCreateRequest);
 
-        return ResponseEntity
-                .status(SuccessCode.POST_CREATED.getStatus())
-                .body(ApiResponse.success(SuccessCode.POST_CREATED, response));
+        return ApiResponse.success(SuccessCode.POST_CREATED, response);
     }
 
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> updatePost(
+    public ApiResponse<PostResponse.PostDetailResponse> updatePost(
 
             @RequestParam Long userId,
             @PathVariable Long postId,
@@ -47,44 +45,36 @@ public class PostController implements PostControllerDocs{
         PostResponse.PostDetailResponse response =
                 postService.updatePost(userId, postId, postCreateRequest);
 
-        return ResponseEntity
-                .status(SuccessCode.POST_UPDATED.getStatus())
-                .body(ApiResponse.success(SuccessCode.POST_UPDATED, response));
+        return ApiResponse.success(SuccessCode.POST_UPDATED, response);
     }
 
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> getPost(
+    public ApiResponse<PostResponse.PostDetailResponse> getPost(
             @PathVariable Long postId
     ) {
         PostResponse.PostDetailResponse response =
                 postService.getPost(postId);
 
-        return ResponseEntity
-                .status(SuccessCode.POST_DETAIL_GET.getStatus())
-                .body(ApiResponse.success(SuccessCode.POST_DETAIL_GET, response));
+        return ApiResponse.success(SuccessCode.POST_DETAIL_GET, response);
     }
 
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse.PostListResponse>>> getPosts() {
+    public ApiResponse<List<PostResponse.PostListResponse>> getPosts() {
         List<PostResponse.PostListResponse> response =
                 postService.getPosts();
 
-        return ResponseEntity
-                .status(SuccessCode.POST_GET.getStatus())
-                .body(ApiResponse.success(SuccessCode.POST_GET, response));
+        return ApiResponse.success(SuccessCode.POST_GET, response);
     }
 
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(
+    public ApiResponse<Void> deletePost(
             @RequestParam Long userId,
             @PathVariable Long postId
     ) {
         postService.deletePost(userId, postId);
-        return ResponseEntity
-                .status(SuccessCode.POST_DELETED.getStatus())
-                .body(ApiResponse.success(SuccessCode.POST_DELETED, null));
+        return ApiResponse.success(SuccessCode.POST_DELETED, null);
     }
 }

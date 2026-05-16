@@ -1,9 +1,7 @@
 package com.example.week2.auth.service;
 
-import com.example.week2.auth.dto.LoginRequest;
-import com.example.week2.auth.dto.ReissueRequest;
-import com.example.week2.auth.dto.SignupRequest;
-import com.example.week2.auth.dto.TokenResponse;
+import com.example.week2.auth.dto.AuthRequest;
+import com.example.week2.auth.dto.AuthResponse;
 import com.example.week2.global.security.JwtProvider;
 import com.example.week2.global.response.CustomException;
 import com.example.week2.global.response.ErrorCode;
@@ -24,7 +22,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public void signup(SignupRequest request) {
+    public void signup(AuthRequest.SignupRequest request) {
 
         if (userRepository.existsByNickname(request.getNickname())) {
             throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
@@ -45,7 +43,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public TokenResponse login(LoginRequest request) {
+    public AuthResponse.TokenResult login(AuthRequest.LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -57,14 +55,11 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(user.getId(), user.getRole());
         String refreshToken = jwtProvider.createRefreshToken(user.getId());
 
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return new AuthResponse.TokenResult(accessToken, refreshToken);
     }
 
     @Transactional
-    public TokenResponse reissue(ReissueRequest request) {
+    public AuthResponse.TokenResult reissue(AuthRequest.ReissueRequest request) {
 
         if (!jwtProvider.validateToken(request.getRefreshToken())) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
@@ -81,9 +76,6 @@ public class AuthService {
         String newRefreshToken =
                 jwtProvider.createRefreshToken(user.getId());
 
-        return TokenResponse.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
-                .build();
+        return new AuthResponse.TokenResult(newAccessToken, newRefreshToken);
     }
 }

@@ -21,7 +21,7 @@ public interface ReportControllerDocs {
                 ErrorCode.REPORT_COMMENT_ALREADY_RESOLVED
         })
         @PostMapping
-        ResponseEntity<ApiResponse<ReportResponse.CommentReportResponse>> reportComment(
+        ApiResponse<ReportResponse.CommentReportResponse> reportComment(
                 @Parameter(description = "게시글 post ID", example = "1")
                 @PathVariable Long postId,
                 @Parameter(description = "댓글 comment ID", example = "1")
@@ -35,7 +35,7 @@ public interface ReportControllerDocs {
                 ErrorCode.REPORT_COMMENT_ALREADY_RESOLVED
         })
         @PatchMapping
-        ResponseEntity<ApiResponse<ReportResponse.CommentReportResolve>> resolveReport(
+        ApiResponse<ReportResponse.CommentReportResolve> resolveReport(
                 @Parameter(description = "게시글 post ID", example = "1")
                 @PathVariable Long postId,
                 @Parameter(description = "댓글 comment ID", example = "1")

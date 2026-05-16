@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,9 @@ public class ReportController implements ReportControllerDocs{
 
     private final ReportService commentReportService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<ApiResponse<ReportResponse.CommentReportResponse>> reportComment(
+    public ApiResponse<ReportResponse.CommentReportResponse> reportComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @Valid @RequestBody ReportRequest request
@@ -32,14 +34,12 @@ public class ReportController implements ReportControllerDocs{
         ReportResponse.CommentReportResponse response =
                 commentReportService.reportComment(commentId, request);
 
-        return ResponseEntity
-                .status(SuccessCode.REPORT_COMMENT_CREATED.getStatus())
-                .body(ApiResponse.success(SuccessCode.REPORT_COMMENT_CREATED, response));
+        return ApiResponse.success(SuccessCode.REPORT_COMMENT_CREATED, response);
     }
 
 
     @PatchMapping("/{reportId}/resolves")
-    public ResponseEntity<ApiResponse<ReportResponse.CommentReportResolve>> resolveReport(
+    public ApiResponse<ReportResponse.CommentReportResolve> resolveReport(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long reportId
@@ -47,8 +47,6 @@ public class ReportController implements ReportControllerDocs{
         ReportResponse.CommentReportResolve response =
                 commentReportService.resolveReport(reportId);
 
-        return ResponseEntity
-                .status(SuccessCode.REPORT_COMMENT_RESOLVED.getStatus())
-                .body(ApiResponse.success(SuccessCode.REPORT_COMMENT_RESOLVED, response));
+        return ApiResponse.success(SuccessCode.REPORT_COMMENT_RESOLVED, response);
     }
 }
