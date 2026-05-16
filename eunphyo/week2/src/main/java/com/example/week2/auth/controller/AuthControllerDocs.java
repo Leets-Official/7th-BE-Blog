@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -43,7 +44,7 @@ public interface AuthControllerDocs {
     })
     @PostMapping("/reissue")
     ApiResponse<AuthResponse.AccessToken> reissue(
-            @Valid @RequestBody AuthRequest.ReissueRequest request,
-            HttpServletResponse servletResponse
+            @CookieValue(name = "refreshToken") String refreshToken,
+            HttpServletResponse response
             );
 }

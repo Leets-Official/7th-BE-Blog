@@ -59,13 +59,13 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse.TokenResult reissue(AuthRequest.ReissueRequest request) {
+    public AuthResponse.TokenResult reissue(String refreshToken) {
 
-        if (!jwtProvider.validateToken(request.getRefreshToken())) {
+        if (!jwtProvider.validateToken(refreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        Long userId = jwtProvider.getUserId(request.getRefreshToken());
+        Long userId = jwtProvider.getUserId(refreshToken);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

@@ -9,12 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +22,7 @@ public class AuthController implements AuthControllerDocs{
     private final AuthService authService;
 
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<Void> signup(
             @Valid @RequestBody AuthRequest.SignupRequest request
     ) {
@@ -49,10 +48,10 @@ public class AuthController implements AuthControllerDocs{
 
     @PostMapping("/reissue")
     public ApiResponse<AuthResponse.AccessToken> reissue(
-            @Valid @RequestBody AuthRequest.ReissueRequest request,
+            @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse servletResponse
     ) {
-        AuthResponse.TokenResult tokenResponse = authService.reissue(request);
+        AuthResponse.TokenResult tokenResponse = authService.reissue(refreshToken);
 
         setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
 
