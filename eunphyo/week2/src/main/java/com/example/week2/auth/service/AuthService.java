@@ -26,10 +26,6 @@ public class AuthService {
     @Transactional
     public void signup(SignupRequest request) {
 
-        if (userRepository.existsByName(request.getName())) {
-            throw new CustomException(ErrorCode.NAME_ALREADY_EXISTS);
-        }
-
         if (userRepository.existsByNickname(request.getNickname())) {
             throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
