@@ -75,7 +75,8 @@ public class AuthService {
     public TokenResponse reissue(HttpServletRequest request) {
         String refreshToken = extractRefreshTokenFromCookie(request);
 
-        if (refreshToken == null || !jwtUtil.validate(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.validate(refreshToken)
+                || !"REFRESH".equals(jwtUtil.getTokenType(refreshToken))) {
             throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 

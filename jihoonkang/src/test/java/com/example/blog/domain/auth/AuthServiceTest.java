@@ -117,6 +117,7 @@ class AuthServiceTest {
         jakarta.servlet.http.HttpServletRequest request = mock(jakarta.servlet.http.HttpServletRequest.class);
         given(request.getCookies()).willReturn(new jakarta.servlet.http.Cookie[]{cookie});
         given(jwtUtil.validate("validToken")).willReturn(true);
+        given(jwtUtil.getTokenType("validToken")).willReturn("REFRESH");
         given(refreshTokenRepository.findByToken("validToken")).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.reissue(request))
@@ -132,6 +133,7 @@ class AuthServiceTest {
         jakarta.servlet.http.HttpServletRequest request = mock(jakarta.servlet.http.HttpServletRequest.class);
         given(request.getCookies()).willReturn(new jakarta.servlet.http.Cookie[]{cookie});
         given(jwtUtil.validate("expiredToken")).willReturn(true);
+        given(jwtUtil.getTokenType("expiredToken")).willReturn("REFRESH");
 
         RefreshToken stored = RefreshToken.of(1L, "expiredToken", LocalDateTime.now().minusDays(1));
         given(refreshTokenRepository.findByToken("expiredToken")).willReturn(Optional.of(stored));

@@ -39,6 +39,7 @@ public class JwtUtil {
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
             .claim("role", role)
+            .claim("token_type", "ACCESS")
             .setIssuedAt(new Date(now))
             .setExpiration(new Date(now + accessExpiration))
             .signWith(key, SignatureAlgorithm.HS256)
@@ -49,6 +50,7 @@ public class JwtUtil {
         long now = System.currentTimeMillis();
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
+            .claim("token_type", "REFRESH")
             .setIssuedAt(new Date(now))
             .setExpiration(new Date(now + refreshExpiration))
             .signWith(key, SignatureAlgorithm.HS256)
@@ -70,6 +72,10 @@ public class JwtUtil {
 
     public String getRole(String token) {
         return parseClaims(token).get("role", String.class);
+    }
+
+    public String getTokenType(String token) {
+        return parseClaims(token).get("token_type", String.class);
     }
 
     public Date getExpiration(String token) {
