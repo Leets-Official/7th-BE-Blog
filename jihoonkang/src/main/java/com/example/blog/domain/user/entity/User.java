@@ -34,6 +34,10 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
@@ -46,6 +50,7 @@ public class User extends BaseEntity {
         user.email = email;
         user.password = password;
         user.profileUrl = profileUrl;
+        user.role = Role.USER;
         return user;
     }
 

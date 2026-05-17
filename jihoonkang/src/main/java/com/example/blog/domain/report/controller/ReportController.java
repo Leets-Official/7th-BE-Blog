@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class ReportController {
     })
     @PostMapping("/{reportId}/resolve")
     public ApiResponse<ReportResponse> resolve(
-        @RequestHeader("X-User-Id") Long handlerId,
+        @AuthenticationPrincipal Long handlerId,
         @Parameter(description = "신고 ID", example = "1") @PathVariable Long reportId
     ) {
         return ApiResponse.success(reportService.resolveReport(handlerId, reportId));

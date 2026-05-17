@@ -16,7 +16,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
-    static final String SECURITY_SCHEME_NAME = "X-User-Id";
+    static final String SECURITY_SCHEME_NAME = "bearerAuth";
 
     @Bean
     public OpenAPI blogOpenAPI() {
@@ -35,9 +35,9 @@ public class SwaggerConfig {
             .title("Leets 7기 BE 블로그 API")
             .description("""
                 블로그 도메인 REST API 명세서.
-                - 인증: X-User-Id 헤더로 사용자 식별 (우상단 Authorize 버튼에서 입력)
+                - 인증: Bearer JWT (우상단 Authorize 버튼에 Access Token 입력)
                 - 응답 형식: ApiResponse<T> 래퍼 (status / message / data)
-                - 에러 코드: U001/U002, P001/P002, C001/C002, A001, R001~R004
+                - 에러 코드: AUTH_001~006, U001~U003, P001/P002, C001/C002, A001, R001~R004
                 """)
             .version("v1.0.0")
             .contact(new Contact()
@@ -48,9 +48,9 @@ public class SwaggerConfig {
 
     private SecurityScheme apiKeySecurityScheme() {
         return new SecurityScheme()
-            .type(SecurityScheme.Type.APIKEY)
-            .in(SecurityScheme.In.HEADER)
-            .name(SECURITY_SCHEME_NAME)
-            .description("사용자 식별 헤더. 숫자 userId를 입력하세요 (예: 1)");
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("bearer")
+            .bearerFormat("JWT")
+            .description("로그인 후 발급받은 Access Token을 입력하세요 (Bearer 접두어 제외)");
     }
 }

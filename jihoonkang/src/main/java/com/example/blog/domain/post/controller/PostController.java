@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "게시글", description = "게시글 CRUD, 숨김, 신고")
@@ -46,7 +47,7 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PostResponse> create(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @RequestBody @Valid PostCreateRequest request
     ) {
         return ApiResponse.success(postService.create(userId, request));
@@ -96,7 +97,7 @@ public class PostController {
     })
     @PatchMapping("/{postId}")
     public ApiResponse<PostResponse> update(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
         @RequestBody @Valid PostUpdateRequest request
     ) {
@@ -113,7 +114,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId
     ) {
         postService.delete(userId, postId);
@@ -129,7 +130,7 @@ public class PostController {
     })
     @PostMapping("/{postId}/hide")
     public ApiResponse<PostResponse> hide(
-        @RequestHeader("X-User-Id") Long userId,
+        @AuthenticationPrincipal Long userId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId
     ) {
         return ApiResponse.success(postService.hidePost(userId, postId));
@@ -156,7 +157,7 @@ public class PostController {
     @PostMapping("/{postId}/reports")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ReportResponse> reportPost(
-        @RequestHeader("X-User-Id") Long reporterId,
+        @AuthenticationPrincipal Long reporterId,
         @Parameter(description = "게시글 ID", example = "1") @PathVariable Long postId,
         @RequestBody @Valid ReportPostRequest request
     ) {

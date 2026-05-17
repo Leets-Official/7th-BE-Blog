@@ -24,7 +24,16 @@ public enum ErrorCode {
 
     POST_ALREADY_HIDDEN(HttpStatus.CONFLICT, "P002", "이미 숨김 처리된 게시물입니다."),
 
-    INVALID_PARENT_COMMENT(HttpStatus.BAD_REQUEST, "C002", "유효하지 않은 부모 댓글입니다.");
+    INVALID_PARENT_COMMENT(HttpStatus.BAD_REQUEST, "C002", "유효하지 않은 부모 댓글입니다."),
+
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_001", "인증이 필요합니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_002", "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_003", "만료된 토큰입니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_004", "비밀번호가 올바르지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH_005", "Refresh Token이 존재하지 않습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_006", "유효하지 않은 Refresh Token입니다."),
+
+    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "U003", "이미 사용 중인 닉네임입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
