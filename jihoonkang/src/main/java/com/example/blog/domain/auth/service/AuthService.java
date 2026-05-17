@@ -14,6 +14,8 @@ import com.example.blog.global.security.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,9 @@ public class AuthService {
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
+
+    @Value("${jwt.cookie.secure}")
+    private boolean cookieSecure;
 
     public UserResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -97,11 +102,14 @@ public class AuthService {
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE, token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) (refreshExpiration / 1000));
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, token)
+            .httpOnly(true)
+            .secure(cookieSecure)
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(refreshExpiration / 1000)
+            .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     private String extractRefreshTokenFromCookie(HttpServletRequest request) {
