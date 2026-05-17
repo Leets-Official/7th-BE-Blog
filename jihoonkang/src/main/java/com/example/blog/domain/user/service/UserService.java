@@ -9,6 +9,7 @@ import com.example.blog.global.exception.BusinessException;
 import com.example.blog.global.exception.ErrorCode;
 import com.example.blog.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse create(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
-        User user = User.of(request.username(), request.email(), request.password(), request.profileUrl());
+        if (userRepository.existsByUsername(request.username())) {
+            throw new BusinessException(ErrorCode.USERNAME_ALREADY_EXISTS);
+        }
+        String hashedPassword = passwordEncoder.encode(request.password());
+        User user = User.of(request.username(), request.email(), hashedPassword, request.profileUrl());
         return UserResponse.from(userRepository.save(user));
     }
 
