@@ -43,8 +43,8 @@ class JwtUtilTest {
     void validate_만료된_토큰_false_반환() {
         JwtUtil expiredUtil = new JwtUtil();
         ReflectionTestUtils.setField(expiredUtil, "secret", "LeetsBackendKx5!93Jv#1Rz@lQwT9pXe3bD7sUaFzYt");
-        ReflectionTestUtils.setField(expiredUtil, "accessExpiration", 1L);
-        ReflectionTestUtils.setField(expiredUtil, "refreshExpiration", 1L);
+        ReflectionTestUtils.setField(expiredUtil, "accessExpiration", -1000L);
+        ReflectionTestUtils.setField(expiredUtil, "refreshExpiration", -1000L);
         expiredUtil.init();
 
         String token = expiredUtil.generateAccessToken(1L, "USER");
