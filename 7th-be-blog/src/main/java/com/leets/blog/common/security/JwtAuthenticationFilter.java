@@ -1,7 +1,5 @@
 package com.leets.blog.common.security;
 
-import com.leets.blog.domain.user.entity.User;
-import com.leets.blog.domain.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -52,19 +49,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void authenticate(HttpServletRequest request, String token) {
-        Long userId = jwtTokenProvider.getUserId(token);
+        JwtPrincipal principal = new JwtPrincipal(
+                jwtTokenProvider.getUserId(token),
+                jwtTokenProvider.getEmail(token),
+                jwtTokenProvider.getRole(token)
+        );
 
-        userRepository.findById(userId)
-                .filter(user -> !user.isDeleted())
-                .ifPresent(user -> setAuthentication(request, user));
+        setAuthentication(request, principal);
     }
 
-    private void setAuthentication(HttpServletRequest request, User user) {
+    private void setAuthentication(HttpServletRequest request, JwtPrincipal principal) {
         List<SimpleGrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                new SimpleGrantedAuthority("ROLE_" + principal.role())
         );
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, authorities);
+                new UsernamePasswordAuthenticationToken(principal, null, authorities);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
