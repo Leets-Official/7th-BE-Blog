@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
 @Configuration
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class DataInitializer {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData() {
@@ -25,7 +27,7 @@ public class DataInitializer {
             User user = User.builder()
                     .name("tester")
                     .email("tester@test.com")
-                    .password("1234")
+                    .password(passwordEncoder.encode("1234"))
                     .build();
 
             userRepository.save(user);
