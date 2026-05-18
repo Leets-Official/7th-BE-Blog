@@ -3,6 +3,10 @@ package com.leets.blog.auth.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.leets.blog.auth.service.AuthService;
+import com.leets.blog.auth.dto.SignupRequest;
+import com.leets.blog.auth.dto.LoginRequest;
+import com.leets.blog.auth.dto.TokenResponse;
 
 @RestController
 @RequestMapping("/auth")
