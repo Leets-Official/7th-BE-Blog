@@ -2,8 +2,12 @@ package com.leets.assignment.global.exception;
 
 import com.leets.assignment.domain.post.exception.code.PostErrorCode;
 import com.leets.assignment.domain.post.exception.PostException;
+import com.leets.assignment.domain.auth.exception.AuthException;
+import com.leets.assignment.domain.auth.exception.code.AuthErrorCode;
 import com.leets.assignment.domain.report.exception.ReportException;
 import com.leets.assignment.domain.report.exception.code.ReportErrorCode;
+import com.leets.assignment.domain.user.exception.UserException;
+import com.leets.assignment.domain.user.exception.code.UserErrorCode;
 import com.leets.assignment.global.common.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -47,6 +51,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PostException.class)
     public ResponseEntity<ApiResponse<Void>> handlePostException(PostException e) {
         PostErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(
+                ApiResponse.<Void>builder()
+                        .isSuccess(false)
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUserException(UserException e) {
+        UserErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(
+                ApiResponse.<Void>builder()
+                        .isSuccess(false)
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthException(AuthException e) {
+        AuthErrorCode errorCode = e.getErrorCode();
         return ResponseEntity.status(errorCode.getHttpStatus()).body(
                 ApiResponse.<Void>builder()
                         .isSuccess(false)
