@@ -6,11 +6,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
+    boolean existsByLoginId(String LoginId);
 
+    boolean existsByEmail(String email);
+
+    Optional<User> findByLoginId(String LoginId);
+
+    //유저 배치 작업
     @Modifying(clearAutomatically = true)
     @Query(value = "DELETE FROM users WHERE deleted_at <= :expiredTime LIMIT :batchSize",nativeQuery = true)
     int hardDeleteExpiredUser(@Param("expiredTime")LocalDateTime expiredTime,@Param("batchSize") int batchSize);

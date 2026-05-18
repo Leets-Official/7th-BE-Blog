@@ -1,9 +1,34 @@
 spring:
+
   application:
     name: demo
+
+  #redis 포트 번호 지정
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # 구글 SMTP
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: skaudwns3@gmail.com
+    password: ${MAIL_KEY}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 
 #swagger yaml 경로 설정
 springdoc:
   swagger-ui:
     url: /restDocs/openapi3.yaml
+
+
+
+jwt:
+  secret: ${JWT_SECRET}
