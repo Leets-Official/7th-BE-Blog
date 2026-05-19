@@ -81,15 +81,18 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMillis);
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(String.valueOf(user.getId()))
-                .claim("email", user.getEmail())
                 .claim("role", user.getRole().name())
                 .claim(TOKEN_TYPE_CLAIM, tokenType)
                 .issuedAt(now)
-                .expiration(expiration)
-                .signWith(secretKey, Jwts.SIG.HS256)
-                .compact();
+                .expiration(expiration);
+
+        if (user.getEmail() != null) {
+            builder.claim("email", user.getEmail());
+        }
+
+        return builder.signWith(secretKey, Jwts.SIG.HS256).compact();
     }
 
     private String getTokenType(String token) {
