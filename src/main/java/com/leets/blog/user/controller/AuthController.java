@@ -49,22 +49,33 @@ public class AuthController {
             HttpServletResponse response
     ) {
         AuthResponse.Login loginResponse = authService.login(request);
+        addLoginCookies(response, loginResponse);
 
-        response.addHeader(HttpHeaders.SET_COOKIE,
-                CookieUtils.createCookie(
-                        jwtProperties.getAccessCookieName(),
-                        loginResponse.getAccessToken(),
-                        jwtProperties.getAccessTokenExpirationSeconds(),
-                        jwtProperties
-                ).toString());
-        response.addHeader(HttpHeaders.SET_COOKIE,
-                CookieUtils.createCookie(
-                        jwtProperties.getRefreshCookieName(),
-                        loginResponse.getRefreshToken(),
-                        jwtProperties.getRefreshTokenExpirationSeconds(),
-                        jwtProperties
-                ).toString());
+        return ResponseEntity.ok(BaseResponse.ok(loginResponse));
+    }
 
+    @PostMapping("/kakao/login")
+    @Operation(
+            summary = "카카오 로그인",
+            description = "카카오 인가 코드로 로그인하고 access/refresh 토큰을 쿠키로 발급합니다."
+    )
+    public ResponseEntity<BaseResponse<AuthResponse.Login>> kakaoLogin(
+            @Valid @RequestBody AuthRequest.KakaoLogin request,
+            HttpServletResponse response
+    ) {
+        AuthResponse.Login loginResponse = authService.kakaoLogin(request);
+        addLoginCookies(response, loginResponse);
+        return ResponseEntity.ok(BaseResponse.ok(loginResponse));
+    }
+
+    @GetMapping("/kakao/callback")
+    @Operation(summary = "카카오 로그인 콜백 (테스트용)", description = "카카오 인가 코드를 받아 로그인 처리합니다.")
+    public ResponseEntity<BaseResponse<AuthResponse.Login>> kakaoCallback(
+            @RequestParam String code,
+            HttpServletResponse response
+    ) {
+        AuthResponse.Login loginResponse = authService.kakaoLogin(new AuthRequest.KakaoLogin(code));
+        addLoginCookies(response, loginResponse);
         return ResponseEntity.ok(BaseResponse.ok(loginResponse));
     }
 
@@ -127,5 +138,22 @@ public class AuthController {
                 authUser.getRole()
         );
         return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    private void addLoginCookies(HttpServletResponse response, AuthResponse.Login loginResponse) {
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                CookieUtils.createCookie(
+                        jwtProperties.getAccessCookieName(),
+                        loginResponse.getAccessToken(),
+                        jwtProperties.getAccessTokenExpirationSeconds(),
+                        jwtProperties
+                ).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                CookieUtils.createCookie(
+                        jwtProperties.getRefreshCookieName(),
+                        loginResponse.getRefreshToken(),
+                        jwtProperties.getRefreshTokenExpirationSeconds(),
+                        jwtProperties
+                ).toString());
     }
 }
