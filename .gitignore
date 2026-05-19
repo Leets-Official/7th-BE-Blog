@@ -9,6 +9,7 @@
 .gradle/
 build/
 out/
+bin/
 
 # Maven build outputs
 target/

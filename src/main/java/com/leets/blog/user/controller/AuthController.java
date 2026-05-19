@@ -3,7 +3,6 @@ package com.leets.blog.user.controller;
 import com.leets.blog.global.common.BaseResponse;
 import com.leets.blog.security.CookieUtils;
 import com.leets.blog.security.JwtProperties;
-import com.leets.blog.security.JwtTokenProvider;
 import com.leets.blog.user.dto.AuthRequest;
 import com.leets.blog.user.dto.AuthResponse;
 import com.leets.blog.user.service.AuthService;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties jwtProperties;
 
     @PostMapping("/signup")
@@ -52,24 +50,17 @@ public class AuthController {
     ) {
         AuthResponse.Login loginResponse = authService.login(request);
 
-        String accessToken = jwtTokenProvider.createAccessToken(
-                loginResponse.getUserId(),
-                loginResponse.getEmail(),
-                loginResponse.getRole().name()
-        );
-        String refreshToken = jwtTokenProvider.createRefreshToken(loginResponse.getUserId());
-
         response.addHeader(HttpHeaders.SET_COOKIE,
                 CookieUtils.createCookie(
                         jwtProperties.getAccessCookieName(),
-                        accessToken,
+                        loginResponse.getAccessToken(),
                         jwtProperties.getAccessTokenExpirationSeconds(),
                         jwtProperties
                 ).toString());
         response.addHeader(HttpHeaders.SET_COOKIE,
                 CookieUtils.createCookie(
                         jwtProperties.getRefreshCookieName(),
-                        refreshToken,
+                        loginResponse.getRefreshToken(),
                         jwtProperties.getRefreshTokenExpirationSeconds(),
                         jwtProperties
                 ).toString());
@@ -82,20 +73,12 @@ public class AuthController {
             summary = "토큰 재발급",
             description = "Refresh token을 이용하여 새로운 access token을 쿠키에 발급합니다."
     )
-    public ResponseEntity<BaseResponse<AuthResponse.UserInfo>> refresh(
+    public ResponseEntity<BaseResponse<Void>> refresh(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
         String refreshToken = CookieUtils.getCookieValue(request, jwtProperties.getRefreshCookieName());
-        if (refreshToken == null || !jwtTokenProvider.validateToken(refreshToken) || !jwtTokenProvider.isRefreshToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.<AuthResponse.UserInfo>builder()
-                    .message("Refresh token이 유효하지 않습니다.")
-                    .build());
-        }
-
-        Long userId = jwtTokenProvider.getUserId(refreshToken);
-        AuthResponse.UserInfo userInfo = authService.findUserById(userId);
-        String accessToken = jwtTokenProvider.createAccessToken(userInfo.getUserId(), userInfo.getEmail(), userInfo.getRole().name());
+        String accessToken = authService.reissueAccessToken(refreshToken);
 
         response.addHeader(HttpHeaders.SET_COOKIE,
                 CookieUtils.createCookie(
@@ -105,7 +88,7 @@ public class AuthController {
                         jwtProperties
                 ).toString());
 
-        return ResponseEntity.ok(BaseResponse.ok(userInfo));
+        return ResponseEntity.ok(BaseResponse.ok(null));
     }
 
     @PostMapping("/logout")
