@@ -31,6 +31,13 @@ public class User extends BaseEntity{
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
     // 양방향: User → Post
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
@@ -40,10 +47,12 @@ public class User extends BaseEntity{
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public User(String name, String email, String nickname) {
+    public User(String name, String email, String nickname, String password) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
+        this.password = password;
+        this.role = UserRole.USER;
     }
 }
 

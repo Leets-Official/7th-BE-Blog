@@ -13,3 +13,7 @@ spring:
       hibernate:
         ddl-auto: update
       show-sql: true
+jwt:
+  secret: dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtZ2VuZXJhdGlvbi1ub3ctM
+  access-token-expiration-millis: 1800000    # 30분 (30 * 60 * 1000)
+  refresh-token-expiration-millis: 1209600000 # 14일 (14 * 24 * 60 * 60 * 1000)

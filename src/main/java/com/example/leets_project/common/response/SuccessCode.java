@@ -28,8 +28,11 @@ public enum SuccessCode {
     // REPORT
     REPORT_POST(HttpStatus.CREATED, "REPORT_2010", "게시글 신고 성공"),
     REPORT_COMMENT(HttpStatus.CREATED, "REPORT_2011", "댓글 신고 성공"),
-    REPORT_RESOLVE(HttpStatus.OK, "REPORT_2001", "신고 처리 완료");
-
+    REPORT_RESOLVE(HttpStatus.OK, "REPORT_2001", "신고 처리 완료"),
+    // AUTH
+    AUTH_LOGIN(HttpStatus.OK, "AUTH_2000", "로그인 성공"),
+    AUTH_REISSUE(HttpStatus.OK, "AUTH_2001", "토큰 재발급 성공"),
+    AUTH_LOGOUT(HttpStatus.OK, "AUTH_2002", "로그아웃 성공");
     private final HttpStatus status;
     private final String code;
     private final String message;
