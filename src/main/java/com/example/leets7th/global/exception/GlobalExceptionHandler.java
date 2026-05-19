@@ -15,64 +15,11 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handlePostNotFound(PostNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("POST_NOT_FOUND", "해당 게시글을 찾을 수 없습니다."));
-    }
-
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleCommentNotFound(CommentNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("COMMENT_NOT_FOUND", e.getMessage()));
-    }
-
-    @ExceptionHandler(ReportNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleReportNotFound(ReportNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("REPORT_NOT_FOUND", e.getMessage()));
-    }
-
-    @ExceptionHandler(DuplicateReportException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDuplicateReport(DuplicateReportException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error("DUPLICATE_REPORT", e.getMessage()));
-    }
-
-    @ExceptionHandler(AlreadyAdoptedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAlreadyAdopted(AlreadyAdoptedException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error("ALREADY_ADOPTED", e.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUserNotFound(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("USER_NOT_FOUND", e.getMessage()));
-    }
-
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleCategoryNotFound(CategoryNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("CATEGORY_NOT_FOUND", e.getMessage()));
-    }
-
-    @ExceptionHandler(AlreadyHiddenException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAlreadyHidden(AlreadyHiddenException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error("ALREADY_HIDDEN", e.getMessage()));
-    }
-
-    @ExceptionHandler(AlreadyResolvedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAlreadyResolved(AlreadyResolvedException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error("ALREADY_RESOLVED", e.getMessage()));
-    }
-
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("FORBIDDEN", e.getMessage()));
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ApiResponse.error(errorCode.getCode(), e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -89,7 +36,6 @@ public class GlobalExceptionHandler {
         List<FieldErrorDetail> errors = e.getConstraintViolations().stream()
                 .map(cv -> {
                     String field = cv.getPropertyPath().toString();
-                    // "methodName.paramName" -> "paramName"
                     if (field.contains(".")) {
                         field = field.substring(field.lastIndexOf('.') + 1);
                     }
@@ -107,12 +53,6 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error("INVALID_PARAMETER", "잘못된 요청입니다.", errors));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error("INVALID_PARAMETER", e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

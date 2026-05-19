@@ -21,7 +21,7 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (userRepository.count() == 0) {
-            userRepository.save(User.create("Unknown"));
+            userRepository.save(User.create("admin@leets.com", "{noop}admin1234", "admin"));
         }
 
         if (categoryRepository.count() == 0) {
