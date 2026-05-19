@@ -9,3 +9,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  secret: ${JWT_SECRET}
+  accessTokenExpirationSeconds: 900
+  refreshTokenExpirationSeconds: 1209600
+  accessCookieName: ACCESS_TOKEN
+  refreshCookieName: REFRESH_TOKEN
+  secure: false
+  httpOnly: true
+  sameSite: Lax

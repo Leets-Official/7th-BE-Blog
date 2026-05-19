@@ -29,7 +29,7 @@ public class PostController {
     @PostMapping
     @Operation(
             summary = "게시글 생성",
-            description = "새 게시글을 생성합니다. 임시 인증으로 헤더 `X-USER-ID` 값을 사용합니다."
+            description = "새 게시글을 생성합니다. Access token 쿠키 인증이 필요합니다."
     )
     public ResponseEntity<BaseResponse<PostResponse>> create(
             @Parameter(hidden = true)
