@@ -1,4 +1,4 @@
-package com.example.demo.user.dto;
+package com.example.demo.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-@Schema(description = "유저 생성 요청 DTO")
-public class UserCreateRequest {
+@Schema(description = "회원가입 요청 DTO")
+public class SignupRequest {
 
-    @Schema(description = "유저 이름", example = "홍길동")
+    @Schema(description = "이름", example = "홍길동")
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
@@ -17,7 +17,7 @@ public class UserCreateRequest {
     @NotBlank(message = "닉네임은 필수입니다.")
     private String nickname;
 
-    @Schema(description = "이메일 주소", example = "test@example.com")
+    @Schema(description = "이메일", example = "test@example.com")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     @NotBlank(message = "이메일은 필수입니다.")
     private String email;

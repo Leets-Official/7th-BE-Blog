@@ -9,10 +9,6 @@ import jakarta.validation.constraints.NotNull;
 @Schema(description = "댓글 생성 요청 DTO")
 public class CommentCreateRequest {
 
-    @Schema(description = "유저 ID", example = "1")
-    @NotNull(message = "유저 ID는 필수입니다.")
-    private Long userId;
-
     @Schema(description = "게시글 ID", example = "10")
     @NotNull(message = "게시글 ID는 필수입니다.")
     private Long postId;

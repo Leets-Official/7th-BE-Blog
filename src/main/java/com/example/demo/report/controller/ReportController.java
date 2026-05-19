@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Report", description = "신고 관련 API")
@@ -27,7 +28,7 @@ public class ReportController {
     // 게시글 신고
     @Operation(
             summary = "게시글 신고 API",
-            description = "postId에 해당하는 게시글을 신고합니다."
+            description = "로그인한 사용자가 postId에 해당하는 게시글을 신고합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -40,19 +41,26 @@ public class ReportController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
-                    description = "게시글 또는 신고자를 찾을 수 없음",
+                    description = "게시글을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     @PostMapping("/posts/{postId}/reports")
     public ResponseEntity<ApiResponse<ReportResponse>> reportPost(
+            @AuthenticationPrincipal Long userId,
+
             @Parameter(description = "신고할 게시글 ID", example = "1")
             @PathVariable Long postId,
 
             @RequestBody ReportCreateRequest request
     ) {
-        ReportResponse response = reportService.reportPost(postId, request);
+        ReportResponse response = reportService.reportPost(userId, postId, request);
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_POST_SUCCESS, response)
@@ -62,7 +70,7 @@ public class ReportController {
     // 댓글 신고
     @Operation(
             summary = "댓글 신고 API",
-            description = "commentId에 해당하는 댓글을 신고합니다."
+            description = "로그인한 사용자가 commentId에 해당하는 댓글을 신고합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -75,19 +83,26 @@ public class ReportController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
-                    description = "댓글 또는 신고자를 찾을 수 없음",
+                    description = "댓글을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
     @PostMapping("/comments/{commentId}/reports")
     public ResponseEntity<ApiResponse<ReportResponse>> reportComment(
+            @AuthenticationPrincipal Long userId,
+
             @Parameter(description = "신고할 댓글 ID", example = "1")
             @PathVariable Long commentId,
 
             @RequestBody ReportCreateRequest request
     ) {
-        ReportResponse response = reportService.reportComment(commentId, request);
+        ReportResponse response = reportService.reportComment(userId, commentId, request);
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_COMMENT_SUCCESS, response)
@@ -105,6 +120,11 @@ public class ReportController {
                     description = "신고 처리 완료 성공"
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
                     description = "신고를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
@@ -112,10 +132,12 @@ public class ReportController {
     })
     @PatchMapping("/reports/{reportId}/resolve")
     public ResponseEntity<ApiResponse<ReportResponse>> resolveReport(
+            @AuthenticationPrincipal Long userId,
+
             @Parameter(description = "처리할 신고 ID", example = "1")
             @PathVariable Long reportId
     ) {
-        ReportResponse response = reportService.resolveReport(reportId);
+        ReportResponse response = reportService.resolveReport(userId, reportId);
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_RESOLVE_SUCCESS, response)
