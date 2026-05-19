@@ -20,11 +20,14 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 20 ,nullable = false)
+    @Column(unique = true)
+    private String kakaoId;
+
+    @Column(name = "name", length = 20, nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private Gender gender;
 
     @Column(name = "email", length = 40)
@@ -34,7 +37,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
@@ -50,6 +53,16 @@ public class User extends BaseEntity {
         user.email = email;
         user.password = password;
         user.age = age;
+        user.role = Role.USER;
+        return user;
+    }
+
+    public static User createByKakao(String name, String email, String kakaoId) {
+        User user = new User();
+        user.name = name;
+        user.email = email;
+        user.kakaoId = kakaoId;
+        user.password = "";
         user.role = Role.USER;
         return user;
     }
