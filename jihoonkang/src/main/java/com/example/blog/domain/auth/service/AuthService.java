@@ -144,6 +144,26 @@ public class AuthService {
         return candidate + "_" + providerId;
     }
 
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = extractRefreshTokenFromCookie(request);
+        if (refreshToken != null) {
+            refreshTokenRepository.findByToken(refreshToken)
+                .ifPresent(rt -> refreshTokenRepository.deleteByUserId(rt.getUserId()));
+        }
+        clearRefreshTokenCookie(response);
+    }
+
+    private void clearRefreshTokenCookie(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, "")
+            .httpOnly(true)
+            .secure(cookieSecure)
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(0)
+            .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
     private void setRefreshTokenCookie(HttpServletResponse response, String token) {
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, token)
             .httpOnly(true)
