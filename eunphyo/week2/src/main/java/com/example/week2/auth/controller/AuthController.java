@@ -1,6 +1,7 @@
 package com.example.week2.auth.controller;
 
 import com.example.week2.auth.dto.AuthRequest;
+import com.example.week2.auth.service.KakaoAuthService;
 import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
 import com.example.week2.auth.dto.AuthResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController implements AuthControllerDocs{
 
     private final AuthService authService;
+    private final KakaoAuthService kakaoauthservice;
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,5 +78,13 @@ public class AuthController implements AuthControllerDocs{
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+
+    @GetMapping("/kakao/callback")
+    public ApiResponse<AuthResponse.TokenResult> kakaoLogin(
+            @RequestParam String code
+    ) {
+        return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, kakaoauthservice.kakaologin(code));
     }
 }
