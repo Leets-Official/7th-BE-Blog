@@ -1,10 +1,11 @@
 package com.example.demo.domain.auth.service;
 
-import com.example.demo.domain.auth.dto.AuthTokenResponse;
+import com.example.demo.domain.auth.dto.LoginResponse;
 import com.example.demo.domain.auth.dto.LoginRequest;
 import com.example.demo.domain.auth.dto.SignUpRequest;
 import com.example.demo.domain.auth.dto.SignUpResponse;
 import com.example.demo.domain.auth.dto.TokenRefreshRequest;
+import com.example.demo.domain.auth.dto.TokenRefreshResponse;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.exception.CustomException;
@@ -51,7 +52,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthTokenResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email(), request.password())
@@ -59,14 +60,14 @@ public class AuthService {
 
             CustomUserPrincipal principal = (CustomUserPrincipal) authentication.getPrincipal();
             User user = findUser(principal.getId());
-            return issueTokens(user, principal);
+            return issueLoginTokens(user, principal);
         } catch (AuthenticationException e) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "INVALID_LOGIN", "이메일 또는 비밀번호가 올바르지 않습니다.");
         }
     }
 
     @Transactional
-    public AuthTokenResponse refresh(TokenRefreshRequest request) {
+    public TokenRefreshResponse refresh(TokenRefreshRequest request) {
         if (!jwtTokenProvider.validateToken(request.refreshToken())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "INVALID_REFRESH_TOKEN", "유효하지 않은 리프레시 토큰입니다.");
         }
@@ -79,22 +80,35 @@ public class AuthService {
         }
 
         CustomUserPrincipal principal = CustomUserPrincipal.from(user);
-        return issueTokens(user, principal);
+        return issueRefreshTokens(user, principal);
     }
 
-    private AuthTokenResponse issueTokens(User user, CustomUserPrincipal principal) {
+    private LoginResponse issueLoginTokens(User user, CustomUserPrincipal principal) {
         String accessToken = jwtTokenProvider.createAccessToken(principal);
         String refreshToken = jwtTokenProvider.createRefreshToken(principal);
 
         user.updateRefreshToken(refreshToken);
 
-        return new AuthTokenResponse(
+        return new LoginResponse(
                 accessToken,
                 refreshToken,
                 "Bearer",
                 user.getId(),
                 user.getEmail(),
                 user.getNickname()
+        );
+    }
+
+    private TokenRefreshResponse issueRefreshTokens(User user, CustomUserPrincipal principal) {
+        String accessToken = jwtTokenProvider.createAccessToken(principal);
+        String refreshToken = jwtTokenProvider.createRefreshToken(principal);
+
+        user.updateRefreshToken(refreshToken);
+
+        return new TokenRefreshResponse(
+                accessToken,
+                refreshToken,
+                "Bearer"
         );
     }
 

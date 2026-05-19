@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.auth.dto.AuthTokenResponse;
 import com.example.demo.domain.auth.dto.KakaoLoginResponse;
+import com.example.demo.domain.auth.dto.LoginResponse;
 import com.example.demo.domain.auth.dto.LoginRequest;
 import com.example.demo.domain.auth.dto.SignUpRequest;
 import com.example.demo.domain.auth.dto.SignUpResponse;
 import com.example.demo.domain.auth.dto.TokenRefreshRequest;
+import com.example.demo.domain.auth.dto.TokenRefreshResponse;
 import com.example.demo.domain.auth.service.AuthService;
 import com.example.demo.domain.auth.service.KakaoOAuthService;
 import com.example.demo.global.exception.CustomException;
@@ -38,7 +39,7 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인하고 access token과 refresh token을 발급받습니다.")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthTokenResponse>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.success("LOGIN_SUCCESS", "로그인 성공", authService.login(request))
         );
@@ -46,7 +47,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급", description = "refresh token으로 새로운 access token과 refresh token을 발급받습니다.")
     @PostMapping("/auth/refresh")
-    public ResponseEntity<ApiResponse<AuthTokenResponse>> refresh(@Valid @RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<ApiResponse<TokenRefreshResponse>> refresh(@Valid @RequestBody TokenRefreshRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.success("TOKEN_REFRESH_SUCCESS", "토큰 재발급 성공", authService.refresh(request))
         );
