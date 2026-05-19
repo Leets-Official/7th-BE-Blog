@@ -19,7 +19,7 @@ public interface PostControllerDocs {
         @Operation(summary = "게시글 생성", description = "특정 게시글을 생성합니다.")
         @ApiErrorCodeExample({ErrorCode.POST_NOT_FOUND})
         @PostMapping
-        ResponseEntity<ApiResponse<PostResponse.CreatePostResponse>> createPost(
+        ApiResponse<PostResponse.CreatePostResponse> createPost(
                 @Parameter(description = "작성자 user ID", example = "1")
                 @RequestParam Long userId,
                 @Valid @RequestBody PostCreateRequest request
@@ -28,7 +28,7 @@ public interface PostControllerDocs {
         @Operation(summary = "게시글 수정", description = "특정 게시글을 수정합니다.")
         @ApiErrorCodeExample({ErrorCode.POST_NOT_FOUND})
         @PatchMapping("/{postId}")
-        ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> updatePost(
+        ApiResponse<PostResponse.PostDetailResponse> updatePost(
                 @Parameter(description = "작성자 user ID", example = "1")
                 @RequestParam Long userId,
                 @Parameter(description = "게시글 post ID", example = "1")
@@ -39,7 +39,7 @@ public interface PostControllerDocs {
         @Operation(summary = "특정 게시글 조회", description = "특정 게시글을 조회합니다.")
         @ApiErrorCodeExample({ErrorCode.POST_NOT_FOUND})
         @GetMapping("/{postId}")
-        ResponseEntity<ApiResponse<PostResponse.PostDetailResponse>> getPost(
+        ApiResponse<PostResponse.PostDetailResponse> getPost(
                 @Parameter(description = "게시글 post ID", example = "1")
                 @PathVariable Long postId
         );
@@ -47,12 +47,12 @@ public interface PostControllerDocs {
         @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다.")
         @ApiErrorCodeExample({ErrorCode.POST_NOT_FOUND})
         @GetMapping
-        ResponseEntity<ApiResponse<List<PostResponse.PostListResponse>>> getPosts();
+        ApiResponse<List<PostResponse.PostListResponse>> getPosts();
 
         @Operation(summary = "게시글 삭제", description = "특정 게시글을 삭제합니다.")
         @ApiErrorCodeExample({ErrorCode.POST_NOT_FOUND})
         @DeleteMapping("/{postId}")
-        ResponseEntity<ApiResponse<Void>> deletePost(
+        ApiResponse<Void> deletePost(
                 @Parameter(description = "작성자 user ID", example = "1")
                 @RequestParam Long userId,
                 @Parameter(description = "게시글 post ID", example = "1")

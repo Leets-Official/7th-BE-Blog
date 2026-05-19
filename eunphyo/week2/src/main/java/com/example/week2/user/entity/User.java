@@ -20,8 +20,30 @@ public class User extends BaseEntity {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
+    @Column(name = "nickname", nullable = false, length = 50)
+    private String nickname;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "password", nullable = false, length = 100)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    public enum Role {
+        USER, ADMIN
+    }
+
     @Builder
-    public User(String name) {
+    public User(String name, String nickname, String email, String password, Role role) {
+
         this.name = name;
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 }

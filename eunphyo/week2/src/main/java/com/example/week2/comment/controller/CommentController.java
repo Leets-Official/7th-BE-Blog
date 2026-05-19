@@ -8,6 +8,7 @@ import com.example.week2.global.response.ApiResponse;
 import com.example.week2.global.response.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,8 @@ public class CommentController implements CommentControllerDocs{
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CommentResponse.CreateCommentResponse>> createComment(
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<CommentResponse.CreateCommentResponse> createComment(
 
             @PathVariable Long postId,
             @RequestParam Long userId,
@@ -29,15 +31,12 @@ public class CommentController implements CommentControllerDocs{
         CommentResponse.CreateCommentResponse response =
             commentService.createComment(postId, userId, request);
 
-        return ResponseEntity
-                .status(SuccessCode.COMMENT_CREATED.getStatus())
-                .body(ApiResponse.success(SuccessCode.COMMENT_CREATED, response));
-
+        return ApiResponse.success(SuccessCode.COMMENT_CREATED, response);
     }
 
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse.CommentDetailResponse>> getComment(
+    public ApiResponse<CommentResponse.CommentDetailResponse> getComment(
 
             @PathVariable Long postId,
             @PathVariable Long commentId
@@ -45,14 +44,12 @@ public class CommentController implements CommentControllerDocs{
         CommentResponse.CommentDetailResponse response =
                 commentService.getCommentResponse(commentId);
 
-        return ResponseEntity
-                .status(SuccessCode.COMMENT_GET.getStatus())
-                .body(ApiResponse.success(SuccessCode.COMMENT_GET, response));
+        return ApiResponse.success(SuccessCode.COMMENT_GET, response);
     }
 
 
     @PostMapping("/{commentId}/likes")
-    public ResponseEntity<ApiResponse<CommentResponse.CommentLikeResponse>> likeComment(
+    public ApiResponse<CommentResponse.CommentLikeResponse> likeComment(
 
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -64,8 +61,6 @@ public class CommentController implements CommentControllerDocs{
                 request.getUserId()
         );
 
-        return ResponseEntity
-                .status(SuccessCode.COMMENT_LIKED.getStatus())
-                .body(ApiResponse.success(SuccessCode.COMMENT_LIKED, response));
+        return ApiResponse.success(SuccessCode.COMMENT_LIKED, response);
     }
-} //
+}
