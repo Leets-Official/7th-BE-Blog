@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Auth", description = "인증 관련 API")
 public interface AuthControllerDocs {
@@ -41,4 +42,15 @@ public interface AuthControllerDocs {
     @Operation(summary = "로그아웃", description = "accessToken, refreshToken 쿠키를 삭제합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그아웃 성공")
     ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response);
+
+    @Operation(summary = "카카오 로그인 페이지로 이동", description = "카카오 OAuth 인가 URL로 리다이렉트합니다.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "302", description = "카카오 로그인 페이지로 리다이렉트")
+    ResponseEntity<Void> kakaoLogin();
+
+    @Operation(summary = "카카오 로그인 콜백", description = "카카오로부터 인가 코드를 받아 로그인/회원가입 처리 후 JWT 쿠키를 발급합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "502", description = "카카오 인증 실패")
+    })
+    ResponseEntity<ApiResponse<Void>> kakaoCallback(@RequestParam String code, HttpServletResponse response);
 }

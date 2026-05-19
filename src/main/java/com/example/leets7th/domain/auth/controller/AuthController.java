@@ -4,6 +4,7 @@ import com.example.leets7th.domain.auth.dto.LoginRequest;
 import com.example.leets7th.domain.auth.dto.SignUpRequest;
 import com.example.leets7th.domain.auth.dto.TokenResponse;
 import com.example.leets7th.domain.auth.service.AuthService;
+import com.example.leets7th.domain.auth.service.KakaoOAuthService;
 import com.example.leets7th.global.common.ApiResponse;
 import com.example.leets7th.global.util.CookieProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ public class AuthController implements AuthControllerDocs {
     private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
 
     private final AuthService authService;
+    private final KakaoOAuthService kakaoOAuthService;
     private final CookieProvider cookieProvider;
 
     @PostMapping("/signup")
@@ -57,5 +59,20 @@ public class AuthController implements AuthControllerDocs {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @GetMapping("/kakao")
+    public ResponseEntity<Void> kakaoLogin() {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", kakaoOAuthService.getKakaoLoginUrl())
+                .build();
+    }
 
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<ApiResponse<Void>> kakaoCallback(
+            @RequestParam String code,
+            HttpServletResponse response) {
+        TokenResponse tokens = kakaoOAuthService.kakaoLogin(code);
+        cookieProvider.addCookie(response, ACCESS_TOKEN_COOKIE, tokens.accessToken(), Duration.ofHours(1));
+        cookieProvider.addCookie(response, REFRESH_TOKEN_COOKIE, tokens.refreshToken(), Duration.ofDays(14));
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }

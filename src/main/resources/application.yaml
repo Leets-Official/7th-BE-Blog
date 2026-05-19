@@ -1,6 +1,8 @@
 spring:
   application:
     name: leets-7th
+  profiles:
+    active: local
 
   datasource:
     url: ${DB_URL}
@@ -24,3 +26,8 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /api-docs
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET:}
+  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/auth/kakao/callback}

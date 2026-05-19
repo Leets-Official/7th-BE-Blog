@@ -40,6 +40,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private Long kakaoId;
+
     private String refreshToken;
 
     private LocalDateTime deletedAt;
@@ -54,6 +56,16 @@ public class User extends BaseEntity {
         User user = new User();
         user.email = email;
         user.password = encodedPassword;
+        user.nickname = nickname;
+        user.role = UserRole.USER;
+        return user;
+    }
+
+    public static User createByKakao(Long kakaoId, String email, String nickname, String encodedTempPassword) {
+        User user = new User();
+        user.kakaoId = kakaoId;
+        user.email = email;
+        user.password = encodedTempPassword;
         user.nickname = nickname;
         user.role = UserRole.USER;
         return user;
