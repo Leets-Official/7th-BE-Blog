@@ -5,13 +5,10 @@ import com.example.week2.global.response.SuccessCode;
 import com.example.week2.post.dto.PostCreateRequest;
 import com.example.week2.post.dto.PostResponse;
 import com.example.week2.post.service.PostService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +23,7 @@ public class PostController implements PostControllerDocs{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PostResponse.CreatePostResponse> createPost(
-
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
         PostResponse.CreatePostResponse response =
@@ -39,8 +35,7 @@ public class PostController implements PostControllerDocs{
 
     @PatchMapping("/{postId}")
     public ApiResponse<PostResponse.PostDetailResponse> updatePost(
-
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long postId,
             @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
@@ -73,7 +68,7 @@ public class PostController implements PostControllerDocs{
 
     @DeleteMapping("/{postId}")
     public ApiResponse<Void> deletePost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long postId
     ) {
         postService.deletePost(userId, postId);

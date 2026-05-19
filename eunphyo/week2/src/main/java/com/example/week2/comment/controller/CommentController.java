@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,9 +24,8 @@ public class CommentController implements CommentControllerDocs{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CommentResponse.CreateCommentResponse> createComment(
-
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long postId,
-            @RequestParam Long userId,
             @Valid @RequestBody CommentCreateRequest request
     ) {
         CommentResponse.CreateCommentResponse response =
@@ -37,7 +37,6 @@ public class CommentController implements CommentControllerDocs{
 
     @GetMapping("/{commentId}")
     public ApiResponse<CommentResponse.CommentDetailResponse> getComment(
-
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
@@ -50,7 +49,7 @@ public class CommentController implements CommentControllerDocs{
 
     @PostMapping("/{commentId}/likes")
     public ApiResponse<CommentResponse.CommentLikeResponse> likeComment(
-
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @Valid @RequestBody CommentLikeRequest request

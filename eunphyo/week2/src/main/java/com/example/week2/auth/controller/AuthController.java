@@ -73,27 +73,13 @@ public class AuthController implements AuthControllerDocs{
                 .build();
     }
 
-    @PostMapping("/kakao/login")
-    public ApiResponse<AuthResponse.AccessToken> kakaoLoginByPost(
-            @RequestParam String code,
-            HttpServletResponse servletResponse
-    ) {
-        AuthResponse.TokenResult tokenResponse = kakaoAuthService.kakaoLogin(code);
-
-        setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
-
-        return ApiResponse.success(
-                SuccessCode.LOGIN_SUCCESS,
-                new AuthResponse.AccessToken(tokenResponse.accessToken())
-        );
-    }
-
     @GetMapping("/kakao/callback")
     public ApiResponse<AuthResponse.AccessToken> kakaoLogin(
             @RequestParam String code,
             HttpServletResponse servletResponse
     ) {
-        AuthResponse.TokenResult tokenResponse = kakaoAuthService.kakaoLogin(code);
+        AuthResponse.TokenResult tokenResponse =
+                kakaoAuthService.kakaoLogin(code);
 
         setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
 
