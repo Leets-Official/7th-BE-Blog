@@ -54,10 +54,7 @@ public enum ErrorCode implements BaseErrorCode{
     KAKAO_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST,
             "KAKAO400_1", "카카오 토큰 요청에 실패했습니다."),
     KAKAO_USER_INFO_REQUEST_FAILED(HttpStatus.BAD_REQUEST,
-            "KAKAO400_2", "카카오 사용자 정보 조회에 실패했습니다."),
-    KAKAO_LOGIN_FAILED(HttpStatus.UNAUTHORIZED,
-            "KAKAO401_1", "카카오 로그인에 실패했습니다.");
-
+            "KAKAO400_2", "카카오 사용자 정보 조회에 실패했습니다.");
 
 
     private final HttpStatus status;

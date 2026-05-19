@@ -67,14 +67,14 @@ public class AuthController implements AuthControllerDocs{
     }
 
     @GetMapping("/kakao/login")
-    public ResponseEntity<Void> redirectToKakaoLogin() {
+    public ResponseEntity<Void> redirectKakaoLogin() {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(kakaoAuthService.getAuthorizationUrl()))
                 .build();
     }
 
     @GetMapping("/kakao/callback")
-    public ApiResponse<AuthResponse.AccessToken> kakaoLogin(
+    public ApiResponse<AuthResponse.AccessToken> kakaoCallback(
             @RequestParam String code,
             HttpServletResponse servletResponse
     ) {

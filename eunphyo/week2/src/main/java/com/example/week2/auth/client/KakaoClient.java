@@ -4,7 +4,6 @@ import com.example.week2.auth.dto.KakaoResponse;
 import com.example.week2.global.response.CustomException;
 import com.example.week2.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KakaoClient {
@@ -79,17 +77,13 @@ public class KakaoClient {
                     request,
                     KakaoResponse.TokenResponse.class
             );
-        } catch (HttpClientErrorException e) {
-            log.warn("Kakao token request failed. status={}, body={}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new IllegalArgumentException("카카오 토큰 요청 실패: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         } catch (RestClientException e) {
-            log.warn("Kakao token request failed.", e);
-            throw new CustomException(ErrorCode.BAD_REQUEST);
+            throw new CustomException(ErrorCode.KAKAO_TOKEN_REQUEST_FAILED);
         }
 
         KakaoResponse.TokenResponse tokenBody = response.getBody();
         if (tokenBody == null || tokenBody.accessToken() == null) {
-            throw new CustomException(ErrorCode.BAD_REQUEST);
+            throw new CustomException(ErrorCode.KAKAO_TOKEN_REQUEST_FAILED);
         }
 
         return tokenBody.accessToken();
@@ -112,17 +106,13 @@ public class KakaoClient {
                     request,
                     KakaoResponse.KakaoUserResponse.class
             );
-        } catch (HttpClientErrorException e) {
-            log.warn("Kakao user info request failed. status={}, body={}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new IllegalArgumentException("카카오 사용자 정보 요청 실패: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         } catch (RestClientException e) {
-            log.warn("Kakao user info request failed.", e);
-            throw new CustomException(ErrorCode.BAD_REQUEST);
+            throw new CustomException(ErrorCode.KAKAO_USER_INFO_REQUEST_FAILED);
         }
 
         KakaoResponse.KakaoUserResponse body = response.getBody();
         if (body == null || body.id() == null) {
-            throw new CustomException(ErrorCode.BAD_REQUEST);
+            throw new CustomException(ErrorCode.KAKAO_USER_INFO_REQUEST_FAILED);
         }
 
         KakaoResponse.KakaoAccount kakaoAccount = body.kakaoAccount();
