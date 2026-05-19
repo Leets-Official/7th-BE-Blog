@@ -45,6 +45,7 @@ public class AuthService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .name(request.name())
+                .nickname(request.nickname())
                 .provider(AuthProvider.LOCAL)
                 .build();
 
@@ -90,6 +91,7 @@ public class AuthService {
     private User createKakaoUser(KakaoUserResponse kakaoUser) {
         return User.builder()
                 .name(resolveKakaoNickname(kakaoUser))
+                .nickname(createKakaoServiceNickname(kakaoUser.providerId()))
                 .provider(AuthProvider.KAKAO)
                 .providerId(kakaoUser.providerId())
                 .build();
@@ -100,6 +102,19 @@ public class AuthService {
             return kakaoUser.nickname();
         }
         return "kakao_" + kakaoUser.providerId();
+    }
+
+    private String createKakaoServiceNickname(String providerId) {
+        String baseNickname = "kakao_" + providerId;
+        String nickname = baseNickname;
+        int suffix = 1;
+
+        while (userRepository.existsByNickname(nickname)) {
+            nickname = baseNickname + "_" + suffix;
+            suffix++;
+        }
+
+        return nickname;
     }
 
     private LoginResponse issueToken(User user) {
@@ -135,7 +150,7 @@ public class AuthService {
         if (userRepository.existsByEmail(request.email())) {
             throw new GeneralException(BaseErrorCode.DUPLICATE_EMAIL);
         }
-        if (userRepository.existsByName(request.name())) {
+        if (userRepository.existsByNickname(request.nickname())) {
             throw new GeneralException(BaseErrorCode.DUPLICATE_NICKNAME);
         }
     }
