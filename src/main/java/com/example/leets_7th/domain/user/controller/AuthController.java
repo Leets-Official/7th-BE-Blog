@@ -11,10 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,6 +26,15 @@ public class AuthController implements AuthControllerDocs {
     ) {
         authService.signup(request);
         return ApiResponse.success(SuccessStatus.CREATE_USER_SUCCESS);
+    }
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<ApiResponse<Void>> kakaoCallback(
+            @RequestParam String code,
+            HttpServletResponse response
+    ) {
+        authService.kakaoLogin(code, response);
+        return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS);
     }
 
     @PostMapping("/login")
