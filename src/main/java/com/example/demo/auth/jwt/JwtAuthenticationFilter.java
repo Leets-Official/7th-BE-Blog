@@ -30,36 +30,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String token = resolveToken(request);
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Long userId = jwtTokenProvider.getUserId(token);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String accessToken = authorizationHeader.substring(7);
+
+        try {
+            if (!jwtTokenProvider.validateToken(accessToken)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Long userId = jwtTokenProvider.getUserId(accessToken);
 
             User user = userRepository.findById(userId)
-                    .orElse(null);
+                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-            if (user != null) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                user.getId(),
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                        );
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            user,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                    );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 }

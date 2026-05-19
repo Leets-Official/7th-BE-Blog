@@ -1,5 +1,6 @@
 package com.example.demo.auth.controller;
 
+import com.example.demo.auth.dto.KakaoLoginRequest;
 import com.example.demo.auth.dto.LoginRequest;
 import com.example.demo.auth.dto.ReissueRequest;
 import com.example.demo.auth.dto.SignupRequest;
@@ -10,6 +11,7 @@ import com.example.demo.global.exception.BaseCode;
 import com.example.demo.global.exception.ErrorResponse;
 import com.example.demo.global.exception.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -87,6 +89,69 @@ public class AuthController {
         return ResponseUtil.success(
                 BaseCode.SUCCESS,
                 authService.login(request)
+        );
+    }
+
+    @Operation(
+            summary = "카카오 로그인 API",
+            description = "카카오 인가 코드를 이용해 로그인하고 accessToken, refreshToken을 발급받습니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "카카오 로그인 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 카카오 로그인 요청 또는 인가 코드 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "카카오 인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PostMapping("/kakao/login")
+    public ApiResponse<TokenResponse> kakaoLogin(
+            @RequestBody @Valid KakaoLoginRequest request) {
+
+        return ResponseUtil.success(
+                BaseCode.SUCCESS,
+                authService.kakaoLogin(request)
+        );
+    }
+
+    @Operation(
+            summary = "카카오 로그인 Callback API",
+            description = "카카오에서 전달한 인가 코드를 받아 accessToken, refreshToken을 발급합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "카카오 로그인 Callback 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "인가 코드 누락 또는 잘못된 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "카카오 인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @GetMapping("/kakao/callback")
+    public ApiResponse<TokenResponse> kakaoCallback(
+            @Parameter(description = "카카오 인가 코드", example = "A1b2C3d4E5")
+            @RequestParam String code) {
+
+        KakaoLoginRequest request = new KakaoLoginRequest(code);
+
+        return ResponseUtil.success(
+                BaseCode.SUCCESS,
+                authService.kakaoLogin(request)
         );
     }
 

@@ -7,6 +7,7 @@ import com.example.demo.global.exception.ResponseUtil;
 import com.example.demo.report.dto.ReportCreateRequest;
 import com.example.demo.report.dto.ReportResponse;
 import com.example.demo.report.service.ReportService;
+import com.example.demo.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,7 +26,6 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    // 게시글 신고
     @Operation(
             summary = "게시글 신고 API",
             description = "로그인한 사용자가 postId에 해당하는 게시글을 신고합니다."
@@ -53,21 +53,24 @@ public class ReportController {
     })
     @PostMapping("/posts/{postId}/reports")
     public ResponseEntity<ApiResponse<ReportResponse>> reportPost(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
 
             @Parameter(description = "신고할 게시글 ID", example = "1")
             @PathVariable Long postId,
 
             @RequestBody ReportCreateRequest request
     ) {
-        ReportResponse response = reportService.reportPost(userId, postId, request);
+        ReportResponse response = reportService.reportPost(
+                user.getId(),
+                postId,
+                request
+        );
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_POST_SUCCESS, response)
         );
     }
 
-    // 댓글 신고
     @Operation(
             summary = "댓글 신고 API",
             description = "로그인한 사용자가 commentId에 해당하는 댓글을 신고합니다."
@@ -95,21 +98,24 @@ public class ReportController {
     })
     @PostMapping("/comments/{commentId}/reports")
     public ResponseEntity<ApiResponse<ReportResponse>> reportComment(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
 
             @Parameter(description = "신고할 댓글 ID", example = "1")
             @PathVariable Long commentId,
 
             @RequestBody ReportCreateRequest request
     ) {
-        ReportResponse response = reportService.reportComment(userId, commentId, request);
+        ReportResponse response = reportService.reportComment(
+                user.getId(),
+                commentId,
+                request
+        );
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_COMMENT_SUCCESS, response)
         );
     }
 
-    // 신고 처리 완료
     @Operation(
             summary = "신고 처리 완료 API",
             description = "reportId에 해당하는 신고 상태를 처리 완료로 변경합니다."
@@ -132,12 +138,15 @@ public class ReportController {
     })
     @PatchMapping("/reports/{reportId}/resolve")
     public ResponseEntity<ApiResponse<ReportResponse>> resolveReport(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
 
             @Parameter(description = "처리할 신고 ID", example = "1")
             @PathVariable Long reportId
     ) {
-        ReportResponse response = reportService.resolveReport(userId, reportId);
+        ReportResponse response = reportService.resolveReport(
+                user.getId(),
+                reportId
+        );
 
         return ResponseEntity.ok(
                 ResponseUtil.success(BaseCode.REPORT_RESOLVE_SUCCESS, response)

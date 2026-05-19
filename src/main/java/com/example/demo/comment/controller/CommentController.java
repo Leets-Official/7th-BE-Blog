@@ -8,6 +8,7 @@ import com.example.demo.global.exception.ApiResponse;
 import com.example.demo.global.exception.BaseCode;
 import com.example.demo.global.exception.ResponseUtil;
 import com.example.demo.global.exception.ErrorResponse;
+import com.example.demo.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +31,6 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // 댓글 생성
     @Operation(
             summary = "댓글 생성 API",
             description = "로그인한 사용자가 게시글에 댓글을 생성합니다."
@@ -58,10 +58,10 @@ public class CommentController {
     })
     @PostMapping
     public ApiResponse<Map<String, Long>> create(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
             @RequestBody @Valid CommentCreateRequest request) {
 
-        Long commentId = commentService.createComment(userId, request);
+        Long commentId = commentService.createComment(user.getId(), request);
 
         return ResponseUtil.success(
                 BaseCode.COMMENT_CREATE_SUCCESS,
@@ -69,7 +69,6 @@ public class CommentController {
         );
     }
 
-    // 특정 게시글 댓글 조회
     @Operation(
             summary = "특정 게시글 댓글 조회 API",
             description = "postId에 해당하는 게시글의 댓글 목록을 조회합니다."
@@ -96,7 +95,6 @@ public class CommentController {
         );
     }
 
-    // 댓글 수정
     @Operation(
             summary = "댓글 수정 API",
             description = "commentId에 해당하는 댓글 내용을 수정합니다."
@@ -136,7 +134,6 @@ public class CommentController {
         );
     }
 
-    // 댓글 삭제
     @Operation(
             summary = "댓글 삭제 API",
             description = "commentId에 해당하는 댓글을 삭제합니다."
