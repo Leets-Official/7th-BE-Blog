@@ -27,10 +27,10 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateEmailException();
-        }
-        if (userRepository.existsByNickname(request.nickname())) {
+        if (userRepository.existsByEmailOrNickname(request.email(), request.nickname())) {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new DuplicateEmailException();
+            }
             throw new DuplicateNicknameException();
         }
 
