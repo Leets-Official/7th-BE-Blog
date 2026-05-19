@@ -36,6 +36,17 @@ public class User {
     @Column(nullable = false, length = 255, unique = true)
     private String nickname;
 
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AuthProvider provider;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -54,10 +65,13 @@ public class User {
     private List<Report> reports = new ArrayList<>();
 
     @Builder
-    public User(Integer age, String name, String email, String nickname) {
+    public User(Integer age, String name, String email, String nickname, String password, Role role, AuthProvider provider) {
         this.age = age;
         this.name = name;
         this.email = email;
         this.nickname = nickname;
+        this.password = password == null ? "" : password;
+        this.role = role == null ? Role.USER : role;
+        this.provider = provider == null ? AuthProvider.LOCAL : provider;
     }
 }
