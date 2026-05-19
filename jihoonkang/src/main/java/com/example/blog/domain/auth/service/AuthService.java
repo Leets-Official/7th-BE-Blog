@@ -1,5 +1,8 @@
 package com.example.blog.domain.auth.service;
 
+import com.example.blog.domain.auth.client.KakaoOAuthClient;
+import com.example.blog.domain.auth.dto.KakaoTokenResponse;
+import com.example.blog.domain.auth.dto.KakaoUserInfo;
 import com.example.blog.domain.auth.dto.LoginRequest;
 import com.example.blog.domain.auth.dto.SignUpRequest;
 import com.example.blog.domain.auth.dto.TokenResponse;
@@ -37,6 +40,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final KakaoOAuthClient kakaoOAuthClient;
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
@@ -100,6 +104,44 @@ public class AuthService {
 
         String newAccessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
         return new TokenResponse(newAccessToken);
+    }
+
+    public TokenResponse kakaoCallback(String code, HttpServletResponse response) {
+        KakaoTokenResponse kakaoToken = kakaoOAuthClient.getToken(code);
+        KakaoUserInfo userInfo = kakaoOAuthClient.getUserInfo(kakaoToken.accessToken());
+
+        String providerId = String.valueOf(userInfo.id());
+
+        User user = userRepository.findByProviderAndProviderId(Provider.KAKAO, providerId)
+            .orElseGet(() -> registerKakaoUser(userInfo, providerId));
+
+        String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
+
+        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(refreshExpiration / 1000);
+        refreshTokenRepository.findByUserId(user.getId())
+            .ifPresentOrElse(
+                rt -> rt.update(refreshToken, expiresAt),
+                () -> refreshTokenRepository.save(RefreshToken.of(user.getId(), refreshToken, expiresAt))
+            );
+
+        setRefreshTokenCookie(response, refreshToken);
+        return new TokenResponse(accessToken);
+    }
+
+    private User registerKakaoUser(KakaoUserInfo userInfo, String providerId) {
+        String username = resolveUniqueUsername(userInfo.nickname(), providerId);
+        String email = userInfo.email() != null ? userInfo.email() : "kakao_" + providerId + "@kakao.local";
+        User newUser = User.ofKakao(username, email, userInfo.profileImageUrl(), providerId);
+        return userRepository.save(newUser);
+    }
+
+    private String resolveUniqueUsername(String nickname, String providerId) {
+        String candidate = nickname != null ? nickname : "kakao_" + providerId;
+        if (!userRepository.existsByUsername(candidate)) {
+            return candidate;
+        }
+        return candidate + "_" + providerId;
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String token) {
