@@ -15,13 +15,15 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController implements AuthControllerDocs{
 
     private final AuthService authService;
-    private final KakaoAuthService kakaoauthservice;
+    private final KakaoAuthService kakaoAuthService;
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -64,6 +66,43 @@ public class AuthController implements AuthControllerDocs{
         return ApiResponse.success(SuccessCode.TOKEN_REISSUE_SUCCESS, response);
     }
 
+    @GetMapping("/kakao/login")
+    public ResponseEntity<Void> redirectToKakaoLogin() {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(kakaoAuthService.getAuthorizationUrl()))
+                .build();
+    }
+
+    @PostMapping("/kakao/login")
+    public ApiResponse<AuthResponse.AccessToken> kakaoLoginByPost(
+            @RequestParam String code,
+            HttpServletResponse servletResponse
+    ) {
+        AuthResponse.TokenResult tokenResponse = kakaoAuthService.kakaoLogin(code);
+
+        setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
+
+        return ApiResponse.success(
+                SuccessCode.LOGIN_SUCCESS,
+                new AuthResponse.AccessToken(tokenResponse.accessToken())
+        );
+    }
+
+    @GetMapping("/kakao/callback")
+    public ApiResponse<AuthResponse.AccessToken> kakaoLogin(
+            @RequestParam String code,
+            HttpServletResponse servletResponse
+    ) {
+        AuthResponse.TokenResult tokenResponse = kakaoAuthService.kakaoLogin(code);
+
+        setRefreshTokenCookie(servletResponse, tokenResponse.refreshToken());
+
+        AuthResponse.AccessToken response =
+                new AuthResponse.AccessToken(tokenResponse.accessToken());
+
+        return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, response);
+    }
+
     private void setRefreshTokenCookie(
             HttpServletResponse response,
             String refreshToken
@@ -73,18 +112,10 @@ public class AuthController implements AuthControllerDocs{
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("Strict")
-                .path("/api/auth")
+                .path("/auth")
                 .maxAge(60 * 60 * 24 * 7)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-    }
-
-
-    @GetMapping("/kakao/callback")
-    public ApiResponse<AuthResponse.TokenResult> kakaoLogin(
-            @RequestParam String code
-    ) {
-        return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, kakaoauthservice.kakaologin(code));
     }
 }

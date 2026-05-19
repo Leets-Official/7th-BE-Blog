@@ -13,12 +13,16 @@ public class KakaoResponse {
 
             @JsonProperty("refresh_token")
             String refreshToken
+
+
     ) {}
 
     public record KakaoUserResponse(
             Long id,
-            KakaoAccount kakao_account
+            @JsonProperty("kakao_account")
+            KakaoAccount kakaoAccount
     ) {}
+
 
     public record KakaoAccount(
             String email,
@@ -30,6 +34,7 @@ public class KakaoResponse {
     ) {}
 
     public record KakaoUserInfo(
+            String providerId,
             String email,
             String nickname
     ) {}
