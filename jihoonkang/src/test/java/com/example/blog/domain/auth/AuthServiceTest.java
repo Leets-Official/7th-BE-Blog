@@ -1,18 +1,22 @@
 package com.example.blog.domain.auth;
 
+import com.example.blog.domain.auth.client.KakaoOAuthClient;
+import com.example.blog.domain.auth.dto.KakaoTokenResponse;
+import com.example.blog.domain.auth.dto.KakaoUserInfo;
 import com.example.blog.domain.auth.dto.LoginRequest;
 import com.example.blog.domain.auth.dto.SignUpRequest;
+import com.example.blog.domain.auth.dto.TokenResponse;
 import com.example.blog.domain.auth.entity.RefreshToken;
 import com.example.blog.domain.auth.repository.RefreshTokenRepository;
 import com.example.blog.domain.auth.service.AuthService;
 import com.example.blog.domain.user.entity.Provider;
-import com.example.blog.domain.user.entity.Role;
 import com.example.blog.domain.user.entity.User;
 import com.example.blog.domain.user.repository.UserRepository;
 import com.example.blog.global.exception.BusinessException;
 import com.example.blog.global.exception.ErrorCode;
 import com.example.blog.global.security.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,6 +52,15 @@ class AuthServiceTest {
 
     @Mock
     private JwtUtil jwtUtil;
+
+    @Mock
+    private KakaoOAuthClient kakaoOAuthClient;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(authService, "refreshExpiration", 1209600000L);
+        ReflectionTestUtils.setField(authService, "cookieSecure", false);
+    }
 
     @Test
     void signUp_이메일_중복_예외() {
@@ -143,5 +156,81 @@ class AuthServiceTest {
             .isInstanceOf(BusinessException.class)
             .satisfies(e -> assertThat(((BusinessException) e).getErrorCode())
                 .isEqualTo(ErrorCode.INVALID_REFRESH_TOKEN));
+    }
+
+    @Test
+    void kakaoCallback_기존유저_로그인() {
+        KakaoTokenResponse kakaoToken = new KakaoTokenResponse("kakao_at", "kakao_rt", "bearer", 21599L);
+        KakaoUserInfo userInfo = new KakaoUserInfo(
+            12345L,
+            new KakaoUserInfo.KakaoAccount("kakao@test.com",
+                new KakaoUserInfo.KakaoAccount.Profile("테스트닉", null))
+        );
+        User existingUser = User.ofKakao("테스트닉", "kakao@test.com", null, "12345");
+
+        given(kakaoOAuthClient.getToken("code123")).willReturn(kakaoToken);
+        given(kakaoOAuthClient.getUserInfo("kakao_at")).willReturn(userInfo);
+        given(userRepository.findByProviderAndProviderId(Provider.KAKAO, "12345"))
+            .willReturn(Optional.of(existingUser));
+        given(jwtUtil.generateAccessToken(any(), anyString())).willReturn("access_token");
+        given(jwtUtil.generateRefreshToken(any())).willReturn("refresh_token");
+        given(refreshTokenRepository.findByUserId(any())).willReturn(Optional.empty());
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        TokenResponse result = authService.kakaoCallback("code123", response);
+
+        assertThat(result.accessToken()).isEqualTo("access_token");
+    }
+
+    @Test
+    void kakaoCallback_신규유저_자동가입() {
+        KakaoTokenResponse kakaoToken = new KakaoTokenResponse("kakao_at", "kakao_rt", "bearer", 21599L);
+        KakaoUserInfo userInfo = new KakaoUserInfo(
+            99999L,
+            new KakaoUserInfo.KakaoAccount("new@kakao.com",
+                new KakaoUserInfo.KakaoAccount.Profile("뉴유저", null))
+        );
+        User savedUser = User.ofKakao("뉴유저", "new@kakao.com", null, "99999");
+
+        given(kakaoOAuthClient.getToken("newcode")).willReturn(kakaoToken);
+        given(kakaoOAuthClient.getUserInfo("kakao_at")).willReturn(userInfo);
+        given(userRepository.findByProviderAndProviderId(Provider.KAKAO, "99999"))
+            .willReturn(Optional.empty());
+        given(userRepository.existsByUsername("뉴유저")).willReturn(false);
+        given(userRepository.save(any(User.class))).willReturn(savedUser);
+        given(jwtUtil.generateAccessToken(any(), anyString())).willReturn("new_access_token");
+        given(jwtUtil.generateRefreshToken(any())).willReturn("new_refresh_token");
+        given(refreshTokenRepository.findByUserId(any())).willReturn(Optional.empty());
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        TokenResponse result = authService.kakaoCallback("newcode", response);
+
+        assertThat(result.accessToken()).isEqualTo("new_access_token");
+    }
+
+    @Test
+    void kakaoCallback_username_중복시_suffix() {
+        KakaoTokenResponse kakaoToken = new KakaoTokenResponse("kakao_at", "kakao_rt", "bearer", 21599L);
+        KakaoUserInfo userInfo = new KakaoUserInfo(
+            77777L,
+            new KakaoUserInfo.KakaoAccount("dup@kakao.com",
+                new KakaoUserInfo.KakaoAccount.Profile("중복닉", null))
+        );
+        User savedUser = User.ofKakao("중복닉_77777", "dup@kakao.com", null, "77777");
+
+        given(kakaoOAuthClient.getToken("dupcode")).willReturn(kakaoToken);
+        given(kakaoOAuthClient.getUserInfo("kakao_at")).willReturn(userInfo);
+        given(userRepository.findByProviderAndProviderId(Provider.KAKAO, "77777"))
+            .willReturn(Optional.empty());
+        given(userRepository.existsByUsername("중복닉")).willReturn(true);
+        given(userRepository.save(any(User.class))).willReturn(savedUser);
+        given(jwtUtil.generateAccessToken(any(), anyString())).willReturn("at");
+        given(jwtUtil.generateRefreshToken(any())).willReturn("rt");
+        given(refreshTokenRepository.findByUserId(any())).willReturn(Optional.empty());
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        TokenResponse result = authService.kakaoCallback("dupcode", response);
+
+        assertThat(result.accessToken()).isEqualTo("at");
     }
 }
