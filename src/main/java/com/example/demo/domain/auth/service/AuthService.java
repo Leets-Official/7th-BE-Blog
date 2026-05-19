@@ -68,9 +68,7 @@ public class AuthService {
 
     @Transactional
     public TokenRefreshResponse refresh(TokenRefreshRequest request) {
-        if (!jwtTokenProvider.validateToken(request.refreshToken())) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "INVALID_REFRESH_TOKEN", "유효하지 않은 리프레시 토큰입니다.");
-        }
+        jwtTokenProvider.validateToken(request.refreshToken());
 
         Long userId = jwtTokenProvider.getUserId(request.refreshToken());
         User user = findUser(userId);
