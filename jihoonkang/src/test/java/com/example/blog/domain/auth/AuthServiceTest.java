@@ -5,6 +5,7 @@ import com.example.blog.domain.auth.dto.SignUpRequest;
 import com.example.blog.domain.auth.entity.RefreshToken;
 import com.example.blog.domain.auth.repository.RefreshTokenRepository;
 import com.example.blog.domain.auth.service.AuthService;
+import com.example.blog.domain.user.entity.Provider;
 import com.example.blog.domain.user.entity.Role;
 import com.example.blog.domain.user.entity.User;
 import com.example.blog.domain.user.repository.UserRepository;
@@ -50,7 +51,7 @@ class AuthServiceTest {
 
     @Test
     void signUp_이메일_중복_예외() {
-        given(userRepository.existsByEmail("dup@example.com")).willReturn(true);
+        given(userRepository.existsByEmailAndProvider("dup@example.com", Provider.LOCAL)).willReturn(true);
 
         SignUpRequest request = new SignUpRequest("dup@example.com", "pass123", "닉네임", null);
 
@@ -62,7 +63,7 @@ class AuthServiceTest {
 
     @Test
     void signUp_닉네임_중복_예외() {
-        given(userRepository.existsByEmail(anyString())).willReturn(false);
+        given(userRepository.existsByEmailAndProvider(anyString(), any(Provider.class))).willReturn(false);
         given(userRepository.existsByUsername("중복닉네임")).willReturn(true);
 
         SignUpRequest request = new SignUpRequest("new@example.com", "pass123", "중복닉네임", null);
@@ -87,7 +88,7 @@ class AuthServiceTest {
 
     @Test
     void login_비밀번호_불일치_예외() {
-        User user = User.of("지훈", "jihoon@example.com", "hashedPw", null);
+        User user = User.ofLocal("지훈", "jihoon@example.com", "hashedPw", null);
         given(userRepository.findByEmail("jihoon@example.com")).willReturn(Optional.of(user));
         given(passwordEncoder.matches("wrongPw", "hashedPw")).willReturn(false);
 
