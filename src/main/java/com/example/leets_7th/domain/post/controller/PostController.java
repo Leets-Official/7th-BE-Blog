@@ -1,5 +1,6 @@
 package com.example.leets_7th.domain.post.controller;
 
+import com.example.leets_7th.common.auth.CustomUserDetails;
 import com.example.leets_7th.common.response.ApiResponse;
 import com.example.leets_7th.common.status.SuccessStatus;
 import com.example.leets_7th.domain.post.controller.docs.PostControllerDocs;
@@ -16,6 +17,7 @@ import com.example.leets_7th.domain.post.service.PostQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,72 +42,72 @@ public class PostController implements PostControllerDocs {
     @Override
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<GetPostDetailResponse>> getDetailPost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId
     ) {
-        GetPostDetailResponse response = postQueryService.getPostDetail(userId, postId);
+        GetPostDetailResponse response = postQueryService.getPostDetail(userDetails.getUserId(), postId);
         return ApiResponse.success(SuccessStatus.GET_POST_DETAIL_SUCCESS, response);
     }
 
     @Override
     @PostMapping
     public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid CreatePostRequest request
     ) {
-        CreatePostResponse response = postCommandService.createPost(userId, request);
+        CreatePostResponse response = postCommandService.createPost(userDetails.getUserId(), request);
         return ApiResponse.success(SuccessStatus.CREATE_POST_SUCCESS, response);
     }
 
     @Override
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<UpdatePostResponse>> updatePost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @Valid @RequestBody UpdatePostRequest request
     ) {
-        UpdatePostResponse response = postCommandService.updatePost(userId, postId, request);
+        UpdatePostResponse response = postCommandService.updatePost(userDetails.getUserId(), postId, request);
         return ApiResponse.success(SuccessStatus.UPDATE_POST_SUCCESS, response);
     }
 
     @Override
     @PostMapping("/{postId}/likes")
     public ResponseEntity<ApiResponse<Void>> likePost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId
     ) {
-        postCommandService.likePost(userId, postId);
+        postCommandService.likePost(userDetails.getUserId(), postId);
         return ApiResponse.success(SuccessStatus.LIKE_POST_SUCCESS);
     }
 
     @Override
     @DeleteMapping("/{postId}/likes")
     public ResponseEntity<ApiResponse<Void>> unlikePost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId
     ) {
-        postCommandService.unlikePost(userId, postId);
+        postCommandService.unlikePost(userDetails.getUserId(), postId);
         return ApiResponse.success(SuccessStatus.UNLIKE_POST_CANCEL_SUCCESS);
     }
 
     @Override
     @PostMapping("/{postId}/reports")
     public ResponseEntity<ApiResponse<Void>> reportPost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @RequestBody @Valid ReportPostRequest request
     ) {
-        postCommandService.reportPost(userId, postId, request);
+        postCommandService.reportPost(userDetails.getUserId(), postId, request);
         return ApiResponse.success(SuccessStatus.REPORT_POST_SUCCESS);
     }
 
     @Override
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @PathVariable Long postId
     ) {
-        postCommandService.deletePost(userId, postId);
+        postCommandService.deletePost(userDetails.getUserId(), postId);
         return ApiResponse.success(SuccessStatus.DELETE_POST_SUCCESS);
     }
 }
