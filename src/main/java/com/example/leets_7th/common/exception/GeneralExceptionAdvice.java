@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.security.core.AuthenticationException;
 
 @Slf4j
 @RestControllerAdvice
@@ -37,6 +38,12 @@ public class GeneralExceptionAdvice extends ResponseEntityExceptionHandler {
         String errorMessage = "잘못된 요청입니다: " + e.getMessage();
         log.error("[*] IllegalArgumentException :", e);
         return ApiResponse.error(ErrorStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthenticationException(AuthenticationException e) {
+        log.error("[*] AuthenticationException : {}", e.getMessage());
+        return ApiResponse.error(ErrorStatus.LOGIN_FAILED);
     }
 
     @ExceptionHandler(NullPointerException.class)
