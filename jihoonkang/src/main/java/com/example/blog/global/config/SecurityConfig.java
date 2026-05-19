@@ -33,6 +33,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth", "/login", "/reissue",
+                    "/oauth/kakao/**",
                     "/api/v1/health",
                     "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                     "/h2-console/**", "/error"
