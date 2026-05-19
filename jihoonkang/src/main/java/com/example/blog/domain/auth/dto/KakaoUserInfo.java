@@ -1,8 +1,10 @@
 package com.example.blog.domain.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record KakaoUserInfo(
     Long id,
-    KakaoAccount kakaoAccount
+    @JsonProperty("kakao_account") KakaoAccount kakaoAccount
 ) {
     public record KakaoAccount(
         String email,
@@ -10,7 +12,7 @@ public record KakaoUserInfo(
     ) {
         public record Profile(
             String nickname,
-            String profileImageUrl
+            @JsonProperty("profile_image_url") String profileImageUrl
         ) {}
     }
 
