@@ -81,6 +81,10 @@ public class User extends BaseEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void clearRefreshToken() {
+        this.refreshToken = null;
+    }
+
     public void linkKakao(Long kakaoId) {
         this.kakaoId = kakaoId;
     }

@@ -11,6 +11,7 @@ import com.example.demo.domain.auth.service.AuthService;
 import com.example.demo.domain.auth.service.KakaoOAuthService;
 import com.example.demo.global.exception.CustomException;
 import com.example.demo.global.response.ApiResponse;
+import com.example.demo.global.security.CustomUserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -50,6 +52,19 @@ public class AuthController {
     public ResponseEntity<ApiResponse<TokenRefreshResponse>> refresh(@Valid @RequestBody TokenRefreshRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.success("TOKEN_REFRESH_SUCCESS", "토큰 재발급 성공", authService.refresh(request))
+        );
+    }
+
+    @Operation(summary = "로그아웃", description = "저장된 refresh token을 삭제하여 로그아웃 처리합니다.")
+    @PostMapping("/auth/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        if (principal == null) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다.");
+        }
+
+        authService.logout(principal.getId());
+        return ResponseEntity.ok(
+                ApiResponse.success("LOGOUT_SUCCESS", "로그아웃 성공", null)
         );
     }
 

@@ -83,6 +83,12 @@ public class AuthService {
         return issueRefreshTokens(user, principal);
     }
 
+    @Transactional
+    public void logout(Long userId) {
+        User user = findUser(userId);
+        user.clearRefreshToken();
+    }
+
     private LoginResponse issueLoginTokens(User user, CustomUserPrincipal principal) {
         String accessToken = jwtTokenProvider.createAccessToken(principal);
         String refreshToken = jwtTokenProvider.createRefreshToken(principal);
