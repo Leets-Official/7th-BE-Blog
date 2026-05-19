@@ -22,9 +22,25 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 이름
-    @Column(nullable = false, length = 10)
+    // 닉네임
+    @Column(nullable = false, unique = true, length = 10)
     private String name;
+
+    @Column(unique = true, length = 100)
+    private String email;
+
+    @Column(length = 255)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UserRole role;
+
+    @Column(length = 500)
+    private String refreshToken;
+
+    @Column(unique = true)
+    private Long kakaoId;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
@@ -38,5 +54,34 @@ public class User extends BaseEntity {
 
     public static User of(String name) {
         return new User(name);
+    }
+
+    private User(String email, String nickname, String password, UserRole role) {
+        this.email = email;
+        this.name = nickname;
+        this.password = password;
+        this.role = role;
+    }
+
+    public static User register(String email, String nickname, String password) {
+        return new User(email, nickname, password, UserRole.USER);
+    }
+
+    public static User registerKakao(Long kakaoId, String email, String nickname) {
+        User user = new User(email, nickname, null, UserRole.USER);
+        user.kakaoId = kakaoId;
+        return user;
+    }
+
+    public String getNickname() {
+        return name;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void linkKakao(Long kakaoId) {
+        this.kakaoId = kakaoId;
     }
 }
