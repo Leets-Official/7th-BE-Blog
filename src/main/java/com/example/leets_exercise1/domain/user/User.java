@@ -47,6 +47,9 @@ public class User {
     @Column(nullable = false, length = 20)
     private AuthProvider provider;
 
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -65,7 +68,7 @@ public class User {
     private List<Report> reports = new ArrayList<>();
 
     @Builder
-    public User(Integer age, String name, String email, String nickname, String password, Role role, AuthProvider provider) {
+    public User(Integer age, String name, String email, String nickname, String password, Role role, AuthProvider provider, String providerId) {
         this.age = age;
         this.name = name;
         this.email = email;
@@ -73,5 +76,6 @@ public class User {
         this.password = password == null ? "" : password;
         this.role = role == null ? Role.USER : role;
         this.provider = provider == null ? AuthProvider.LOCAL : provider;
+        this.providerId = providerId;
     }
 }
