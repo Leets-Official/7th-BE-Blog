@@ -3,9 +3,11 @@ package com.example.leets7th.domain.auth.domain;
 import com.example.leets7th.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class SocialAccount {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,13 +20,18 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    @Value("${jwt.access-token-expiration}")
+    private Long accessTokenExpiration;
+
     // JWT 액세스 토큰 생성
     public String generateAccessToken(Long userId, UserRole role) {
+        Date now = new Date();
+
         return Jwts.builder()
                 .subject(userId.toString())
                 .claim("role",role.name())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*15))
+                .issuedAt(now)
+                .expiration(new Date(now.getTime()+ accessTokenExpiration))
                 .signWith(getSecretKey())
                 .compact();
 

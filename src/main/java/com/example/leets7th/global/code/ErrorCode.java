@@ -15,7 +15,11 @@ public enum ErrorCode implements BaseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400_1","잘못된 요청입니다."),
     UNSUPPORTED_TYPE(HttpStatus.BAD_REQUEST,"COMMON400_2","지원하지 않는 타입입니다."),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST,"COMMON400_3","입력값이 유효하지 않습니다."),
+
+    //AUTH
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"AUTH401_1","인증이 필요합니다."),
+    TOKEN_EXPIRATION(HttpStatus.UNAUTHORIZED,"AUTH401_2","인증 토큰이 만료되었습니다."),
+    TOKEN_INVALIDATION(HttpStatus.UNAUTHORIZED,"AUTH_401_3","인증 토큰이 올바르지 않습니다"),
     RT_NOT_EXISTS(HttpStatus.UNAUTHORIZED,"AUTH404_1","인증 토큰이 존재하지 않습니다."),
     LOGIN_NOT_VALID(HttpStatus.BAD_REQUEST,"AUTH_400_1","아이디 또는 비밀번호가 올바르지 않습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN,"AUTH403_1","요청이 거부되었습니다."),
