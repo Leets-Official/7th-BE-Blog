@@ -5,6 +5,8 @@ import com.example.leets7th.domain.user.dto.UserRequestDto;
 import com.example.leets7th.domain.user.dto.UserResponseDto;
 import com.example.leets7th.global.code.SuccessCode;
 import com.example.leets7th.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.headers.Header;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,14 @@ public class AuthController {
 
         return ApiResponse.success(SuccessCode.GENERAL_OK, new UserResponseDto.AccessToken(tokens.accessToken()));
 
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logoutUser(@CookieValue(name = "refreshToken") String refreshToken,
+                                        @RequestHeader("Authorization") String accessToken) {
+
+        authService.logoutUser(accessToken,refreshToken);
+        return ApiResponse.success(SuccessCode.GENERAL_OK);
     }
 
 

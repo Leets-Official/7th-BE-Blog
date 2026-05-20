@@ -1,11 +1,13 @@
 package com.example.leets7th.global.util;
 
+import com.example.leets7th.domain.auth.repository.AuthCacheRepository;
 import com.example.leets7th.domain.user.domain.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,9 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
+    private final AuthCacheRepository authCacheRepository;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -51,16 +55,8 @@ public class JwtUtil {
 
     //토큰 검증
     public boolean isValidToken(String token) {
-        try {
-            parseClaims(token);
-            return true;
-        }
-        catch (ExpiredJwtException ex) {
-            throw ex;
-        }
-        catch (JwtException ex) {
-            return false;
-        }
+        parseClaims(token);
+        return !authCacheRepository.isBlindedToken(token);
     }
 
     public Claims parseClaims(String token) {
@@ -77,6 +73,15 @@ public class JwtUtil {
 
     public String getRole(String token) {
         return parseClaims(token).get("role",String.class);
+    }
+
+    public long getRemainTime(String token) {
+        Date expiration = parseClaims(token).getExpiration();
+        long now = System.currentTimeMillis();
+
+        long remain = expiration.getTime() - now;
+
+        return remain > 0 ? remain : 0;
     }
 
 

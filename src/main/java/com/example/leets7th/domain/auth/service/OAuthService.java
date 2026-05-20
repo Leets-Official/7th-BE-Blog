@@ -133,14 +133,13 @@ public class OAuthService {
     }
 
     // 유저 생성
-
     private User createUser(String name,String email) {
 
         User user = User.createOAuthUser(name,email);
         return userRepository.save(user);
     }
 
-
+    //토큰 발급
     private UserResponseDto.TokenResult issueToken(Long userId) {
         String accessToken = jwtUtil.generateAccessToken(userId, UserRole.ROLE_USER);
         String refreshToken = jwtUtil.generateRefreshToken();

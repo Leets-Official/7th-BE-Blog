@@ -12,6 +12,7 @@ public class AuthCacheRepository {
     private final StringRedisTemplate redisTemplate;
 
     private static final String RT_PREFIX = "RT:";
+    private static final String BLIND_PREFIX = "BLIND:";
 
 
     //
@@ -35,5 +36,15 @@ public class AuthCacheRepository {
     public void deleteRefreshToken(String token) {
         String key = RT_PREFIX + token;
         redisTemplate.delete(key);
+    }
+
+    public void saveBlindToken(String token,TokenBlindReason reason,Long remainMs) {
+        String key = BLIND_PREFIX + token;
+        redisTemplate.opsForValue().set(key,reason.name(),Duration.ofMillis(remainMs));
+    }
+
+    public boolean isBlindedToken(String token) {
+        String key = BLIND_PREFIX + token;
+        return redisTemplate.opsForValue().get(key) != null;
     }
 }

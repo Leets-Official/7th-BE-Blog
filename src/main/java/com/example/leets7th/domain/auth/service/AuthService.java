@@ -2,6 +2,7 @@ package com.example.leets7th.domain.auth.service;
 
 import com.example.leets7th.domain.auth.error.AuthException;
 import com.example.leets7th.domain.auth.repository.AuthCacheRepository;
+import com.example.leets7th.domain.auth.repository.TokenBlindReason;
 import com.example.leets7th.domain.user.domain.User;
 import com.example.leets7th.domain.user.domain.UserRole;
 import com.example.leets7th.domain.user.dto.UserRequestDto;
@@ -26,9 +27,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    @Transactional
-    public UserResponseDto.TokenResult loginUser(UserRequestDto.Login request) {
 
+    public UserResponseDto.TokenResult loginUser(UserRequestDto.Login request) {
         //로그인 검증
         User user = userService.findUserByLoginId(request.loginId())
                 .orElseThrow(() -> new AuthException(ErrorCode.LOGIN_NOT_VALID));
@@ -37,11 +37,8 @@ public class AuthService {
             throw new AuthException(ErrorCode.LOGIN_NOT_VALID);
         }
 
-
         //토큰 발급
-
         UserResponseDto.TokenResult tokens = issueToken(user.getId(),user.getRole());
-
 
         return new UserResponseDto.TokenResult(tokens.accessToken(),tokens.refreshToken());
     }
@@ -60,6 +57,15 @@ public class AuthService {
                 .orElseThrow(()-> new AuthException(ErrorCode.LOGIN_NOT_VALID));
 
         return issueToken(userId,user.getRole());
+    }
+
+
+
+    public void logoutUser(String accessToken,String refreshToken) {
+        String token = accessToken.substring(7);
+
+        authCacheRepository.deleteRefreshToken(refreshToken);
+        authCacheRepository.saveBlindToken(token, TokenBlindReason.LOGOUT,jwtUtil.getRemainTime(token));
     }
 
     //토큰 발급
