@@ -2,7 +2,7 @@ package com.example.leets7th.domain.auth.service;
 
 import com.example.leets7th.domain.auth.error.AuthException;
 import com.example.leets7th.domain.auth.repository.AuthCacheRepository;
-import com.example.leets7th.domain.auth.repository.TokenBlindReason;
+import com.example.leets7th.domain.auth.domain.TokenBlindReason;
 import com.example.leets7th.domain.user.domain.User;
 import com.example.leets7th.domain.user.domain.UserRole;
 import com.example.leets7th.domain.user.dto.UserRequestDto;

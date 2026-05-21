@@ -1,5 +1,6 @@
 package com.example.leets7th.domain.auth.repository;
 
+import com.example.leets7th.domain.auth.domain.TokenBlindReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,7 @@ public class AuthCacheRepository {
         redisTemplate.delete(key);
     }
 
-    public void saveBlindToken(String token,TokenBlindReason reason,Long remainMs) {
+    public void saveBlindToken(String token, TokenBlindReason reason, Long remainMs) {
         String key = BLIND_PREFIX + token;
         redisTemplate.opsForValue().set(key,reason.name(),Duration.ofMillis(remainMs));
     }

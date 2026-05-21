@@ -45,7 +45,6 @@ public class OAuthService {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final AuthCacheRepository authCacheRepository;
-    private final UserRepository userRepository;
 
     //카카오 엑세스 토큰 요청 메서드
     public OAuthResponseDto.KakaoToken getKakaoToken(String code) {
@@ -81,16 +80,12 @@ public class OAuthService {
 
     //유저 리소스 요청
     public OAuthResponseDto.KakaoUserInfo getUserResource(OAuthResponseDto.KakaoToken token) {
-
-
         // 헤더 토큰 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization","Bearer "+token.accessToken());
 
-
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-
 
         ResponseEntity<OAuthResponseDto.KakaoUserInfo> response = restTemplate.exchange(
                 resourceURI,
@@ -98,9 +93,6 @@ public class OAuthService {
                 httpEntity,
                 OAuthResponseDto.KakaoUserInfo.class
         );
-
-
-
 
         return response.getBody();
     }
@@ -116,14 +108,13 @@ public class OAuthService {
                 .findByProviderAndProviderId(OAuthProvider.KAKAO,userInfo.id())
                 .orElseGet(() -> createSocialAccount(userInfo));
 
-
         return issueToken(socialAccount.getUser().getId());
     }
 
     //socialAccount 생성
     private SocialAccount createSocialAccount(OAuthResponseDto.KakaoUserInfo userInfo) {
         User user = userService.findUserByEmail(userInfo.kakaoAccount().email())
-                .orElseGet(() -> createUser(
+                .orElseGet(() -> userService.createOAuthUser(
                         userInfo.kakaoAccount().profile().nickname(),
                         userInfo.kakaoAccount().email())
                 );
@@ -132,12 +123,7 @@ public class OAuthService {
         return socialAccountRepository.save(socialAccount);
     }
 
-    // 유저 생성
-    private User createUser(String name,String email) {
 
-        User user = User.createOAuthUser(name,email);
-        return userRepository.save(user);
-    }
 
     //토큰 발급
     private UserResponseDto.TokenResult issueToken(Long userId) {
@@ -145,7 +131,6 @@ public class OAuthService {
         String refreshToken = jwtUtil.generateRefreshToken();
 
         authCacheRepository.saveRefreshToken(refreshToken,userId);
-
 
         return new UserResponseDto.TokenResult(accessToken,refreshToken);
     }

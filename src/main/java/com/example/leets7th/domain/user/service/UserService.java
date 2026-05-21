@@ -62,6 +62,11 @@ public class UserService {
         return UserResponseDto.UserCreateRes.from(user);
     }
 
+    public User createOAuthUser(String name,String email) {
+        User user = User.createOAuthUser(name,email);
+        return userRepository.save(user);
+    }
+
 
 
 
@@ -84,10 +89,6 @@ public class UserService {
 
     public Optional<User> findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId);
-    }
-
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
     }
 
     public Optional<User> findUserByEmail(String email) {
