@@ -33,7 +33,7 @@ public class Post extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PostStatus status;          // PUBLISHED, DRAFT
+    private PostStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)      // 필요시만 가져오는 LAZY 지연로딩 사용
     @JoinColumn(name = "user_id")

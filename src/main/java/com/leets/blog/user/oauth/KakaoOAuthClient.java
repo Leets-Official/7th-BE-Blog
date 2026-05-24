@@ -48,7 +48,7 @@ public class KakaoOAuthClient {
                 .body(KakaoOAuthResponse.Token.class);
 
         if (token == null || !StringUtils.hasText(token.getAccessToken())) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+            throw new BusinessException(ErrorCode.KAKAO_LOGIN_FAILED);
         }
 
         return token;
@@ -62,7 +62,7 @@ public class KakaoOAuthClient {
                 .body(KakaoOAuthResponse.UserInfo.class);
 
         if (userInfo == null || userInfo.getId() == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+            throw new BusinessException(ErrorCode.KAKAO_LOGIN_FAILED);
         }
 
         return userInfo;

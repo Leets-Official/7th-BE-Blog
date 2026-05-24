@@ -68,17 +68,6 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.ok(loginResponse));
     }
 
-    @GetMapping("/kakao/callback")
-    @Operation(summary = "카카오 로그인 콜백 (테스트용)", description = "카카오 인가 코드를 받아 로그인 처리합니다.")
-    public ResponseEntity<BaseResponse<AuthResponse.Login>> kakaoCallback(
-            @RequestParam String code,
-            HttpServletResponse response
-    ) {
-        AuthResponse.Login loginResponse = authService.kakaoLogin(new AuthRequest.KakaoLogin(code));
-        addLoginCookies(response, loginResponse);
-        return ResponseEntity.ok(BaseResponse.ok(loginResponse));
-    }
-
     @PostMapping("/refresh")
     @Operation(
             summary = "토큰 재발급",
