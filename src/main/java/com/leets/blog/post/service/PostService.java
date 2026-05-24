@@ -4,7 +4,7 @@ import com.leets.blog.global.exception.BusinessException;
 import com.leets.blog.global.exception.ErrorCode;
 import com.leets.blog.user.auth.AuthUser;
 import com.leets.blog.post.domain.Post;
-import com.leets.blog.post.domain.PostStatus; // 추가
+import com.leets.blog.post.domain.PostStatus;
 import com.leets.blog.post.repository.PostRepository;
 import com.leets.blog.post.dto.PostRequest;
 import com.leets.blog.post.dto.PostResponse;
@@ -27,8 +27,7 @@ public class PostService {
 
     @Transactional
     public PostResponse create(AuthUser authUser, PostRequest.Create request) {
-        User user = userRepository.findById(authUser.getUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.getReferenceById(authUser.getUserId());
 
         Post post = Post.builder()
                 .title(request.getTitle())

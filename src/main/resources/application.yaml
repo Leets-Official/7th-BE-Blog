@@ -18,3 +18,11 @@ jwt:
   secure: false
   httpOnly: true
   sameSite: Lax
+
+oauth:
+  kakao:
+    clientId: ${KAKAO_CLIENT_ID:}
+    clientSecret: ${KAKAO_CLIENT_SECRET:}
+    redirectUri: ${KAKAO_REDIRECT_URI:}
+    tokenUri: https://kauth.kakao.com/oauth/token
+    userInfoUri: https://kapi.kakao.com/v2/user/me

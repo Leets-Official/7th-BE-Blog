@@ -29,8 +29,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponse create(AuthUser authUser, Long postId, CommentRequest.Create request) {
-        User user = userRepository.findById(authUser.getUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.getReferenceById(authUser.getUserId());
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 

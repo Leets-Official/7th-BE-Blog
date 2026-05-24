@@ -31,46 +31,29 @@ public class ReportService {
 
     @Transactional
     public ReportResponse reportComment(AuthUser authUser, Long commentId, ReportRequest.Create request) {
-        User reporter = userRepository.findById(authUser.getUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
         if (!commentRepository.existsById(commentId)) {
             throw new BusinessException(ErrorCode.COMMENT_NOT_FOUND);
         }
-
-        if (reportRepository.existsByReporterIdAndTargetTypeAndTargetId(
-                reporter.getId(),
-                ReportTargetType.COMMENT,
-                commentId
-        )) {
-            throw new BusinessException(ErrorCode.DUPLICATE_REPORT);
-        }
-
-        Report report = new Report(ReportTargetType.COMMENT, commentId, request.getReason(), reporter);
-        Report savedReport = reportRepository.save(report);
-        return new ReportResponse(savedReport);
+        return createReport(authUser, commentId, ReportTargetType.COMMENT, request);
     }
 
     @Transactional
     public ReportResponse reportPost(AuthUser authUser, Long postId, ReportRequest.Create request) {
-        User reporter = userRepository.findById(authUser.getUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
         if (!postRepository.existsById(postId)) {
             throw new BusinessException(ErrorCode.POST_NOT_FOUND);
         }
+        return createReport(authUser, postId, ReportTargetType.POST, request);
+    }
 
-        if (reportRepository.existsByReporterIdAndTargetTypeAndTargetId(
-                reporter.getId(),
-                ReportTargetType.POST,
-                postId
-        )) {
+    private ReportResponse createReport(AuthUser authUser, Long targetId, ReportTargetType targetType, ReportRequest.Create request) {
+        User reporter = userRepository.findById(authUser.getUserId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (reportRepository.existsByReporterIdAndTargetTypeAndTargetId(reporter.getId(), targetType, targetId)) {
             throw new BusinessException(ErrorCode.DUPLICATE_REPORT);
         }
 
-        Report report = new Report(ReportTargetType.POST, postId, request.getReason(), reporter);
-        Report savedReport = reportRepository.save(report);
-        return new ReportResponse(savedReport);
+        return new ReportResponse(reportRepository.save(new Report(targetType, targetId, request.getReason(), reporter)));
     }
 
     @Transactional

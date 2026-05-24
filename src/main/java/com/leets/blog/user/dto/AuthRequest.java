@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,5 +40,14 @@ public class AuthRequest {
         @NotBlank(message = "비밀번호는 필수입니다.")
         @Schema(description = "비밀번호", example = "password1234")
         private String password;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class KakaoLogin {
+        @NotBlank(message = "카카오 인가 코드는 필수입니다.")
+        @Schema(description = "카카오 인가 코드", example = "authorization-code-from-kakao")
+        private String code;
     }
 }

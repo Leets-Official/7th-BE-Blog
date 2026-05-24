@@ -15,7 +15,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // 기본 생성자 생성, 외부 접근 PROTECTED 제한
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name = "idx_oauth_provider_id", columnList = "oauthProvider, oauthId")
+})
 public class User extends BaseTimeEntity {
 
     @Id
@@ -31,6 +33,12 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false, length = 100)
     private String nickname;
+
+    @Column(length = 30)
+    private String oauthProvider;
+
+    @Column(length = 100)
+    private String oauthId;
 
     // role (권한) 설정
     @Enumerated(EnumType.STRING)
@@ -50,5 +58,8 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-
+    public void linkOAuth(String oauthProvider, String oauthId) {
+        this.oauthProvider = oauthProvider;
+        this.oauthId = oauthId;
+    }
 }
