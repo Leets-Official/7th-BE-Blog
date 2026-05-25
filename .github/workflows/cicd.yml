@@ -28,13 +28,18 @@ jobs:
       - name: Build application
         run: ./gradlew clean bootJar
 
+      - name: Prepare deploy jar
+        run: |
+          JAR_FILE=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*plain.jar' | head -n 1)
+          cp "$JAR_FILE" build/libs/app.jar
+
       - name: Copy deploy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "Dockerfile,docker-compose.yml,.dockerignore,gradlew,gradle,build.gradle,settings.gradle,src"
+          source: "Dockerfile.deploy,docker-compose.yml,docker-compose.deploy.yml,build/libs/app.jar"
           target: "~/demo"
           strip_components: 0
 
@@ -61,5 +66,5 @@ jobs:
               echo "Docker Compose is not installed on the server."
               exit 1
             fi
-            $COMPOSE_CMD down
-            $COMPOSE_CMD up -d --build
+            $COMPOSE_CMD -f docker-compose.yml -f docker-compose.deploy.yml down
+            $COMPOSE_CMD -f docker-compose.yml -f docker-compose.deploy.yml up -d --build
