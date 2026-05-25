@@ -53,12 +53,16 @@ jobs:
           command_timeout: 30m
           script: |
             mkdir -p ~/demo
+            mkdir -p ~/demo/build/libs
             cat > ~/demo/.env <<'EOF'
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             EOF
             cat > ~/demo/application.yml <<'EOF'
             ${{ secrets.APPLICATION_YML }}
             EOF
+            if [ -f ~/demo/app.jar ]; then
+              mv ~/demo/app.jar ~/demo/build/libs/app.jar
+            fi
             cd ~/demo
             if docker compose version >/dev/null 2>&1; then
               COMPOSE_CMD="docker compose"
