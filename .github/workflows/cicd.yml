@@ -31,7 +31,7 @@ jobs:
       - name: Prepare deploy jar
         run: |
           JAR_FILE=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*plain.jar' | head -n 1)
-          cp "$JAR_FILE" build/libs/app.jar
+          cp "$JAR_FILE" app.jar
 
       - name: Copy deploy files to server
         uses: appleboy/scp-action@v0.1.7
@@ -39,7 +39,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "Dockerfile.deploy,docker-compose.yml,docker-compose.deploy.yml,build/libs/app.jar"
+          source: "Dockerfile.deploy,docker-compose.yml,docker-compose.deploy.yml,app.jar"
           target: "~/demo"
           strip_components: 0
 
@@ -53,16 +53,12 @@ jobs:
           command_timeout: 30m
           script: |
             mkdir -p ~/demo
-            mkdir -p ~/demo/build/libs
             cat > ~/demo/.env <<'EOF'
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             EOF
             cat > ~/demo/application.yml <<'EOF'
             ${{ secrets.APPLICATION_YML }}
             EOF
-            if [ -f ~/demo/app.jar ]; then
-              mv ~/demo/app.jar ~/demo/build/libs/app.jar
-            fi
             cd ~/demo
             if docker compose version >/dev/null 2>&1; then
               COMPOSE_CMD="docker compose"
