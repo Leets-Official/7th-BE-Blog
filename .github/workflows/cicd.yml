@@ -49,6 +49,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 30m
           script: |
             mkdir -p ~/demo
             cat > ~/demo/.env <<'EOF'
