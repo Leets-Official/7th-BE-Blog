@@ -53,5 +53,13 @@ jobs:
             ${{ secrets.APPLICATION_YML }}
             EOF
             cd ~/demo
-            docker compose down
-            docker compose up -d --build
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE_CMD="docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              COMPOSE_CMD="docker-compose"
+            else
+              echo "Docker Compose is not installed on the server."
+              exit 1
+            fi
+            $COMPOSE_CMD down
+            $COMPOSE_CMD up -d --build
