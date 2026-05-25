@@ -2,6 +2,9 @@
 .github
 .gradle
 build
+!build/
+!build/libs/
+!build/libs/app.jar
 7th-BE-Blog
 *.iml
 .idea
