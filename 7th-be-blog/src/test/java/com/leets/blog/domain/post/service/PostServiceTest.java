@@ -44,6 +44,7 @@ class PostServiceTest {
     void setUp() {
         user = User.builder()
                 .name("tester")
+                .nickname("tester")
                 .email("tester@example.com")
                 .password("password")
                 .build();

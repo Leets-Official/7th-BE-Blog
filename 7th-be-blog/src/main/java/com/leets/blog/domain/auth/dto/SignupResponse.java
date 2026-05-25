@@ -10,11 +10,14 @@ public record SignupResponse(
         @Schema(description = "이메일", example = "user@example.com")
         String email,
 
-        @Schema(description = "닉네임", example = "tester")
-        String name
+        @Schema(description = "이름", example = "김동빈")
+        String name,
+
+        @Schema(description = "닉네임", example = "dongbin807")
+        String nickname
 ) {
 
     public static SignupResponse from(User user) {
-        return new SignupResponse(user.getId(), user.getEmail(), user.getName());
+        return new SignupResponse(user.getId(), user.getEmail(), user.getName(), user.getNickname());
     }
 }

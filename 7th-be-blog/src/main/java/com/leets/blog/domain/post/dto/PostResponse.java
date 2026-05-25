@@ -19,7 +19,7 @@ public class PostResponse {
     private String title;
     @Schema(description = "게시글 본문", example = "Swagger UI를 프로젝트에 적용한 과정을 정리합니다.")
     private String content;
-    @Schema(description = "작성자 이름", example = "dongbin")
+    @Schema(description = "작성자 닉네임", example = "dongbin")
     private String authorName;
     @Schema(description = "생성 시각", example = "2026-05-05T14:30:00")
     private LocalDateTime createdAt;

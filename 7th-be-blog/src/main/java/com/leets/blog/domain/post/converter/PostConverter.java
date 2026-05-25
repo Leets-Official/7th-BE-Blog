@@ -13,7 +13,7 @@ public class PostConverter {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .authorName(post.getUser().getName())
+                .authorName(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
                 .build();
     }
