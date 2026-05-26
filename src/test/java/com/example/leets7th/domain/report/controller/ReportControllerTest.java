@@ -4,19 +4,26 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
 import com.epages.restdocs.apispec.Schema;
+import com.example.leets7th.domain.post.controller.PostController;
 import com.example.leets7th.domain.report.domain.ReportContentType;
 import com.example.leets7th.domain.report.dto.ReportRequestDto;
 import com.example.leets7th.domain.report.dto.ReportResponseDto;
 import com.example.leets7th.domain.report.error.ReportException;
 import com.example.leets7th.domain.report.service.ReportService;
+import com.example.leets7th.global.auth.JwtExceptionFilter;
+import com.example.leets7th.global.auth.JwtFilter;
 import com.example.leets7th.global.code.ErrorCode;
+import com.example.leets7th.global.config.SecurityConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,10 +39,19 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReportController.class)
+@WebMvcTest(
+        controllers = ReportController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+                        SecurityConfig.class,
+                        JwtFilter.class,
+                        JwtExceptionFilter.class
+                })
+        }
+)
 @AutoConfigureRestDocs
 public class ReportControllerTest {
-
 
 
     @MockitoBean

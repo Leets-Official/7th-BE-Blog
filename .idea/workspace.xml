@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe1570b-38b0-4a5d-8519-5916e0d6f809" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostControllerDocs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostControllerDocs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/DemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/DemoApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/controller/PostControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/controller/PostControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/service/PostServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/service/PostServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportAdminControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportAdminControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +85,8 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "Gradle.7th-BE-Blog 빌드.executor": "Run",
     "Gradle.C:/Users/skaud/7th-BE-Blog/settings.gradle.executor": "Run",
+    "Gradle.DemoApplicationTests.executor": "Run",
+    "Gradle.GetPost.error_notFound.executor": "Run",
     "Gradle.GetPost.getPostApi_notFound.executor": "Run",
     "Gradle.GetPost.success.executor": "Run",
     "Gradle.GetPostList.getPostListApi.executor": "Run",
@@ -140,8 +151,8 @@
       <recent name="C:\Users\skaud\7th-BE-Blog\namyeongjun" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.DemoApplication">
-    <configuration name="approveReport" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.GetPost.error_notFound">
+    <configuration name="DemoApplicationTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -154,7 +165,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.example.leets7th.domain.report.controller.ReportAdminControllerTest$approveReport&quot;" />
+            <option value="&quot;com.example.leets7th.DemoApplicationTests&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -168,7 +179,7 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="approveReport.reportNotFound" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="GetPost.error_notFound" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -181,7 +192,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.example.leets7th.domain.report.controller.ReportAdminControllerTest$approveReport.reportNotFound&quot;" />
+            <option value="&quot;com.example.leets7th.domain.post.controller.PostControllerTest$GetPost.error_notFound&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -324,8 +335,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Gradle.approveReport" />
-      <item itemvalue="Gradle.approveReport.reportNotFound" />
+      <item itemvalue="Gradle.DemoApplicationTests" />
+      <item itemvalue="Gradle.GetPost.error_notFound" />
       <item itemvalue="Gradle.rejectReport.reportNotFound" />
       <item itemvalue="Gradle.rejectReport.success" />
       <item itemvalue="Spring Boot.DemoApplication (1)" />
@@ -333,11 +344,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.GetPost.error_notFound" />
+        <item itemvalue="Gradle.DemoApplicationTests" />
         <item itemvalue="Spring Boot.DemoApplication" />
         <item itemvalue="Gradle.rejectReport.reportNotFound" />
         <item itemvalue="Gradle.rejectReport.success" />
-        <item itemvalue="Gradle.approveReport.reportNotFound" />
-        <item itemvalue="Gradle.approveReport" />
       </list>
     </recent_temporary>
   </component>

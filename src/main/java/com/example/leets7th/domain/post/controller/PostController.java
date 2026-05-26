@@ -15,11 +15,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
-public class PostController implements PostControllerDocs {
+public class PostController {
     private final PostService postService;
 
 
-    @Override
+
     @GetMapping("/{postId}")
     public ApiResponse<PostResponseDto.ReadPost> getPost(
             @PathVariable Long postId,
@@ -29,14 +29,14 @@ public class PostController implements PostControllerDocs {
     }
 
 
-    @Override
+
     @GetMapping
     public ApiResponse<List<PostResponseDto.ReadPostList>> getPostList() {
         return ApiResponse.success(SuccessCode.POST_LIST_READ_OK,postService.getPostList());
     }
 
 
-    @Override
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ApiResponse<PostResponseDto.CreatePost> createPost(
@@ -46,7 +46,6 @@ public class PostController implements PostControllerDocs {
         return ApiResponse.success(SuccessCode.POST_CREATED,postService.createPost(request,userId));
     }
 
-    @Override
     @PatchMapping("/{postId}")
     public ApiResponse<PostResponseDto.UpdatePost> updatePost(
             @Valid @RequestBody PostRequestDto.PostUpdateReq request,
@@ -57,7 +56,7 @@ public class PostController implements PostControllerDocs {
     }
 
 
-    @Override
+
     @DeleteMapping("/{postId}")
     public ApiResponse<Void> deletePost(
             @PathVariable Long postId,
