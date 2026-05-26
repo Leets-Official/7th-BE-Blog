@@ -32,7 +32,7 @@ jobs:
         run: ./gradlew build -x test
 
       - name: Docker build
-        run: docker build -t daekyooo/springboot-assignment .
+        run: docker build -t daekyoooo/springboot-assignment .
 
       - name: Docker Hub Login
         uses: docker/login-action@v3
