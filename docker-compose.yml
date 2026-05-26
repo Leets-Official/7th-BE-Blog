@@ -23,7 +23,7 @@ services:
   spring:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.deploy
 
     container_name: spring-container
 
@@ -32,6 +32,9 @@ services:
 
     depends_on:
       - mysql
+
+    volumes:
+      - ./application.yml:/application.yml
 
     networks:
       - app-network
