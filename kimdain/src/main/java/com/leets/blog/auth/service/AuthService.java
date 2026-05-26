@@ -40,7 +40,6 @@ public class AuthService {
         return TokenResponse.of(jwtProvider.createAccessToken(user.getEmail()), jwtProvider.createRefreshToken(user.getEmail()));
     }
 
-    // 카카오 로그인
     @Transactional
     public TokenResponse kakaoLogin(String code) {
         String kakaoAccessToken = kakaoService.getAccessToken(code);
@@ -56,6 +55,7 @@ public class AuthService {
                         .name(nickname)
                         .password(passwordEncoder.encode(kakaoId))
                         .build()));
+
 
         return TokenResponse.of(
                 jwtProvider.createAccessToken(user.getEmail()),

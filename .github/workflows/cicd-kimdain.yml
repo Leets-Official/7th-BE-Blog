@@ -1,0 +1,49 @@
+name: CI/CD - 김다인
+
+on:
+  push:
+    branches: [ "김다인/8주차-v2" ]
+    paths:
+      - 'kimdain/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Write application.properties
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" > kimdain/src/main/resources/application.properties
+
+      - name: Build with Gradle
+        run: |
+          cd kimdain
+          chmod +x gradlew
+          ./gradlew build -x test
+
+      - name: Docker build & push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/blog-app ./kimdain
+          docker push ${{ secrets.DOCKER_USERNAME }}/blog-app
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu
+            docker pull ${{ secrets.DOCKER_USERNAME }}/blog-app
+            docker compose down
+            docker compose up -d
