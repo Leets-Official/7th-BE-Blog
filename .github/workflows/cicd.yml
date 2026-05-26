@@ -1,0 +1,31 @@
+name: CICD
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: java setup
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: create application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+
+      - name: grant execute permission
+        run: chmod +x gradlew
+
+      - name: build
+        run: ./gradlew build
+
+      - name: docker compose run
+        run: docker compose up -d --build
