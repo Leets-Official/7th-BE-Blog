@@ -17,7 +17,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,8 @@ import java.net.URI;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
+
+    private static final String KAKAO_STATE_COOKIE_NAME = "kakao_oauth_state";
 
     private final AuthService authService;
     private final KakaoOAuthService kakaoOAuthService;
@@ -71,8 +75,18 @@ public class AuthController {
     @Operation(summary = "카카오 로그인 시작", description = "브라우저를 카카오 로그인 화면으로 리다이렉트합니다.")
     @GetMapping("/auth/kakao")
     public ResponseEntity<Void> redirectToKakao() {
+        String state = kakaoOAuthService.generateState();
+        ResponseCookie stateCookie = ResponseCookie.from(KAKAO_STATE_COOKIE_NAME, state)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(300)
+                .build();
+
         return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(kakaoOAuthService.buildAuthorizationUri()))
+                .header(HttpHeaders.SET_COOKIE, stateCookie.toString())
+                .location(URI.create(kakaoOAuthService.buildAuthorizationUri(state)))
                 .build();
     }
 
@@ -81,10 +95,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse<KakaoLoginResponse>> kakaoCallback(
             @Parameter(description = "카카오에서 전달한 인가 코드")
             @RequestParam(required = false) String code,
+            @Parameter(description = "카카오에서 전달한 state 값")
+            @RequestParam(required = false) String state,
             @Parameter(description = "카카오 로그인 실패 시 전달되는 에러 코드")
             @RequestParam(required = false) String error,
             @Parameter(description = "카카오 로그인 실패 상세 설명")
-            @RequestParam(required = false, name = "error_description") String errorDescription
+            @RequestParam(required = false, name = "error_description") String errorDescription,
+            @CookieValue(name = KAKAO_STATE_COOKIE_NAME, required = false) String savedState
     ) {
         if (error != null) {
             String message = (errorDescription == null || errorDescription.isBlank())
@@ -97,7 +114,20 @@ public class AuthController {
             throw new CustomException(HttpStatus.BAD_REQUEST, "KAKAO_AUTH_CODE_MISSING", "카카오 인가 코드가 전달되지 않았습니다.");
         }
 
-        return ResponseEntity.ok(
+        kakaoOAuthService.validateState(state, savedState);
+
+        ResponseCookie deleteStateCookie = ResponseCookie.from(KAKAO_STATE_COOKIE_NAME, "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteStateCookie.toString());
+
+        return responseBuilder.body(
                 ApiResponse.success("KAKAO_LOGIN_SUCCESS", "카카오 로그인 성공", kakaoOAuthService.login(code))
         );
     }

@@ -1,0 +1,72 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - "변승현/8주차"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build application
+        run: ./gradlew clean bootJar
+
+      - name: Prepare deploy jar
+        run: |
+          JAR_FILE=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*plain.jar' | head -n 1)
+          cp "$JAR_FILE" app.jar
+
+      - name: Copy deploy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "Dockerfile.deploy,docker-compose.yml,docker-compose.deploy.yml,app.jar"
+          target: "~/demo"
+          strip_components: 0
+
+      - name: Run docker compose on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 30m
+          script: |
+            mkdir -p ~/demo
+            cat > ~/demo/.env <<'EOF'
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            EOF
+            cat > ~/demo/application.yml <<'EOF'
+            ${{ secrets.APPLICATION_YML }}
+            EOF
+            cd ~/demo
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE_CMD="docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              COMPOSE_CMD="docker-compose"
+            else
+              echo "Docker Compose is not installed on the server."
+              exit 1
+            fi
+            $COMPOSE_CMD -f docker-compose.yml -f docker-compose.deploy.yml down
+            $COMPOSE_CMD -f docker-compose.yml -f docker-compose.deploy.yml up -d --build
