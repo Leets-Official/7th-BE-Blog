@@ -1,9 +1,15 @@
 package com.example.demo.global.security;
 
+import com.example.demo.global.exception.CustomException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SecurityException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -46,15 +52,22 @@ public class JwtTokenProvider {
         return createToken(principal.getId(), principal.getEmail(), refreshTokenExpirationDays, ChronoUnit.DAYS);
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED", "만료된 토큰입니다.");
+        } catch (SecurityException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_SIGNATURE", "토큰 서명이 올바르지 않습니다.");
+        } catch (MalformedJwtException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "MALFORMED_TOKEN", "토큰 형식이 올바르지 않습니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "UNSUPPORTED_TOKEN", "지원하지 않는 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "EMPTY_TOKEN", "토큰이 비어 있습니다.");
         }
     }
 

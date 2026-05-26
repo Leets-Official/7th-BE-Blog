@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/login", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/api-docs", "/error").permitAll()
+                        .requestMatchers("/auth", "/auth/refresh", "/auth/kakao", "/auth/kakao/callback", "/login", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/api-docs", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/health").permitAll()
                         .anyRequest().authenticated()
                 )
