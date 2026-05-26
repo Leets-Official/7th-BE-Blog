@@ -41,4 +41,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker Push
-        run: docker push daekyooo/springboot-assignment
+        run: docker push daekyoooo/springboot-assignment
