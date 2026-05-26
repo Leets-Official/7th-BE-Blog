@@ -67,15 +67,25 @@ jobs:
           ${{ secrets.APPLICATION_YML }}
           EOF
 
+      - name: Prepare deployment bundle
+        run: |
+          mkdir -p deploy/build/libs
+          cp 7th-be-blog/Dockerfile deploy/Dockerfile
+          cp 7th-be-blog/docker-compose.yml deploy/docker-compose.yml
+          cp 7th-be-blog/application.yml deploy/application.yml
+          cp 7th-be-blog/build/libs/*.jar deploy/build/libs/app.jar
+
       - name: Copy project files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "7th-be-blog/Dockerfile,7th-be-blog/docker-compose.yml,7th-be-blog/build/libs,7th-be-blog/application.yml"
-          target: /home/${{ secrets.EC2_USERNAME }}/7th-BE-Blog
+          source: "deploy/**"
+          target: /home/${{ secrets.EC2_USERNAME }}/7th-BE-Blog/7th-be-blog
+          strip_components: 1
           rm: true
+          command_timeout: 10m
 
       - name: Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1.0.3
