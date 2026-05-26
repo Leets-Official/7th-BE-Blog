@@ -19,8 +19,24 @@ spring:
   #redis 포트 번호 지정
   data:
     redis:
-      host: localhost
+      host: ${PORT}
       port: 6379
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${PORT}:3306
+    username: root
+    password: ${MY_SQL_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
 
   # 구글 SMTP
   mail:
@@ -32,7 +48,7 @@ spring:
       mail:
         smtp:
           auth: true
-          sgtarttls:
+          starttls:
             enable: true
 
 

@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe1570b-38b0-4a5d-8519-5916e0d6f809" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/auth/domain/SocialAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/auth/domain/SocialAccount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/global/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/global/util/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/cd.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/auth/service/OAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/auth/service/OAuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,9 +54,9 @@
       <list>
         <option value="HTML File" />
         <option value="Exception" />
+        <option value="Interface" />
         <option value="Class" />
         <option value="Enum" />
-        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -128,7 +132,7 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.DemoApplication (1).executor": "Run",
     "Spring Boot.DemoApplication.executor": "Run",
-    "git-widget-placeholder": "나명준/7주차",
+    "git-widget-placeholder": "나명준/8주차",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/skaud/7th-BE-Blog/namyeongjun",
@@ -185,33 +189,6 @@
             <option value=":test" />
             <option value="--tests" />
             <option value="&quot;com.example.leets7th.domain.report.controller.ReportAdminControllerTest$approveReport.reportNotFound&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="approveReport.success" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.example.leets7th.domain.report.controller.ReportAdminControllerTest$approveReport.success&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -288,9 +265,27 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
-    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="7th-BE-Blog" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.demo.DemoApplication" />
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="7th-BE-Blog.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.leets7th.DemoApplication" />
+      <option name="VM_PARAMETERS" value="-Djava.io.tmpdir=C:\Users\skaud\AppData\Local\Temp" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.leets7th.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="true" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+          <ENTRY IS_ENABLED="true" PARSER="env" IS_EXECUTABLE="false" PATH=".env" />
+        </ENTRIES>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -321,21 +316,24 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Gradle.approveReport" />
       <item itemvalue="Gradle.approveReport.reportNotFound" />
-      <item itemvalue="Gradle.approveReport.success" />
       <item itemvalue="Gradle.rejectReport.reportNotFound" />
       <item itemvalue="Gradle.rejectReport.success" />
       <item itemvalue="Spring Boot.DemoApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.DemoApplication" />
         <item itemvalue="Gradle.rejectReport.reportNotFound" />
         <item itemvalue="Gradle.rejectReport.success" />
         <item itemvalue="Gradle.approveReport.reportNotFound" />
         <item itemvalue="Gradle.approveReport" />
-        <item itemvalue="Gradle.approveReport.success" />
       </list>
     </recent_temporary>
   </component>
@@ -360,6 +358,7 @@
       <workItem from="1777961832957" duration="296000" />
       <workItem from="1777962189867" duration="65112000" />
       <workItem from="1778309819601" duration="134426000" />
+      <workItem from="1779271988578" duration="56304000" />
     </task>
     <servers />
   </component>

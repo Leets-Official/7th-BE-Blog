@@ -83,7 +83,7 @@ public class OAuthService {
         // 헤더 토큰 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization","Bearer "+token.accessToken());
+        headers.setBearerAuth(token.accessToken());
 
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
