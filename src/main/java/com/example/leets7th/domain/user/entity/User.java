@@ -22,13 +22,13 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 30)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
@@ -39,6 +39,8 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private Long kakaoId;
 
     private String refreshToken;
 
@@ -54,6 +56,16 @@ public class User extends BaseEntity {
         User user = new User();
         user.email = email;
         user.password = encodedPassword;
+        user.nickname = nickname;
+        user.role = UserRole.USER;
+        return user;
+    }
+
+    public static User createByKakao(Long kakaoId, String email, String nickname, String encodedTempPassword) {
+        User user = new User();
+        user.kakaoId = kakaoId;
+        user.email = email;
+        user.password = encodedTempPassword;
         user.nickname = nickname;
         user.role = UserRole.USER;
         return user;
