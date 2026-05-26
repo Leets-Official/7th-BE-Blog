@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,10 +64,11 @@ public class AuthController implements AuthControllerDocs{
     }
 
     @GetMapping("/kakao/login")
-    public ResponseEntity<Void> redirectKakaoLogin() {
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(kakaoAuthService.getAuthorizationUrl()))
-                .build();
+    public ApiResponse<AuthResponse.KakaoLoginUrl> getKakaoLoginUrl() {
+        AuthResponse.KakaoLoginUrl response =
+                new AuthResponse.KakaoLoginUrl(kakaoAuthService.getAuthorizationUrl());
+
+        return ApiResponse.success(SuccessCode.KAKAO_LOGIN_URL_GET_SUCCESS, response);
     }
 
     @GetMapping("/kakao/callback")

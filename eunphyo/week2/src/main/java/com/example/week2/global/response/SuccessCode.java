@@ -39,7 +39,9 @@ public enum SuccessCode {
     LOGIN_SUCCESS(HttpStatus.OK,
             "AUTH200_1", "로그인에 성공하였습니다."),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK,
-            "AUTH200_2", "토큰 재발급에 성공하였습니다.");
+            "AUTH200_2", "토큰 재발급에 성공하였습니다."),
+    KAKAO_LOGIN_URL_GET_SUCCESS(HttpStatus.OK,
+            "AUTH200_3", "카카오 로그인 URL 조회에 성공하였습니다.");
 
 
 
