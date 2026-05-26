@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    networks:
+      - app-network
+
+  spring:
+    build:
+      context: .
+      dockerfile: Dockerfile.deploy
+
+    container_name: spring-container
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - mysql
+
+    volumes:
+      - ./application.yml:/application.yml
+
+    networks:
+      - app-network
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
