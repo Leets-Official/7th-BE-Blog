@@ -27,9 +27,11 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: application.yml 생성
+        env:
+          APP_YML: ${{ secrets.APPLICATION_YML }}
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+          printf '%s' "$APP_YML" > src/main/resources/application.yml
 
       - name: 테스트 실행
         run: ./gradlew test
