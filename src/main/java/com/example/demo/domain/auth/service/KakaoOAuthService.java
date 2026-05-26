@@ -20,6 +20,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,6 +31,7 @@ public class KakaoOAuthService {
     private static final String KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
     private static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final RestClient restClient;
     private final UserRepository userRepository;
@@ -42,7 +46,13 @@ public class KakaoOAuthService {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
-    public String buildAuthorizationUri() {
+    public String generateState() {
+        byte[] randomBytes = new byte[24];
+        SECURE_RANDOM.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+    }
+
+    public String buildAuthorizationUri(String state) {
         validateKakaoOAuthConfig();
 
         return UriComponentsBuilder.fromHttpUrl(KAKAO_AUTHORIZE_URL)
@@ -50,8 +60,19 @@ public class KakaoOAuthService {
                 .queryParam("client_id", clientId)
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("scope", "account_email,profile_nickname")
+                .queryParam("state", state)
                 .build()
                 .toUriString();
+    }
+
+    public void validateState(String state, String savedState) {
+        if (state == null || state.isBlank() || savedState == null || savedState.isBlank()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "INVALID_KAKAO_STATE", "유효하지 않은 카카오 OAuth state 값입니다.");
+        }
+
+        if (!state.equals(savedState)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "INVALID_KAKAO_STATE", "카카오 OAuth state 검증에 실패했습니다.");
+        }
     }
 
     @Transactional
