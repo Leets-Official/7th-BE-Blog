@@ -2,8 +2,10 @@ name: CI/CD
 
 on:
   push:
-    branches: [main, 이은표/main, 이은표/8주차]
-
+    branches:
+      - main
+      - 이은표/main
+      - 이은표/8주차
   workflow_dispatch:
 
 jobs:
