@@ -12,7 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"email", "provider"}),
+        @UniqueConstraint(columnNames = {"provider", "provider_id"})
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -28,15 +34,22 @@ public class User extends BaseEntity {
     @Column(name = "profile_url", length = 200)
     private String profileUrl;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Provider provider;
+
+    @Column(name = "provider_id", length = 50)
+    private String providerId;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
@@ -44,13 +57,25 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    public static User of(String username, String email, String password, String profileUrl) {
+    public static User ofLocal(String username, String email, String password, String profileUrl) {
         User user = new User();
         user.username = username;
         user.email = email;
         user.password = password;
         user.profileUrl = profileUrl;
         user.role = Role.USER;
+        user.provider = Provider.LOCAL;
+        return user;
+    }
+
+    public static User ofKakao(String username, String email, String profileUrl, String providerId) {
+        User user = new User();
+        user.username = username;
+        user.email = email;
+        user.profileUrl = profileUrl;
+        user.role = Role.USER;
+        user.provider = Provider.KAKAO;
+        user.providerId = providerId;
         return user;
     }
 

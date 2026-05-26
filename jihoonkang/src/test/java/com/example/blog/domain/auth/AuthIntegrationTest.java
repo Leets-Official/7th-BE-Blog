@@ -1,17 +1,25 @@
 package com.example.blog.domain.auth;
 
+import com.example.blog.domain.auth.client.KakaoOAuthClient;
+import com.example.blog.domain.auth.dto.KakaoTokenResponse;
+import com.example.blog.domain.auth.dto.KakaoUserInfo;
 import com.example.blog.domain.auth.dto.LoginRequest;
 import com.example.blog.domain.auth.dto.SignUpRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +34,18 @@ class AuthIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private KakaoOAuthClient kakaoOAuthClient;
+
+    @Value("${kakao.authorize-uri}")
+    private String authorizeUri;
+
+    @Value("${kakao.client-id}")
+    private String clientId;
+
+    @Value("${kakao.redirect-uri}")
+    private String redirectUri;
 
     @Test
     void 회원가입_성공() throws Exception {
@@ -124,5 +144,36 @@ class AuthIntegrationTest {
 
         mockMvc.perform(post("/reissue").cookie(fakeCookie))
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void 카카오_로그인_시작_카카오_인가_URL로_리다이렉트() throws Exception {
+        mockMvc.perform(get("/oauth/kakao/login"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(result -> {
+                String location = result.getResponse().getHeader("Location");
+                assertThat(location).startsWith(authorizeUri);
+                assertThat(location).contains("client_id=" + clientId);
+                assertThat(location).contains("response_type=code");
+            });
+    }
+
+    @Test
+    void 카카오_콜백_신규유저_액세스_토큰_반환() throws Exception {
+        KakaoTokenResponse kakaoToken = new KakaoTokenResponse("kakao_at", "kakao_rt", "bearer", 21599L);
+        KakaoUserInfo userInfo = new KakaoUserInfo(
+            55555L,
+            new KakaoUserInfo.KakaoAccount("integration@kakao.com",
+                new KakaoUserInfo.KakaoAccount.Profile("통합테스트닉", null))
+        );
+
+        given(kakaoOAuthClient.getToken(anyString())).willReturn(kakaoToken);
+        given(kakaoOAuthClient.getUserInfo(anyString())).willReturn(userInfo);
+
+        mockMvc.perform(get("/oauth/kakao/callback").param("code", "testcode"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("success"))
+            .andExpect(jsonPath("$.data.access_token").isNotEmpty())
+            .andExpect(cookie().exists("refreshToken"));
     }
 }

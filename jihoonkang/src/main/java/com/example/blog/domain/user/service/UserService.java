@@ -3,6 +3,7 @@ package com.example.blog.domain.user.service;
 import com.example.blog.domain.user.dto.UserCreateRequest;
 import com.example.blog.domain.user.dto.UserResponse;
 import com.example.blog.domain.user.dto.UserUpdateRequest;
+import com.example.blog.domain.user.entity.Provider;
 import com.example.blog.domain.user.entity.User;
 import com.example.blog.domain.user.repository.UserRepository;
 import com.example.blog.global.exception.BusinessException;
@@ -22,14 +23,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserResponse create(UserCreateRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmailAndProvider(request.email(), Provider.LOCAL)) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         if (userRepository.existsByUsername(request.username())) {
             throw new BusinessException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
         String hashedPassword = passwordEncoder.encode(request.password());
-        User user = User.of(request.username(), request.email(), hashedPassword, request.profileUrl());
+        User user = User.ofLocal(request.username(), request.email(), hashedPassword, request.profileUrl());
         return UserResponse.from(userRepository.save(user));
     }
 

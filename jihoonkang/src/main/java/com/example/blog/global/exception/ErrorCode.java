@@ -33,7 +33,10 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH_005", "Refresh Token이 존재하지 않습니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_006", "유효하지 않은 Refresh Token입니다."),
 
-    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "U003", "이미 사용 중인 닉네임입니다.");
+    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "U003", "이미 사용 중인 닉네임입니다."),
+
+    KAKAO_AUTH_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_011", "카카오 인증에 실패했습니다."),
+    KAKAO_USER_INFO_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_012", "카카오 사용자 정보 조회에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
