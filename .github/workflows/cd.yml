@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ 강지훈/main ]
 
 jobs:
   deploy:

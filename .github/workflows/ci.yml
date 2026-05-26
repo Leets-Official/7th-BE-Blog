@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ 강지훈/main ]
   push:
-    branches: [ develop ]
+    branches: [ 강지훈/main ]
 
 jobs:
   test-and-build:
