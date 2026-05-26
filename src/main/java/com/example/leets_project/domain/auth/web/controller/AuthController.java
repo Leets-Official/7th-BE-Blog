@@ -6,6 +6,7 @@ import com.example.leets_project.common.response.SuccessCode;
 import com.example.leets_project.common.security.jwt.JwtProperties;
 import com.example.leets_project.common.util.CookieUtil;
 import com.example.leets_project.domain.auth.service.AuthService;
+import com.example.leets_project.domain.auth.web.dto.KakaoLoginRequest;
 import com.example.leets_project.domain.auth.web.dto.LoginRequest;
 import com.example.leets_project.domain.auth.web.dto.SignUpRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,6 +75,17 @@ public class AuthController {
         }
         cookieUtil.deleteRefreshTokenCookie(response);
         return GlobalResponse.onSuccess(SuccessCode.AUTH_LOGOUT);
+    }
+
+    // Kakao 로그인
+    @PostMapping("/kakao/login")
+    public ResponseEntity<GlobalResponse> kakaoLogin(@RequestBody @Valid KakaoLoginRequest request,
+                                                     HttpServletResponse response
+    ) {
+        AuthService.LoginResult result = authService.loginWithKakao(request);
+        addRefreshTokenCookie(response, result.refreshToken());
+
+        return GlobalResponse.onSuccess(SuccessCode.AUTH_LOGIN, result.loginResponse());
     }
 
     // RefreshToken 쿠키 설정

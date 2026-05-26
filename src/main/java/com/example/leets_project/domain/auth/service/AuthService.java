@@ -6,11 +6,10 @@ import com.example.leets_project.common.security.jwt.JwtProperties;
 import com.example.leets_project.common.security.jwt.JwtTokenProvider;
 import com.example.leets_project.common.security.jwt.TokenType;
 import com.example.leets_project.domain.auth.entity.RefreshToken;
+import com.example.leets_project.domain.auth.oauth.kakao.dto.KakaoUserInfo;
 import com.example.leets_project.domain.auth.repository.RefreshTokenRepository;
-import com.example.leets_project.domain.auth.web.dto.LoginRequest;
-import com.example.leets_project.domain.auth.web.dto.LoginResponse;
-import com.example.leets_project.domain.auth.web.dto.SignUpRequest;
-import com.example.leets_project.domain.auth.web.dto.TokenResponse;
+import com.example.leets_project.domain.auth.web.dto.*;
+import com.example.leets_project.domain.user.entity.AuthProvider;
 import com.example.leets_project.domain.user.entity.User;
 import com.example.leets_project.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -22,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -35,6 +35,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties jwtProperties;
     private final PasswordEncoder passwordEncoder;
+    private final KakaoOAuthService kakaoOAuthService;
 
     // 회원가입
     @Transactional
@@ -47,6 +48,8 @@ public class AuthService {
                 .nickname(request.nickname())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
+                .authProvider(AuthProvider.LOCAL)
+                .providerId(null)
                 .build());
 
         log.info("회원가입 완료: email={}", request.email());
@@ -67,7 +70,7 @@ public class AuthService {
 
         return new LoginResult(
                 new LoginResponse(
-                        new TokenResponse(accessToken),
+                        TokenResponse.bearer(accessToken),
                         new LoginResponse.UserInfoResponse(
                                 user.getId(), user.getEmail(), user.getNickname())
                 ),
@@ -92,11 +95,11 @@ public class AuthService {
                 user.getId(), user.getEmail(), user.getRole().name());
         String newRefreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
-        storedToken.rotate(newRefreshToken, calculateExpiryDate());
+        storedToken.rotate(jwtTokenProvider.sha256(newRefreshToken), calculateExpiryDate());
 
         log.info("토큰 재발급 성공: userId={}", userId);
 
-        return new ReissueResult(new TokenResponse(newAccessToken), newRefreshToken);
+        return new ReissueResult(TokenResponse.bearer(newAccessToken), newRefreshToken);
     }
     // 로그아웃
     @Transactional
@@ -112,6 +115,59 @@ public class AuthService {
         } catch (JwtException e) {
             log.warn("로그아웃 - 유효하지 않은 토큰");
         }
+    }
+
+    // 카카오 소셜 로그인/회원가입 처리
+    @Transactional
+    public LoginResult loginWithKakao(KakaoLoginRequest request) {
+        // 인가 코드로 카카오 API 호출해 유저 정보 획득
+        KakaoUserInfo kakaoUser = kakaoOAuthService.getUserInfo(request.code());
+
+        // 이미 가입된 유저인지 검증 후 신규 가입 진행
+        User user = userRepository
+                .findByAuthProviderAndProviderId(AuthProvider.KAKAO, kakaoUser.providerId())
+                .orElseGet(() -> createKakaoUser(kakaoUser));
+
+        return issueLoginTokens(user);
+    }
+
+    // 카카오 신규 유저 데이터베이스 등록
+    private User createKakaoUser(KakaoUserInfo kakaoUser) {
+        String nickname = kakaoUser.nickname() != null && !kakaoUser.nickname().isBlank()
+                ? kakaoUser.nickname()
+                : "kakao_" + kakaoUser.providerId();
+
+        return userRepository.save(User.builder()
+                .email(kakaoUser.email())
+                .nickname(nickname)
+                .name(nickname)
+                .password(null)
+                .authProvider(AuthProvider.KAKAO)
+                .providerId(kakaoUser.providerId())
+                .build());
+    }
+
+    // 소셜/로컬 공통 로그인 토큰 발급 헬퍼
+    private LoginResult issueLoginTokens(User user) {
+        String accessToken = jwtTokenProvider.generateAccessToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name()
+        );
+
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+        saveOrRotateRefreshToken(user.getId(), refreshToken);
+
+        LoginResponse response = new LoginResponse(
+                TokenResponse.bearer(accessToken),
+                new LoginResponse.UserInfoResponse(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getNickname()
+                )
+        );
+
+        return new LoginResult(response, refreshToken);
     }
 
     public record LoginResult(LoginResponse loginResponse, String refreshToken) {}
@@ -146,12 +202,13 @@ public class AuthService {
     }
 
     private void validateStoredToken(RefreshToken storedToken, String refreshToken, Long userId) {
-        if (!storedToken.getToken().equals(refreshToken)) {
+        String refreshTokenHash = jwtTokenProvider.sha256(refreshToken);
+        if (!storedToken.getTokenHash().equals(refreshTokenHash)) {
             refreshTokenRepository.delete(storedToken);
             log.warn("RefreshToken 재사용 감지: userId={}", userId);
             throw new GeneralException(ErrorCode.INVALID_TOKEN);
         }
-        if (storedToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (storedToken.isExpired(Instant.now())) {
             refreshTokenRepository.delete(storedToken);
             log.warn("RefreshToken 만료: userId={}", userId);
             throw new GeneralException(ErrorCode.EXPIRED_TOKEN);
@@ -159,21 +216,21 @@ public class AuthService {
     }
     // Refresh token 저장/순환
     private void saveOrRotateRefreshToken(Long userId, String refreshToken) {
-        LocalDateTime expiresAt = calculateExpiryDate();
+        String tokenHash = jwtTokenProvider.sha256(refreshToken);
+        Instant expiresAt = calculateExpiryDate();
         refreshTokenRepository.findByUserId(userId)
                 .ifPresentOrElse(
-                        token -> token.rotate(refreshToken, expiresAt),
+                        token -> token.rotate(tokenHash, expiresAt),
                         () -> refreshTokenRepository.save(RefreshToken.builder()
                                 .userId(userId)
-                                .token(refreshToken)
+                                .tokenHash(tokenHash)
                                 .expiresAt(expiresAt)
                                 .build())
                 );
     }
     // 만료일자 계산
-    private LocalDateTime calculateExpiryDate() {
-        return LocalDateTime.now()
-                .plusSeconds(jwtProperties.getRefreshTokenExpirationMillis() / 1000);
+    private Instant calculateExpiryDate() {
+        return Instant.now().plusMillis(jwtProperties.getRefreshTokenExpirationMillis());
     }
     // 이메일 중복 검증
     private void validateDuplicateEmail(String email) {

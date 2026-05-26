@@ -1,5 +1,6 @@
 package com.example.leets_project.domain.user.repository;
 
+import com.example.leets_project.domain.user.entity.AuthProvider;
 import com.example.leets_project.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByEmail(String email);
     // 닉네임 중복 확인
     boolean existsByNickname(String nickname);
+    Optional<User> findByAuthProviderAndProviderId(AuthProvider authProvider, String providerId);
 }
+

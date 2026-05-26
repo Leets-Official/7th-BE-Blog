@@ -17,3 +17,19 @@ jwt:
   secret: dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtZ2VuZXJhdGlvbi1ub3ctM
   access-token-expiration-millis: 1800000    # 30분 (30 * 60 * 1000)
   refresh-token-expiration-millis: 1209600000 # 14일 (14 * 24 * 60 * 60 * 1000)
+
+oauth:
+  kakao:
+    client-id: 37fd82a73958cea4cb4d43bd9b562048
+    client-secret: eGsgszGpDxrFg8M7vWqSjGBL45CwImN7
+    redirect-uri: http://localhost:8080/oauth/kakao/callback
+    auth-url: https://kauth.kakao.com/oauth/authorize
+    token-url: https://kauth.kakao.com/oauth/token
+    user-info-url: https://kapi.kakao.com/v2/user/me
+
+cookie:
+  secure: ${COOKIE_SECURE:false}
+
+app:
+  oauth:
+    redirect-url: ${OAUTH_REDIRECT_URL:http://localhost:8080/oauth/callback}

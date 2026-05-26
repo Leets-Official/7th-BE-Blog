@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,21 +22,25 @@ public class RefreshToken {
     @Column(nullable = false, unique = true)
     private Long userId;
 
-    @Column(nullable = false, length = 500)
-    private String token;
+    @Column(nullable = false, length = 128)
+    private String tokenHash;
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private Instant expiresAt;
 
     @Builder
-    public RefreshToken(Long userId, String token, LocalDateTime expiresAt) {
+    private RefreshToken(Long userId, String tokenHash, Instant expiresAt) {
         this.userId = userId;
-        this.token = token;
+        this.tokenHash = tokenHash;
         this.expiresAt = expiresAt;
     }
 
-    public void rotate(String newToken, LocalDateTime expiresAt) {
-        this.token = newToken;
+    public void rotate(String tokenHash, Instant expiresAt) {
+        this.tokenHash = tokenHash;
         this.expiresAt = expiresAt;
+    }
+
+    public boolean isExpired(Instant now) {
+        return expiresAt.isBefore(now);
     }
 }

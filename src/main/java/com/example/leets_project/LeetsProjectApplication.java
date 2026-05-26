@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
-@ConfigurationPropertiesScan("com.example.leets_project.common.security.jwt")
+@ConfigurationPropertiesScan("com.example.leets_project.common.security.jwt, com.example.leets_project.domain.auth.oauth.kakao" )
 @SpringBootApplication
 public class LeetsProjectApplication {
 

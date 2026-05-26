@@ -4,6 +4,7 @@ import com.example.leets_project.common.security.jwt.JwtAccessDeniedHandler;
 import com.example.leets_project.common.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.leets_project.common.security.jwt.JwtAuthenticationFilter;
 import com.example.leets_project.common.security.jwt.JwtProperties;
+import com.example.leets_project.domain.auth.oauth.kakao.KakaoOAuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, KakaoOAuthProperties.class})
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -44,7 +45,7 @@ public class SecurityConfig {
                 )
                 // URL 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/users/signup").permitAll()
+                        .requestMatchers("/api/auth/**","/oauth/kakao/callback", "/api/users/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**", "/error").permitAll()

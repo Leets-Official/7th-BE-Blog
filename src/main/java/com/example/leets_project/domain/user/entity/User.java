@@ -25,18 +25,25 @@ public class User extends BaseEntity{
     @Column(nullable = false, length = 50) // 동명이인 가능 -> unique 값 제외
     private String name;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(unique = true, length = 100)// Kakao test 위해 잠시 nullable 해제
     private String email;
 
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column // Kakao test 위해 잠시 nullable 해제
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AuthProvider authProvider;
+
+    @Column(length = 100)
+    private String providerId;
 
     // 양방향: User → Post
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,12 +54,14 @@ public class User extends BaseEntity{
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public User(String name, String email, String nickname, String password) {
+    public User(String name, String email, String nickname, String password, AuthProvider authProvider,  String providerId) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.role = UserRole.USER;
+        this.authProvider = authProvider;
+        this.providerId = providerId;
     }
 }
 

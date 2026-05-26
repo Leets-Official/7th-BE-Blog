@@ -16,7 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.HexFormat;
 import java.util.List;
 
 @Slf4j
@@ -152,5 +156,16 @@ public class JwtTokenProvider {
             return bearerToken.substring(BEARER_PREFIX.length());
         }
         return null;
+    }
+
+    // DB 해킹 -> refresh token 탈취 방지 -> 복호화(해싱)
+    public String sha256(String value) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encoded = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(encoded);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 algorithm is not available", e);
+        }
     }
 }

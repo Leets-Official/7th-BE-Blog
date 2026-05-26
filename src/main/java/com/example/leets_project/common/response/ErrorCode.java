@@ -47,7 +47,11 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4003", "만료된 토큰입니다."),
     INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "AUTH_4004", "토큰 타입이 올바르지 않습니다."),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_4005", "이메일 또는 비밀번호가 올바르지 않습니다."),
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_4040", "리프레시 토큰이 존재하지 않습니다.");
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_4040", "리프레시 토큰이 존재하지 않습니다."),
+    // Kakao
+    KAKAO_TOKEN_REQUEST_FAILED(HttpStatus.UNAUTHORIZED, "KAKAO_4000", "카카오 토큰 요청에 실패했습니다."),
+    KAKAO_USER_INFO_REQUEST_FAILED(HttpStatus.UNAUTHORIZED, "KAKAO_4001", "카카오 사용자 정보 요청에 실패했습니다."),
+    KAKAO_EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "KAKAO_4002", "카카오 계정 이메일이 존재하지 않습니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

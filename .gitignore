@@ -51,3 +51,7 @@ out/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# yaml
+*.yml
+*.yaml
