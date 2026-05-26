@@ -2,7 +2,7 @@ name: CI leets
 
 on:
   push:
-    branches: [ "나명준/**주차" ]
+    branches: [ "나명준/**" ]
 
 jobs:
   test:
