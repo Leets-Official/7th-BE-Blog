@@ -1,0 +1,73 @@
+name: CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+      - "김동빈/main"
+  push:
+    branches:
+      - main
+      - "김동빈/main"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Test
+        run: ./gradlew clean test
+
+      - name: Build
+        run: ./gradlew bootJar
+
+  cd:
+    needs: ci
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create application.yml
+        run: |
+          cat > application.yml <<'EOF'
+          ${{ secrets.APPLICATION_YML }}
+          EOF
+
+      - name: Copy project files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "Dockerfile,docker-compose.yml,build.gradle,settings.gradle,gradlew,gradle,src,application.yml"
+          target: /home/${{ secrets.EC2_USERNAME }}/7th-BE-Blog
+          rm: true
+
+      - name: Run Docker Compose on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/7th-BE-Blog
+            chmod +x gradlew
+            docker compose down
+            docker compose up -d --build
