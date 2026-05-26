@@ -1,4 +1,4 @@
-name: Leets CI
+name: CI leets
 
 on:
   push:
