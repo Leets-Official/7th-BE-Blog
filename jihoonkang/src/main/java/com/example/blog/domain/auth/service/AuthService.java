@@ -65,7 +65,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request, HttpServletResponse response) {
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmailAndProvider(request.email(), Provider.LOCAL)
             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {

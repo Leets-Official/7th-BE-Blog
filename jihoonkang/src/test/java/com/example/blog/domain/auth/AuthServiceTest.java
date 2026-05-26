@@ -24,6 +24,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,10 +59,14 @@ class AuthServiceTest {
     @Mock
     private KakaoOAuthClient kakaoOAuthClient;
 
+    @Mock
+    private PlatformTransactionManager transactionManager;
+
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(authService, "refreshExpiration", 1209600000L);
         ReflectionTestUtils.setField(authService, "cookieSecure", false);
+        lenient().when(transactionManager.getTransaction(any())).thenReturn(mock(TransactionStatus.class));
     }
 
     @Test
@@ -89,7 +96,7 @@ class AuthServiceTest {
 
     @Test
     void login_사용자_없음_예외() {
-        given(userRepository.findByEmail("no@example.com")).willReturn(Optional.empty());
+        given(userRepository.findByEmailAndProvider("no@example.com", Provider.LOCAL)).willReturn(Optional.empty());
 
         LoginRequest request = new LoginRequest("no@example.com", "pass123");
 
@@ -102,7 +109,7 @@ class AuthServiceTest {
     @Test
     void login_비밀번호_불일치_예외() {
         User user = User.ofLocal("지훈", "jihoon@example.com", "hashedPw", null);
-        given(userRepository.findByEmail("jihoon@example.com")).willReturn(Optional.of(user));
+        given(userRepository.findByEmailAndProvider("jihoon@example.com", Provider.LOCAL)).willReturn(Optional.of(user));
         given(passwordEncoder.matches("wrongPw", "hashedPw")).willReturn(false);
 
         LoginRequest request = new LoginRequest("jihoon@example.com", "wrongPw");
