@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches:햣
+    branches:
       - "이은표/8주차"
   workflow_dispatch:
 
