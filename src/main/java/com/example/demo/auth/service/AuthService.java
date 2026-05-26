@@ -1,5 +1,6 @@
 package com.example.demo.auth.service;
 
+import com.example.demo.auth.dto.KakaoLoginRequest;
 import com.example.demo.auth.dto.LoginRequest;
 import com.example.demo.auth.dto.ReissueRequest;
 import com.example.demo.auth.dto.SignupRequest;
@@ -20,6 +21,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final KakaoAuthService kakaoAuthService;
 
     public Long signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -57,6 +59,10 @@ public class AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    public TokenResponse kakaoLogin(KakaoLoginRequest request) {
+        return kakaoAuthService.kakaoLogin(request);
     }
 
     public TokenResponse reissue(ReissueRequest request) {

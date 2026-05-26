@@ -8,6 +8,7 @@ import com.example.demo.post.dto.PostCreateRequest;
 import com.example.demo.post.dto.PostDetailResponse;
 import com.example.demo.post.dto.PostResponse;
 import com.example.demo.post.service.PostService;
+import com.example.demo.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +30,6 @@ public class PostController {
 
     private final PostService postService;
 
-    // 게시글 생성
     @Operation(
             summary = "게시글 생성 API",
             description = "로그인한 사용자가 새로운 게시글을 생성합니다."
@@ -57,16 +57,15 @@ public class PostController {
     })
     @PostMapping
     public ApiResponse<PostResponse> create(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
             @RequestBody @Valid PostCreateRequest request) {
 
         return ResponseUtil.success(
                 BaseCode.POST_CREATE_SUCCESS,
-                postService.createPost(userId, request)
+                postService.createPost(user.getId(), request)
         );
     }
 
-    // 게시글 수정
     @Operation(
             summary = "게시글 수정 API",
             description = "로그인한 사용자가 postId에 해당하는 게시글을 수정합니다."
@@ -94,7 +93,7 @@ public class PostController {
     })
     @PutMapping("/{postId}")
     public ApiResponse<PostResponse> update(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
 
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId,
@@ -103,11 +102,10 @@ public class PostController {
 
         return ResponseUtil.success(
                 BaseCode.POST_UPDATE_SUCCESS,
-                postService.updatePost(userId, postId, request)
+                postService.updatePost(user.getId(), postId, request)
         );
     }
 
-    // 게시글 삭제
     @Operation(
             summary = "게시글 삭제 API",
             description = "로그인한 사용자가 postId에 해당하는 게시글을 삭제합니다."
@@ -130,18 +128,17 @@ public class PostController {
     })
     @DeleteMapping("/{postId}")
     public ApiResponse<Map<String, Long>> delete(
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal User user,
 
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId) {
 
         return ResponseUtil.success(
                 BaseCode.POST_DELETE_SUCCESS,
-                Map.of("postId", postService.deletePost(userId, postId))
+                Map.of("postId", postService.deletePost(user.getId(), postId))
         );
     }
 
-    // 게시글 조회
     @Operation(
             summary = "게시글 상세 조회 API",
             description = "postId에 해당하는 게시글 상세 정보를 조회합니다."
