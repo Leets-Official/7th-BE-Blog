@@ -47,9 +47,6 @@ class AuthIntegrationTest {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
-    @Value("${kakao.frontend-redirect-uri}")
-    private String frontendRedirectUri;
-
     @Test
     void 회원가입_성공() throws Exception {
         SignUpRequest request = new SignUpRequest("test@example.com", "pass123!", "테스트유저", null);
@@ -162,7 +159,7 @@ class AuthIntegrationTest {
     }
 
     @Test
-    void 카카오_콜백_신규유저_프론트로_리다이렉트() throws Exception {
+    void 카카오_콜백_신규유저_액세스_토큰_반환() throws Exception {
         KakaoTokenResponse kakaoToken = new KakaoTokenResponse("kakao_at", "kakao_rt", "bearer", 21599L);
         KakaoUserInfo userInfo = new KakaoUserInfo(
             55555L,
@@ -174,11 +171,9 @@ class AuthIntegrationTest {
         given(kakaoOAuthClient.getUserInfo(anyString())).willReturn(userInfo);
 
         mockMvc.perform(get("/oauth/kakao/callback").param("code", "testcode"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(result -> {
-                String location = result.getResponse().getHeader("Location");
-                assertThat(location).startsWith(frontendRedirectUri);
-                assertThat(location).contains("accessToken=");
-            });
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("success"))
+            .andExpect(jsonPath("$.data.access_token").isNotEmpty())
+            .andExpect(cookie().exists("refreshToken"));
     }
 }
