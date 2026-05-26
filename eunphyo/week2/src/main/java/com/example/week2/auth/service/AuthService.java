@@ -38,6 +38,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(User.Role.USER)
+                .provider(User.AuthProvider.LOCAL)
                 .build();
 
         userRepository.save(user);
@@ -45,7 +46,7 @@ public class AuthService {
 
     public AuthResponse.TokenResult login(AuthRequest.LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmailAndProvider(request.getEmail(), User.AuthProvider.LOCAL)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {

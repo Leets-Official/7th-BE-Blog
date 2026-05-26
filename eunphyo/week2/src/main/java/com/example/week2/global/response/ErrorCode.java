@@ -48,8 +48,13 @@ public enum ErrorCode implements BaseErrorCode{
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT,
             "USER400_2", "이미 존재하는 이메일입니다."),
     NICKNAME_ALREADY_EXISTS(HttpStatus.CONFLICT,
-            "USER400_3", "이미 존재하는 닉네임입니다.");
+            "USER400_3", "이미 존재하는 닉네임입니다."),
 
+    //kakao
+    KAKAO_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST,
+            "KAKAO400_1", "카카오 토큰 요청에 실패했습니다."),
+    KAKAO_USER_INFO_REQUEST_FAILED(HttpStatus.BAD_REQUEST,
+            "KAKAO400_2", "카카오 사용자 정보 조회에 실패했습니다.");
 
 
     private final HttpStatus status;

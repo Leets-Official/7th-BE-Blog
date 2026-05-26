@@ -10,7 +10,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_users_provider_provider_id",
+                        columnNames = {"provider", "provider_id"}
+                )
+        }
+)
 public class User extends BaseEntity {
 
     @Id
@@ -23,7 +31,7 @@ public class User extends BaseEntity {
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickname;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password", nullable = false, length = 100)
@@ -33,17 +41,38 @@ public class User extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider", nullable = false)
+    private AuthProvider provider;
+
+    @Column(name = "provider_id")
+    private String providerId;
+
     public enum Role {
         USER, ADMIN
     }
 
+    public enum AuthProvider {
+        LOCAL, KAKAO
+    }
+
     @Builder
-    public User(String name, String nickname, String email, String password, Role role) {
+    public User(
+            String name,
+            String nickname,
+            String email,
+            String password,
+            Role role,
+            AuthProvider provider,
+            String providerId
+    ) {
 
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = role == null ? Role.USER : role;
+        this.provider = provider == null ? AuthProvider.LOCAL : provider;
+        this.providerId = providerId;
     }
 }

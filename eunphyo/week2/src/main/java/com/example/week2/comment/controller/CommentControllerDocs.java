@@ -47,6 +47,8 @@ public interface CommentControllerDocs {
         })
         @PostMapping("/{commentId}/likes")
         ApiResponse<CommentResponse.CommentLikeResponse> likeComment(
+                @Parameter(description = "작성자 user ID", example = "1")
+                @RequestParam Long userId,
                 @Parameter(description = "게시물 post ID", example = "1")
                 @PathVariable Long postId,
                 @Parameter(description = "댓글 comment ID", example = "1")

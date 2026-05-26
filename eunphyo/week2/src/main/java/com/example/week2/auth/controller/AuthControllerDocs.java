@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
 public interface AuthControllerDocs {
@@ -47,4 +45,19 @@ public interface AuthControllerDocs {
             @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse response
             );
+
+    @Operation(summary = "카카오 로그인 페이지 이동", description = "카카오 OAuth 인가 페이지로 리다이렉트합니다.")
+    @GetMapping("/kakao/login")
+    ResponseEntity<Void> redirectKakaoLogin();
+
+    @Operation(summary = "카카오 로그인 콜백", description = "카카오 인가 코드를 받아 로그인 처리 후 Access Token을 발급합니다.")
+    @ApiErrorCodeExample({
+            ErrorCode.KAKAO_TOKEN_REQUEST_FAILED,
+            ErrorCode.KAKAO_USER_INFO_REQUEST_FAILED
+    })
+    @GetMapping("/kakao/callback")
+    ApiResponse<AuthResponse.AccessToken> kakaoCallback(
+            @RequestParam String code,
+            HttpServletResponse servletResponse
+    );
 }
