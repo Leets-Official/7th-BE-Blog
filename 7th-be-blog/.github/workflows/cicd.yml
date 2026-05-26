@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - "김동빈/main"
+      - "김동빈/8주차"
   push:
     branches:
       - main
       - "김동빈/main"
+      - "김동빈/8주차"
   workflow_dispatch:
 
 jobs:
