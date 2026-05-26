@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 @Tag(name = "소셜 로그인", description = "카카오 OAuth 로그인")
@@ -42,10 +43,11 @@ public class OAuthController {
     @Operation(summary = "카카오 로그인 시작", description = "카카오 인가 페이지로 리다이렉트합니다.")
     @GetMapping("/login")
     public void redirectToKakao(HttpServletResponse response) throws java.io.IOException {
-        String authUrl = authorizeUri
-            + "?client_id=" + clientId
-            + "&redirect_uri=" + redirectUri
-            + "&response_type=code";
+        String authUrl = UriComponentsBuilder.fromHttpUrl(authorizeUri)
+            .queryParam("client_id", clientId)
+            .queryParam("redirect_uri", redirectUri)
+            .queryParam("response_type", "code")
+            .toUriString();
         response.sendRedirect(authUrl);
     }
 
@@ -60,9 +62,10 @@ public class OAuthController {
     @Operation(summary = "카카오 로그아웃 시작", description = "카카오 로그아웃 페이지로 리다이렉트합니다.")
     @GetMapping("/logout/start")
     public void startLogout(HttpServletResponse response) throws java.io.IOException {
-        String kakaoLogoutUrl = logoutUri
-            + "?client_id=" + clientId
-            + "&logout_redirect_uri=" + logoutRedirectUri;
+        String kakaoLogoutUrl = UriComponentsBuilder.fromHttpUrl(logoutUri)
+            .queryParam("client_id", clientId)
+            .queryParam("logout_redirect_uri", logoutRedirectUri)
+            .toUriString();
         response.sendRedirect(kakaoLogoutUrl);
     }
 
