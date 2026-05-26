@@ -24,14 +24,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AuthService {
 
     private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
@@ -41,6 +42,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final KakaoOAuthClient kakaoOAuthClient;
+    private final PlatformTransactionManager transactionManager;
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
@@ -48,6 +50,7 @@ public class AuthService {
     @Value("${jwt.cookie.secure}")
     private boolean cookieSecure;
 
+    @Transactional
     public UserResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmailAndProvider(request.email(), Provider.LOCAL)) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
@@ -60,6 +63,7 @@ public class AuthService {
         return UserResponse.from(userRepository.save(user));
     }
 
+    @Transactional
     public TokenResponse login(LoginRequest request, HttpServletResponse response) {
         User user = userRepository.findByEmail(request.email())
             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -82,6 +86,7 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
+    @Transactional
     public TokenResponse reissue(HttpServletRequest request) {
         String refreshToken = extractRefreshTokenFromCookie(request);
 
@@ -110,23 +115,25 @@ public class AuthService {
         KakaoTokenResponse kakaoToken = kakaoOAuthClient.getToken(code);
         KakaoUserInfo userInfo = kakaoOAuthClient.getUserInfo(kakaoToken.accessToken());
 
-        String providerId = String.valueOf(userInfo.id());
+        return new TransactionTemplate(transactionManager).execute(status -> {
+            String providerId = String.valueOf(userInfo.id());
 
-        User user = userRepository.findByProviderAndProviderId(Provider.KAKAO, providerId)
-            .orElseGet(() -> registerKakaoUser(userInfo, providerId));
+            User user = userRepository.findByProviderAndProviderId(Provider.KAKAO, providerId)
+                .orElseGet(() -> registerKakaoUser(userInfo, providerId));
 
-        String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
+            String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole().name());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
-        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(refreshExpiration / 1000);
-        refreshTokenRepository.findByUserId(user.getId())
-            .ifPresentOrElse(
-                rt -> rt.update(refreshToken, expiresAt),
-                () -> refreshTokenRepository.save(RefreshToken.of(user.getId(), refreshToken, expiresAt))
-            );
+            LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(refreshExpiration / 1000);
+            refreshTokenRepository.findByUserId(user.getId())
+                .ifPresentOrElse(
+                    rt -> rt.update(refreshToken, expiresAt),
+                    () -> refreshTokenRepository.save(RefreshToken.of(user.getId(), refreshToken, expiresAt))
+                );
 
-        setRefreshTokenCookie(response, refreshToken);
-        return new TokenResponse(accessToken);
+            setRefreshTokenCookie(response, refreshToken);
+            return new TokenResponse(accessToken);
+        });
     }
 
     private User registerKakaoUser(KakaoUserInfo userInfo, String providerId) {
@@ -144,6 +151,7 @@ public class AuthService {
         return candidate + "_" + providerId;
     }
 
+    @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = extractRefreshTokenFromCookie(request);
         if (refreshToken != null) {
