@@ -1,0 +1,16 @@
+package com.example.blog7th.auth.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class TokenResponse {
+    private String accessToken;
+    private String refreshToken;
+
+    public TokenResponse(String accessToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = null; // 리프레시 토큰은 null로 처리
+    }
+}
