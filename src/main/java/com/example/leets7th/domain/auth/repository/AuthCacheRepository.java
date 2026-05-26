@@ -1,5 +1,6 @@
 package com.example.leets7th.domain.auth.repository;
 
+import com.example.leets7th.domain.auth.domain.TokenBlindReason;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,22 +13,39 @@ public class AuthCacheRepository {
     private final StringRedisTemplate redisTemplate;
 
     private static final String RT_PREFIX = "RT:";
+    private static final String BLIND_PREFIX = "BLIND:";
 
 
     //
-    public void saveRefreshToken(String token,String loginId) {
+    public void saveRefreshToken(String token,Long userId) {
         String key = RT_PREFIX + token;
-        redisTemplate.opsForValue().set(key,loginId, Duration.ofDays(7));
+        redisTemplate.opsForValue().set(key,userId.toString(), Duration.ofDays(7));
     }
 
-    public String getRefreshToken(String token) {
+    public Long getUserIdByRefreshToken(String token) {
         String key = RT_PREFIX + token;
-        return redisTemplate.opsForValue().get(key);
+
+        String userId = redisTemplate.opsForValue().get(key);
+
+        if(userId == null) {
+            return null;
+        }
+        return Long.valueOf(userId);
     }
 
 
     public void deleteRefreshToken(String token) {
         String key = RT_PREFIX + token;
         redisTemplate.delete(key);
+    }
+
+    public void saveBlindToken(String token, TokenBlindReason reason, Long remainMs) {
+        String key = BLIND_PREFIX + token;
+        redisTemplate.opsForValue().set(key,reason.name(),Duration.ofMillis(remainMs));
+    }
+
+    public boolean isBlindedToken(String token) {
+        String key = BLIND_PREFIX + token;
+        return redisTemplate.opsForValue().get(key) != null;
     }
 }

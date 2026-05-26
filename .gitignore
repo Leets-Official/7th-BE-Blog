@@ -5,6 +5,9 @@
 *.ipr
 out/
 
+# env
+*.env
+
 # Gradle
 .gradle/
 build/

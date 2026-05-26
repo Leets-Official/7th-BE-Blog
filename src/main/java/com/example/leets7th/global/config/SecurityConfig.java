@@ -1,5 +1,6 @@
 package com.example.leets7th.global.config;
 
+import com.example.leets7th.global.auth.JwtExceptionFilter;
 import com.example.leets7th.global.auth.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +16,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecuriyConfig {
+public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,6 +29,7 @@ public class SecuriyConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/api/auth/login","/api/users","/api/auth/reissue").permitAll()
+                        .requestMatchers("/api/auth/code/**").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
@@ -39,7 +42,8 @@ public class SecuriyConfig {
 
 
 
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
 
 
         return http.build();

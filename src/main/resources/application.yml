@@ -3,6 +3,19 @@ spring:
   application:
     name: demo
 
+
+  oauth2:
+    kakao:
+      client-id: "${KAKAO_ID}"
+      client-secret: "${KAKAO_SECRET}"
+      redirect-uri: "http://${PORT}:8080/api/auth/code/kakao"
+      authorization-uri: "https://kauth.kakao.com/oauth/authorize"
+      token-uri: "https://kauth.kakao.com/oauth/token"
+      user-info-uri: "https://kapi.kakao.com/v2/user/me"
+
+
+
+
   #redis 포트 번호 지정
   data:
     redis:
@@ -13,13 +26,13 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: skaudwns3@gmail.com
+    username: ${GMAIL_SMTP}
     password: ${MAIL_KEY}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          sgtarttls:
             enable: true
 
 
@@ -32,3 +45,6 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
+  access-token-expiration: 900000
+
+
