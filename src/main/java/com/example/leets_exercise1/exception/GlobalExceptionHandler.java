@@ -2,6 +2,7 @@ package com.example.leets_exercise1.exception;
 
 import com.example.leets_exercise1.auth.exception.EmailAlreadyExistsException;
 import com.example.leets_exercise1.auth.exception.InvalidLoginException;
+import com.example.leets_exercise1.auth.exception.KakaoLoginFailedException;
 import com.example.leets_exercise1.auth.exception.NicknameAlreadyExistsException;
 import com.example.leets_exercise1.auth.exception.RefreshTokenNotFoundException;
 import com.example.leets_exercise1.common.response.ApiResponse;
@@ -83,6 +84,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RefreshTokenNotFoundException.class)
     public ResponseEntity<ApiResponse<Map<String, Object>>> handleRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
         return error(HttpStatus.UNAUTHORIZED, "4011", e.getMessage());
+    }
+
+    @ExceptionHandler(KakaoLoginFailedException.class)
+    public ResponseEntity<ApiResponse<Map<String, Object>>> handleKakaoLoginFailedException(KakaoLoginFailedException e) {
+        return error(HttpStatus.BAD_REQUEST, "4005", e.getMessage());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
