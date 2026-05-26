@@ -75,27 +75,31 @@ jobs:
           cp 7th-be-blog/application.yml deploy/application.yml
           cp 7th-be-blog/build/libs/*.jar deploy/build/libs/app.jar
 
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
       - name: Copy project files to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "deploy/**"
-          target: /home/${{ secrets.EC2_USERNAME }}/7th-BE-Blog/7th-be-blog
-          strip_components: 1
-          rm: true
-          command_timeout: 10m
+        run: |
+          tar -czf deploy.tar.gz -C deploy .
+          timeout 5m ssh -i ~/.ssh/ec2_key -o BatchMode=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
+            "rm -rf ~/7th-BE-Blog/7th-be-blog && mkdir -p ~/7th-BE-Blog/7th-be-blog"
+          timeout 5m scp -i ~/.ssh/ec2_key -o BatchMode=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+            deploy.tar.gz "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/7th-BE-Blog/deploy.tar.gz"
+          timeout 5m ssh -i ~/.ssh/ec2_key -o BatchMode=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
+            "tar -xzf ~/7th-BE-Blog/deploy.tar.gz -C ~/7th-BE-Blog/7th-be-blog && rm ~/7th-BE-Blog/deploy.tar.gz"
 
       - name: Run Docker Compose on EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 10m
-          script: |
-            set -e
-            cd ~/7th-BE-Blog/7th-be-blog
-            docker compose down
-            docker compose up -d --build
+        run: |
+          timeout 10m ssh -i ~/.ssh/ec2_key -o BatchMode=yes -o ConnectTimeout=30 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" <<'EOF'
+          set -e
+          cd ~/7th-BE-Blog/7th-be-blog
+          docker compose down
+          docker compose up -d --build
+          EOF
