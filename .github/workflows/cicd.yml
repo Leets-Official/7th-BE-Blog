@@ -40,6 +40,12 @@ jobs:
       - name: Build
         run: ./gradlew bootJar
 
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: 7th-be-blog/build/libs/*.jar
+
   cd:
     needs: ci
     if: github.event_name == 'push'
@@ -48,6 +54,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download jar artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: 7th-be-blog/build/libs
 
       - name: Create application.yml
         run: |
@@ -61,7 +73,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "7th-be-blog/Dockerfile,7th-be-blog/docker-compose.yml,7th-be-blog/build.gradle,7th-be-blog/settings.gradle,7th-be-blog/gradlew,7th-be-blog/gradle,7th-be-blog/src,7th-be-blog/application.yml"
+          source: "7th-be-blog/Dockerfile,7th-be-blog/docker-compose.yml,7th-be-blog/build/libs,7th-be-blog/application.yml"
           target: /home/${{ secrets.EC2_USERNAME }}/7th-BE-Blog
           rm: true
 
@@ -71,10 +83,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 30m
+          command_timeout: 10m
           script: |
             set -e
             cd ~/7th-BE-Blog/7th-be-blog
-            chmod +x gradlew
             docker compose down
             docker compose up -d --build
