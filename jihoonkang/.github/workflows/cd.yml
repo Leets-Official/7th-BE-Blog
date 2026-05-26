@@ -36,7 +36,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app
+            cd /home/ubuntu/7th-BE-Blog/jihoonkang
 
             echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
             echo "${{ secrets.APPLICATION_PROD_YML }}" > src/main/resources/application-prod.yml
