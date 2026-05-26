@@ -2,10 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - main
-      - 이은표/main
-      - 이은표/8주차
+    branches: [main, 이은표/main, 이은표/8주차]
   workflow_dispatch:
 
 jobs:
@@ -24,24 +21,30 @@ jobs:
           cache: gradle
 
       - name: Grant execute permission for gradlew
+        working-directory: eunphyo/week2
         run: chmod +x gradlew
 
       - name: Build application
+        working-directory: eunphyo/week2
         run: ./gradlew clean bootJar
 
-      - name: Prepare deploy jar
+      - name: Prepare deploy files
         run: |
-          JAR_FILE=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*plain.jar' | head -n 1)
-          cp "$JAR_FILE" app.jar
-          
+          mkdir -p deploy
+          JAR_FILE=$(find eunphyo/week2/build/libs -maxdepth 1 -name '*.jar' ! -name '*plain.jar' | head -n 1)
+          cp "$JAR_FILE" deploy/app.jar
+          cp eunphyo/week2/Dockerfile deploy/Dockerfile
+          cp eunphyo/week2/docker-compose.yml deploy/docker-compose.yml
+
       - name: Copy deploy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "Dockerfile,docker-compose.yml,app.jar"
+          source: "deploy/Dockerfile,deploy/docker-compose.yml,deploy/app.jar"
           target: "~/week2"
+          strip_components: 1
 
       - name: Run docker compose on server
         uses: appleboy/ssh-action@v1.2.0
