@@ -18,6 +18,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final KakaoService kakaoService;
 
     @Transactional
     public void signup(SignupRequest request) {

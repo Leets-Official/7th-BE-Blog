@@ -30,4 +30,11 @@ public class AuthController {
 
         return ResponseEntity.ok(tokenResponse);
     }
+
+    // 카카오 로그인
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<TokenResponse> kakaoLogin(@RequestParam String code) {
+        TokenResponse tokenResponse = authService.kakaoLogin(code);
+        return ResponseEntity.ok(tokenResponse);
+    }
 }
