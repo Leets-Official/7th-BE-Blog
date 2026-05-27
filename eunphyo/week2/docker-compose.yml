@@ -22,9 +22,7 @@ services:
       retries: 10
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE:-week2-app:latest}
 
     container_name: spring-app
 
