@@ -3,6 +3,7 @@ name: leets CI
 on:
   push:
     branches: [ "나명준/**주차" ]
+  workflow_dispatch:
 
 jobs:
   test:

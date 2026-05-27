@@ -7,14 +7,8 @@
     <list default="true" id="1fe1570b-38b0-4a5d-8519-5916e0d6f809" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostControllerDocs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/leets7th/domain/post/controller/PostControllerDocs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/DemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/DemoApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/controller/PostControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/controller/PostControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/service/PostServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/post/service/PostServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportAdminControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportAdminControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/leets7th/domain/report/controller/ReportControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HELP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/qodana.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
