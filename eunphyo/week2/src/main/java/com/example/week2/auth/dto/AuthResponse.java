@@ -15,4 +15,8 @@ public class AuthResponse {
     public record AccessToken(
             String accessToken
     ) {}
+
+    public record KakaoLoginUrl(
+            String loginUrl
+    ) {}
 }

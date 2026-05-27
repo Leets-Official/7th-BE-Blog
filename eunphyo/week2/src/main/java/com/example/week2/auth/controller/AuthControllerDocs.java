@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "회원가입 및 로그인 API")
@@ -46,9 +45,9 @@ public interface AuthControllerDocs {
             HttpServletResponse response
             );
 
-    @Operation(summary = "카카오 로그인 페이지 이동", description = "카카오 OAuth 인가 페이지로 리다이렉트합니다.")
+    @Operation(summary = "카카오 로그인 URL 조회", description = "프론트엔드에서 이동할 카카오 OAuth 인가 페이지 URL을 조회합니다.")
     @GetMapping("/kakao/login")
-    ResponseEntity<Void> redirectKakaoLogin();
+    ApiResponse<AuthResponse.KakaoLoginUrl> getKakaoLoginUrl();
 
     @Operation(summary = "카카오 로그인 콜백", description = "카카오 인가 코드를 받아 로그인 처리 후 Access Token을 발급합니다.")
     @ApiErrorCodeExample({
