@@ -53,5 +53,6 @@ out/
 Thumbs.db
 
 # yaml
-*.yml
-*.yaml
+application.yaml
+application.yml
+docker-compose.yml

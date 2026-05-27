@@ -1,35 +1,69 @@
 spring:
   application:
     name: leets-project
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/blog?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ${MYSQL_USER:-user}
+    password: ${MYSQL_PASSWORD:-dlrygud1371!}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
   h2:
     console:
-      enabled: true
-    datasource:
-      url: jdbc:h2:file:./data/mydb;DB_CLOSE_ON_EXIT=FALSE
-      driver-class-name: org.h2.Driver
-      username: sa
-      password:
-    jpa:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
       hibernate:
-        ddl-auto: update
-      show-sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  security:
+    user:
+      name: disable
+      password: disable
+
 jwt:
-  secret: dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtZ2VuZXJhdGlvbi1ub3ctM
-  access-token-expiration-millis: 1800000    # 30분 (30 * 60 * 1000)
-  refresh-token-expiration-millis: 1209600000 # 14일 (14 * 24 * 60 * 60 * 1000)
+  secret: ${JWT_SECRET:-dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtZ2VuZXJhdGlvbi1ub3ctM}
+  access-token-expiration-millis: 1800000
+  refresh-token-expiration-millis: 1209600000
 
 oauth:
   kakao:
-    client-id: 37fd82a73958cea4cb4d43bd9b562048
-    client-secret: eGsgszGpDxrFg8M7vWqSjGBL45CwImN7
-    redirect-uri: http://localhost:8080/oauth/kakao/callback
+    client-id: ${KAKAO_CLIENT_ID:-37fd82a73958cea4cb4d43bd9b562048}
+    client-secret: ${KAKAO_CLIENT_SECRET:-eGsgszGpDxrFg8M7vWqSjGBL45CwImN7}
+    redirect-uri: ${KAKAO_REDIRECT_URI:-http://localhost:8080/oauth/kakao/callback}
     auth-url: https://kauth.kakao.com/oauth/authorize
     token-url: https://kauth.kakao.com/oauth/token
     user-info-url: https://kapi.kakao.com/v2/user/me
 
 cookie:
-  secure: ${COOKIE_SECURE:false}
+  secure: ${COOKIE_SECURE:-false}
 
 app:
   oauth:
-    redirect-url: ${OAUTH_REDIRECT_URL:http://localhost:8080/oauth/callback}
+    redirect-url: ${OAUTH_REDIRECT_URL:-http://localhost:8080/oauth/callback}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+    org.hibernate.SQL: DEBUG
