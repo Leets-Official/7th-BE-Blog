@@ -10,10 +10,6 @@ public class PostServiceTest {
 
 
 
-    @Mock
-
-
-
     @InjectMocks
     PostService postService;
 }

@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api/posts")
 @Tag(name = "Post",description = "게시글 API")
 public interface PostControllerDocs {
 
 
+    @GetMapping("/{postId}")
     @Operation(summary = "게시글 상세 조회", description = "특정 게시글의 상세정보를 조회합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "게시글 상세 조회에 성공하였습니다.")
     @ApiErrorResponse({ErrorCode.POST_NOT_FOUND})
@@ -27,11 +29,13 @@ public interface PostControllerDocs {
             Long userId
     );
 
+    @GetMapping
     @Operation(summary = "게시글 목록 조회",description = "게시글 전체 목록을 조회합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "게시글 목록 조회에 성공하였습니다.")
     ApiResponse<List<PostResponseDto.ReadPostList>> getPostList();
 
 
+    @PostMapping
     @Operation(summary = "게시글 생성",description = "새로운 게시글을 생성합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "게시글 작성에 성공하였습니다.")
     @ApiErrorResponse({
@@ -43,6 +47,7 @@ public interface PostControllerDocs {
             Long userId
     );
 
+    @PatchMapping("/{postId}")
     @Operation(summary = "게시글 수정", description = "게시글 제목과 내용을 수정합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 수정에 성공하였습니다.")
     @ApiErrorResponse({
@@ -58,6 +63,7 @@ public interface PostControllerDocs {
 
 
 
+    @DeleteMapping("/{postId}")
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 삭제에 성공하였습니다.")
     @ApiErrorResponse({

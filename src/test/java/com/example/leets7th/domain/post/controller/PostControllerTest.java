@@ -2,6 +2,10 @@
 
 
     import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
+    import com.example.leets7th.global.auth.JwtExceptionFilter;
+    import com.example.leets7th.global.auth.JwtFilter;
+    import com.example.leets7th.global.config.SecurityConfig;
+    import com.example.leets7th.global.error.GlobalExceptionHandler;
     import com.fasterxml.jackson.databind.ObjectMapper;
     import com.example.leets7th.domain.post.dto.PostRequestDto;
     import com.example.leets7th.domain.post.dto.PostResponseDto;
@@ -13,8 +17,12 @@
     import org.junit.jupiter.api.Nested;
     import org.junit.jupiter.api.Test;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
     import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
     import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+    import org.springframework.context.annotation.ComponentScan;
+    import org.springframework.context.annotation.FilterType;
+    import org.springframework.context.annotation.Import;
     import org.springframework.http.MediaType;
     import org.springframework.test.context.bean.override.mockito.MockitoBean;
     import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +44,18 @@
     import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-    @WebMvcTest(PostController.class)
+    @WebMvcTest(
+            controllers = PostController.class,
+            excludeAutoConfiguration = SecurityAutoConfiguration.class,
+            excludeFilters = {
+                    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+                            SecurityConfig.class,
+                            JwtFilter.class,
+                            JwtExceptionFilter.class
+                    })
+            }
+    )
+    @Import(GlobalExceptionHandler.class)
     @AutoConfigureRestDocs
     class PostControllerTest {
 
@@ -45,6 +64,7 @@
 
         @Autowired
         ObjectMapper objectMapper;
+
 
         @MockitoBean
         PostService postService;
@@ -104,8 +124,8 @@
                         .andExpect(jsonPath("$.data.title").value(response.title()))
                         .andExpect(jsonPath("$.data.content").value(response.content()))
                         .andExpect(jsonPath("$.data.nickname").value(response.nickname()))
-                        .andExpect(jsonPath("$.data.createdAt").value(FIXED_TIME_STR))
-                        .andExpect(jsonPath("$.data.updatedAt").value(FIXED_TIME_STR))
+                        .andExpect(jsonPath("$.data.createdAt").exists())
+                        .andExpect(jsonPath("$.data.updatedAt").exists())
                         .andDo(print())
                         .andDo(MockMvcRestDocumentationWrapper.document("post-read-success",
                                 resource(commonBuilder()

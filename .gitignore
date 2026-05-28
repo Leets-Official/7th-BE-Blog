@@ -8,6 +8,8 @@ out/
 # env
 *.env
 
+.idea/
+
 # Gradle
 .gradle/
 build/
