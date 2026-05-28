@@ -48,7 +48,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF=8
-      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
     restart: always
 
 volumes:
