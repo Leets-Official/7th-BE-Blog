@@ -1,19 +1,21 @@
 package com.example.leets_7th.common.jwt;
 
-import com.example.leets_7th.common.status.ErrorStatus;
+import com.example.leets_7th.common.auth.CustomUserDetailsService;
 import com.example.leets_7th.common.exception.GeneralException;
+import com.example.leets_7th.common.status.ErrorStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -25,20 +27,26 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String ACCESS_TOKEN_COOKIE = "access_token";
 
+    private final CustomUserDetailsService customUserDetailsService;
+
     private final Key key;
     private final long accessTokenExpireMs;
     private final long refreshTokenExpireMs;
 
+    @Autowired
     public JwtProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.access-token-expire-ms}") long accessTokenExpireMs,
-            @Value("${jwt.refresh-token-expire-ms}") long refreshTokenExpireMs
+            @Value("${jwt.refresh-token-expire-ms}") long refreshTokenExpireMs,
+            CustomUserDetailsService customUserDetailsService
     ) {
+        this.customUserDetailsService = customUserDetailsService;
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenExpireMs = accessTokenExpireMs;
@@ -95,7 +103,8 @@ public class JwtProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
+
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 

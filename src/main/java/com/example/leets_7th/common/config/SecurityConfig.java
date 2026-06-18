@@ -46,7 +46,8 @@ public class SecurityConfig {
     private static final String[] AUTH_URIS = {
             "/api/auth/signup",
             "/api/auth/login",
-            "/api/auth/reissue"
+            "/api/auth/reissue",
+            "/api/auth/kakao/callback",
     };
 
     /** 소셜 인증(카카오, 네이버) 관련 경로 */

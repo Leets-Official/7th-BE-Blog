@@ -1,5 +1,6 @@
 package com.example.leets_7th.domain.comment.controller.docs;
 
+import com.example.leets_7th.common.auth.CustomUserDetails;
 import com.example.leets_7th.common.response.ApiResponse;
 import com.example.leets_7th.domain.comment.dto.request.CreateCommentRequest;
 import com.example.leets_7th.domain.comment.dto.request.ReportCommentRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Comment", description = "댓글 관련 API")
@@ -32,7 +34,7 @@ public interface CommentControllerDocs {
             )
     })
     ResponseEntity<ApiResponse<Void>> createComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @RequestBody @Valid CreateCommentRequest request
     );
@@ -57,7 +59,7 @@ public interface CommentControllerDocs {
     })
     @DeleteMapping("/{postId}/comments/{commentId}")
     ResponseEntity<ApiResponse<Void>> deleteComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @PathVariable Long commentId
     );
@@ -77,7 +79,7 @@ public interface CommentControllerDocs {
             )
     })
     ResponseEntity<ApiResponse<Void>> updateComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody @Valid UpdateCommentRequest request
@@ -98,7 +100,7 @@ public interface CommentControllerDocs {
             )
     })
     ResponseEntity<ApiResponse<Void>> likeComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @PathVariable Long commentId
     );
@@ -118,7 +120,7 @@ public interface CommentControllerDocs {
             )
     })
     ResponseEntity<ApiResponse<Void>> unlikeComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @PathVariable Long commentId
     );
@@ -143,7 +145,7 @@ public interface CommentControllerDocs {
     })
     @PostMapping("/{postId}/comments/{commentId}/reports")
     ResponseEntity<ApiResponse<Void>> reportComment(
-            @RequestParam Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody @Valid ReportCommentRequest request
